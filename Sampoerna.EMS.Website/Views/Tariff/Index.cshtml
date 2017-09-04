@@ -1,0 +1,153 @@
+﻿
+@model Sampoerna.EMS.Website.Models.Tariff.TariffViewModel
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Master Tariff</h3>
+            @if (Model.IsNotViewer)
+            {
+                <div class="action-button new">
+                    <a href="@Url.Action("Create", "Tariff")">
+                        <button class="btn btn-blue">NEW</button>
+                    </a>
+                    <a data-toggle="modal" data-target=".menu-maping-type">
+
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="tariffTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th> Filter </th>
+                            <th>#</th>
+                            <th>Product Type</th>
+                            <th>HJE From</th>
+                            <th>HJE To</th>
+                            <th>Valid From</th>
+                            <th>Valid To</th>
+                            <th>Tariff</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 1;}
+                        @foreach (var item in Model.TariffList)
+                        {
+                            item.MaximumHjeDisplay = "Rp" + String.Format("{0:N}", item.MaximumHJE);
+                            item.MinimumHjeDisplay = "Rp" + String.Format("{0:N}", item.MinimumHJE);
+                            item.TariffDisplay = "Rp" + String.Format("{0:N}", item.Tariff);
+                            var fromDateLong = item.ValidStartDate.ToString("dd MMMM yyyy");
+                            var toDateLong = item.ValidEndDate.ToString("dd MMMM yyyy");
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "Tariff", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer && !item.IsSubmitted)
+                                    {
+                                        <a href="@Url.Action("Edit", "Tariff", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
+                                    @if (Model.IsAdminApprover && !item.IsApproved && item.IsSubmitted)
+                                    {
+                                        <a href="@Url.Action("Approve", "Tariff", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approve"> <i class="fa  fa-check"></i></a>
+                                    }
+                                </td>
+                                <td>@i</td>
+                                <td>@Html.DisplayFor(model => item.ProductType.ProductType)</td>
+                                <td class="text-right">@Html.DisplayFor(model => item.MinimumHjeDisplay)</td>
+                                <td class="text-right">@Html.DisplayFor(model => item.MaximumHjeDisplay)</td>
+                                <td>@Html.DisplayFor(model => fromDateLong)</td>
+                                <td>@Html.DisplayFor(model => toDateLong)</td>
+                                <td class="text-right">@Html.DisplayFor(model => item.TariffDisplay)</td>
+                                <td>@Html.DisplayFor(model => item.ApprovalStatusDescription.Value)</td>
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuMasterTariff').addClass('active');
+
+            setupDataTables();
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#tariffTable')) {
+                table = $('#tariffTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#tariffTable').DataTable(
+                  {
+                      "order": [[1, "asc"]],
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#tariffTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+
+
+    </script>
+}
+
+

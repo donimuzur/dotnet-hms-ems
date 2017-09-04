@@ -30,6 +30,7 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
 
     public class VirtualNppbckDetails
     {
+        [Required(ErrorMessage = "please fill this field"), MaxLength(15, ErrorMessage = "Nppbkc ID mustn't more than 15 characters")]
         public string VirtualNppbckId { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
@@ -52,6 +53,7 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+        [Required(ErrorMessage = "please fill this field"), MaxLength(10, ErrorMessage = "Kppbc ID mustn't more than 10 characters")]
         public string KppbcId { get; set; }
         public ZAIDM_EX_KPPBC KPPBC { get; set; }
         public string AcountNumber { get; set; }

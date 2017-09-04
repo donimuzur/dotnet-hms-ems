@@ -1,0 +1,314 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    legend {
+        width: 38%;
+        padding: 2px;
+        font-size: 16px !important;
+        text-align: left;
+    }
+        .file {
+        visibility: hidden;
+        position: absolute;
+    }
+</style>
+    @Html.HiddenFor(model => model.ViewModel.PD_ID, new { @id = "PD_ID" })
+    @Html.Partial("_ActionButtonProduct", Model)
+    @Html.Partial("_DetailModalLock")
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="information">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-3"><label>First Name</label></div>
+                                    <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.FirstName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-3"><label>Last Name</label></div>
+                                    <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.LastName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                </div>
+                            </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-3"><label>Email</label></div>
+                                    <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.Email, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                </div>
+                            </div>
+                            <hr width="100%" />
+                            <div class="row"></div>
+                            <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading2">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-2" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                                Next Action
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                @foreach (var action in Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction)))
+                                                {
+                                                    <div class="col-md-3">
+                                                        @if (Model.ViewModel.Next_Action == (int)action)
+                                                        {
+                                                            @Html.RadioButton("Action", ((int)action).ToString(), new { @checked = "true", @disabled = "disabled" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.RadioButton("Action", ((int)action).ToString(), new { @disabled = "disabled" })
+                                                        }
+                                                        @*@Html.RadioButton("Action", ((int)Model.ViewModel.Next_Action).ToString())*@
+                                                        @Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), action.ToString()))
+                                                    </div>
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="overflow-x: scroll;">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Product Development
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    @*<button type="button" id="uploadItem" class="btn btn-primary btn-sm"> Upload </button>*@
+                                                </div>
+                                                <div class="col-md-3"></div>
+                                                <div class="col-md-6 text-right">
+
+                                                </div>
+                                            </div>
+                                            <div class="table-container" id="contenttableproduct">
+                                                @Html.Partial("_ProductListItem")
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        
+                            <div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading3">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-3" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                                Notes Action
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+                                        <div class="panel-body">
+                                            <div class="table-container">
+                                                <p>New Brand Registration: Using Brand Registration Form for New Brand Request</p>
+                                                <p>Update HJE: Using Brand Registration for Update HJE</p>
+                                                <p>Map SKEP: Mapping Brand Registration</p>
+                                                <p>Penetapan SKEP: Penetapan SKEP Form</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script src="~/Scripts/brand-registration-trans/main_product.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+      
+      
+        $(document).ready(function () {
+            $('#MenuProduct').addClass('open');
+            $('#MenuProductDevelopment').addClass('active');
+            attach();                          
+           
+            handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
+                                    
+        });
+
+        $(document).unload(function () {
+            detach();
+        });
+
+        $(".itemDisplayLock").click(function () {
+            var idItem = $(this).data('id');
+            console.log("id item : " + idItem);
+            existingOtherDocs = {};
+            getDetailItem(idItem);
+            loadOtherDocs(idItem);
+            //mapBrowseAction();
+        });
+
+        function getDetailItem(idVal) {
+            console.log("modal lock");
+            var docsItemLock = $("#DetailItemLock");
+            console.log(idVal);
+          
+            $.ajax({
+                url: '@Url.Action("GetDetailItemLock", "BrandRegistrationTransaction")',
+                type: 'POST',
+                data: {
+                    detailID: Number(idVal)
+                },
+            })
+            .success(function (partialResult) {
+                console.log("load item");               
+                docsItemLock.html(partialResult);
+                $('#myModalItemLock').modal('show');
+                setupDataTables();
+            })
+            .error(function (error) {
+                console.log("failed load item");                
+
+            });
+        }
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $('.loading').show();
+            });
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
+
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#changesHistoryTable')) {
+                table = $('#changesHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#changesHistoryTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      },
+
+                  });
+
+
+            $('#changesHistoryTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () { });
+            });
+            $('.loading').hide();
+            setupDataTables();
+        }
+        function loadOtherDocs(detailID) {
+
+            $("#customloader").show();
+            $.ajax({
+                url: '@Url.Action("GetOtherDocsProduct", "BrandRegistrationTransaction")',
+                type: 'POST',
+                data: JSON.stringify({
+                    detailID: Number(detailID),
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#customloader").hide();
+                    if (response && response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            otherDocs[i] = response[i];
+                            otherDocsName[i] = response[i].File_Name;
+                            var parts = response[i].Path_Url.split('/');
+                            otherDocs[i].name = parts[parts.length - 1];
+                            otherDocs[i].url= response[i].Path_Url;
+                          
+                        }
+                      
+                        _renderFileList();
+
+                    }
+                },
+                error: function () {
+                    $("#customloader").hide();
+                }
+            });
+        }
+    
+    
+        function _renderFileList() {
+         
+            var container = $("#otherDocsBody");
+            var content = '';
+            if (!otherDocs || otherDocs.length <= 0) {
+                content += '<tr id="noOtherFileMsg">' +
+                            '<td colspan="4"><div class="alert alert-info">No Additional Documents</div>' + '</td></tr>';
+            }
+            for (var i = 0; i < otherDocs.length; i++) {
+                var url = undefined;
+                var linkOpen ="";
+                var linkClose ="";
+                if(otherDocs[i].url){
+                    url = '@string.Format("{0}://{1}{2}", Request.Url.Scheme,Request.Url.Authority, Url.Content("~"))';
+                    url = url + otherDocs[i].url.replace("~/", "");
+                    linkOpen ='<a href="'+url+'" title="' + otherDocs[i].name+ '" target="_blank"><i class="fa fa-file-o"></i>';
+                    linkClose ='</a>';
+                }
+                content +=
+                    '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + linkOpen + otherDocs[i].name + linkClose +'</td>' +
+                    '<td>' + otherDocsName[i] + '</td>' +
+                    '<td></td>' +
+                    '</tr>';
+            }
+            container.html(content);
+        }
+              
+
+    </script>
+}

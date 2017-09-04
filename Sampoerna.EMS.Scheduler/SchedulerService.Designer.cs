@@ -31,7 +31,7 @@
             // 
             // SchedulerService
             // 
-            this.ServiceName = "SchedulerServiceDEV";
+            this.ServiceName = "SchedulerService";
 
         }
 

@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using System.Web.Mvc;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
@@ -1479,6 +1481,51 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 _ck4CBll.Ck4cWorkflow(input);
             }
+        }
+
+        public void ExportClientsListToExcel(int id)
+        {
+
+            var listHistory = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C, id.ToString());
+
+            var model = Mapper.Map<List<ChangesHistoryItemModel>>(listHistory);
+
+            var grid = new GridView
+            {
+                DataSource = from d in model
+                             select new
+                             {
+                                 Date = d.MODIFIED_DATE.HasValue ? d.MODIFIED_DATE.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty,
+                                 FieldName = d.FIELD_NAME,
+                                 OldValue = d.OLD_VALUE,
+                                 NewValue = d.NEW_VALUE,
+                                 User = d.USERNAME
+
+                             }
+            };
+
+            grid.DataBind();
+
+            var fileName = "CK4C" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+
+            Response.Flush();
+
+            Response.End();
+
         }
 
         #endregion

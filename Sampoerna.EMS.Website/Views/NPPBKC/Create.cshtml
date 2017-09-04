@@ -1,0 +1,279 @@
+﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NewNPPBKCViewModel.NppbkcModel
+
+@{
+    ViewBag.Title = "Create NPPBKC";
+}
+
+@using (Html.BeginForm("Create", "NPPBKC", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="desc">NPPBKC <span>(Nomor Pokok Pengusaha Barang Kena Cukai)</span></h3>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <a href="@Url.Action("Index", "NPPBKC")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="scroll">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Create NPPBKC
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.VirtualNppbckId, "NPPBKC ID")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.VirtualNppbckId, new { @class = "form-control", @type = "text", @required = true, maxlength = 15 })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.VirtualNppbckId)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.City, "City")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.City, new { @class = "form-control", @type = "text", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.City)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.Address1, "Address 1")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.Address1, new { @class = "form-control", @rows = "5", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.Address1)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.RegionOfficeOfDGCE, "Region Office of DGCE")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.RegionOfficeOfDGCE, new { @class = "form-control", @rows = "5", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.RegionOfficeOfDGCE)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.Address2, "Address 2")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.Address2, new { @class = "form-control", @rows = "5", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.Address2)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.TextTo, "Text To")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.TextTo, new { @class = "form-control", @rows = "5", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.TextTo)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.KppbcId, "KPPBC ID")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.KppbcId, new { @class = "form-control", @type = "text", @required = true, maxlength = 10 })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.KppbcId)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.CityAlias, "City Alias")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.CityAlias, new { @class = "form-control", @type = "text", @required = true, maxlength = 10 })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.CityAlias)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.Region, "Region")<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.Region, new { @class = "form-control", @type = "text", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.Region)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">@Html.LabelFor(model => model.Detail.AcountNumber, "Account Number")</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.AcountNumber, new { @class = "form-control", @type = "text" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">
+                                                            @Html.LabelFor(model => model.Detail.StartDate, "Start Date")<span class="red">*</span>
+                                                        </label>
+                                                        <div class="col-md-9">
+
+                                                            <div class="input-group date">
+                                                                @Html.TextBoxFor(model => model.Detail.StartDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.StartDate)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">
+                                                            @Html.LabelFor(model => model.Detail.EndDate, "End Date")<span class="red">*</span>
+                                                        </label>
+                                                        <div class="col-md-9">
+
+                                                            <div class="input-group date">
+                                                                @Html.TextBoxFor(model => model.Detail.EndDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.EndDate)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3 long">Flag For LACK-1</label>
+                                                        <div class="col-md-9">
+                                                            <div class="row">
+                                                                <div class="col-md-8">
+                                                                    @Html.CheckBoxFor(model => model.Detail.FlagForLack1)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">DGCE Address<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.DgceAddress, new { @class = "form-control", rows = "5", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.DgceAddress)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Location<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.Location, new { @class = "form-control", rows = "5", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.Location)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">KPPBC Address <span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextAreaFor(model => model.Detail.KppbcAddress, new { @class = "form-control", rows = "5", @required = true })
+                                                        </div>
+                                                        <div class="col-md-9 col-md-offset-3">
+                                                            @Html.ValidationMessageFor(model => model.Detail.KppbcAddress)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <span class="red">*</span> ) This Field Required
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@section scripts {
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            $('#MenuNPPBKC').addClass('active');
+        });
+    </script>
+
+
+}

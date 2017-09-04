@@ -1,0 +1,1046 @@
+﻿@model Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestModel
+
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    legend {
+        padding: 2px;
+        font-size: 16px !important;
+    } 
+
+    .currency {
+        padding-left: 12px;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        padding: 2px 5px;
+    }
+
+    .tablekoe table{
+        background:white;
+    }
+
+    .watermark {
+        opacity: 0.1;
+        color: BLACK;
+        position: absolute;
+        top: auto;
+        margin-left: 20%;
+        margin-top:35%;
+        font-size:50pt;
+        z-index:1;
+
+        /* Safari */
+        -webkit-transform: rotate(-45deg);
+        /* Firefox */
+        -moz-transform: rotate(-45deg);
+        /* IE */
+        -ms-transform: rotate(-45deg);
+        /* Opera */
+        -o-transform: rotate(-45deg);
+        /* Internet Explorer */
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    }
+    #div-print-layout table{
+        background-color:#ffffff;
+    }
+</style>
+
+@{
+    //ViewBag.Title = "Detail";
+
+    var actionName = "Save";
+    Model.IsFormSkep = false;
+    if (Model.Status.ToUpper() == "WAITING_GOVERNMENT_APPROVAL")
+    {
+        actionName = "UpdateSkep";
+        Model.IsFormReadOnly = true;
+        Model.IsFormSkep = true;
+
+    }
+
+    /*var actionName = "Save";
+    if (Model.Status == "WAITING FOR POA SKEP APPROVAL")
+    {
+        actionName = "UpdateSkep";
+    }*/
+}
+
+@using (Html.BeginForm(actionName, "MLLicenseRequest", FormMethod.Post, new { @id = "SaveLRequestForms", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    //////////// INIT START ////////////
+    @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_hd_id" })
+    @Html.HiddenFor(model => model.MnfFormNum)
+    @Html.HiddenFor(model => model.Status, new { @id = "txt_hd_status" })
+    @Html.HiddenFor(model => model.StatusKey, new { @id = "txt_hd_statuskey" })
+    @Html.HiddenFor(model => model.InterviewId, new { @id = "int_interview_id" })
+    @Html.HiddenFor(model => model.InterviewId, new { @id = "int_interview_id" })
+    @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_req_id" })
+    @Html.HiddenFor(model => model.InterviewFormNum, new { @id = "txt_form_num" })   
+    @Html.HiddenFor(model => model.Lampiran_Count, new { @id = "txt_lampirancount" })
+    @Html.HiddenFor(model => model.CreatedBy, new { @id = "txt_hd_createdby" })
+    <input type="hidden" id="txt_isformreadonly" value="true" />
+    <input type="hidden" id="txt_printout_temp" />
+    //////////// INIT END /////////////
+    
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>License Request Form</h3>
+                <label class="status">@Model.Status</label>
+                <label class="status" id="div_form_number">@Model.MnfFormNum</label>
+                <div class="action-button">
+                    
+                    @if (Model.IsPage != "detail")
+                    {
+                        if (Model.IsApprover)
+                        {
+                            if (Model.Status.ToLower().Equals("waiting_poa_approval"))
+                            {
+                        <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".approve-modal.licenserequest"  value="Approve" />
+                        <input type="button" class="btn btn-blue btn_showmodal_changestatus" data-action="Revise" data-toggle="modal" data-target=".modal_ChangeStatus" value="Revise" />
+                            }
+                            else if (Model.Status.ToLower().Equals("waiting_poa_skep_approval"))
+                            {
+                        <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".approvefinal-modal.licenserequest" value="Approve" />
+                        <input type="button" class="btn btn-blue btn_showmodal_changestatus" data-action="ReviseSkep" data-toggle="modal" data-target=".modal_ChangeStatus" value="Revise" />
+                            }
+                        }
+                    }
+                    <a href="@Url.Action("Index", "MLLicenseRequest")" class="btn btn-grey btn_loader">Back</a>
+                   </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" id="home-tab" class="active"><a href="#info" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                            
+                                <li role="presentation"><a href="#print" id="btn-tab-print-layout" aria-controls="print" role="tab" data-toggle="tab">Print Out</a></li>
+                                <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab" id="btn-tab-changeslog">Changes Log</a></li>
+                            
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="info">
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    DETAIL LICENSE REQUEST
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                            <div class="panel-body">
+                                                <div class="form-excise" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Request Date<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group">
+                                                                        @Html.TextBoxFor(model => model.RequestDate, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">BA No</label>
+                                                                <div class="col-md-8">
+                                                                    <a href="@Html.DisplayFor(model => model.link_BA)" id="BANO_link" target="_blank"><span id="label_BANO" class="form-control row-border" style="color:blue;border:0px;box-shadow:none">@Html.DisplayFor(model => model.BANum)</span></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Interview Number<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(model => model.InterviewId, Model.FormNumList, "Select", new { @disabled = "disabled", @class = "form-control", @id = "dd_IRformnum" })
+                                                                    <input type="hidden" id="txt_hd_interviewNumber" value="0" name="InterviewFormNum" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Company Type</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.CompType, Model.CompType, new { @readonly = "readonly", @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwo">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                                    RESPONSIBLE PERSON & AUTHORIZATION OWNER
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                            <div class="panel-body">
+                                                <div class="form-excise" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Name</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBox("POAName", Model.POAName, new { @readonly = "readonly", @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">KPPBC</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBox("KPPBC", Model.KPPBC, new { @readonly = "readonly", @id = "KPPBC_ID", @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Position</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBox("Position", Model.POAPosition, new { @readonly = "readonly", @id = "POAPosition", @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">KPPBC Address</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBox("KppbcAddress", Model.KppbcAddress, new { @readonly = "readonly", @id = "KPPBCAddress", @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Address</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextArea("POAAddress", Model.POAAddress, new { @readonly = "readonly", @id = "POAAddress", @class = "form-control", @rows = "6" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Company</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBox("Company", Model.Company, new { @readonly = "readonly", @class = "form-control" })
+                                                                    @Html.HiddenFor(model => model.CompanyId, new { @id = "CompanyId" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <label class="col-md-4">NPWP</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBox("Npwp", Model.Npwp, new { @readonly = "readonly", @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <label class="col-md-4">Company Address</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBox("CompanyAddress", Model.CompanyAddress, new { @readonly = "readonly", @class = "form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingThree">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                                    INTERVIEW & LOCATION VISIT
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="div_interview_detail">
+                                            @{
+                                                var Tmpindex = 0;
+                                                var urut = 1;
+                                                string location_list = "";
+                                                string mnfcity_list = "";
+                                                string mnfaddr_list = "";
+                                            }
+                                            @foreach (var irdetail in Model.IRDetails)
+                                            {
+                                                irdetail.Index = Tmpindex;
+                                                irdetail.NumList = urut;
+                                                irdetail.ActionName = "Detail";
+
+                                                location_list += "<p style='text-indent: 5em;'><b>Detil Pabrik " + Tmpindex.ToString() + "</b></p>";
+                                                location_list += "<p style='text-indent: 5em;'>1. Lokasi Pabrik</p>";
+                                                location_list += "<div style='padding-left:5em'><table style='background:none;'><tr><td>a.</td><td>Alamat Jalan</td><td>:</td><td>" + irdetail.MnfAddr + "</td></tr>";
+                                                location_list += "<tr><td>b.</td><td>Kelurahan/Desa</td><td>:</td><td>" + irdetail.MnfVillage + "</td></tr>";
+                                                location_list += "<tr><td>c.</td><td>Kecamatan</td><td>:</td><td>" + irdetail.MnfSubDist + "</td></tr>";
+                                                location_list += "<tr><td>d.</td><td>Kabupaten/Kota</td><td>:</td><td>" + irdetail.MnfCity + "</td></tr>";
+                                                location_list += "<tr><td>e.</td><td>Provinsi</td><td>:</td><td>" + irdetail.MnfProvince + "</td></tr>";
+                                                location_list += "<tr><td>f.</td><td>Telepon/Faksimili</td><td>:</td><td>" + irdetail.MnfPhone + "/" + irdetail.MnfFax + "</td></tr></table></div>";
+                                                location_list += "<p style='padding-left:5em'>2. Batas-batas</p><div style='padding-left:5em'><table style='background:none;'><tr><td>a.</td><td>Utara</td><td>:</td><td>" + irdetail.North + "</td></tr>";
+                                                location_list += "<tr><td>b.</td><td>Timur</td><td>:</td><td>" + irdetail.East + "</td></tr><tr><td>c.</td><td>Selatan</td><td>:</td><td>" + irdetail.South + "</td></tr>";
+                                                location_list += "<tr><td>d.</td><td>Barat</td><td>:</td><td>" + irdetail.West + "</td></tr></table></div>";
+                                                location_list += "<p style='padding-left:5em'>3. Kondisi&nbsp;" + Model.CompType + " :</p><div style='padding-left:5em'><table style='background:none;'>";
+                                                location_list += "<tr><td>a.</td><td>Luas Tanah</td><td>:</td><td>" + irdetail.LandArea + " m2</td></tr><tr><td>b.</td><td>Luas Bangunan</td><td>:</td><td>" + irdetail.BuildingArea + " m2</td></tr>";
+                                                location_list += "<tr><td>c.</td><td>Status kepemilikan</td><td>:</td><td>" + irdetail.OwnershipStatus + "</td></tr></table></div>";
+
+
+                                                mnfcity_list += irdetail.MnfCity;
+                                                mnfaddr_list += irdetail.MnfAddr + " " + irdetail.MnfCity;
+                                                if (Tmpindex >= 1 && Tmpindex < irdetail.MnfCount)
+                                                {
+                                                    mnfcity_list += ",";
+                                                    mnfaddr_list += ",";
+                                                }
+                                                Tmpindex++;
+
+                                                Tmpindex++;urut++;
+                                                @Html.Partial("_LicenseRequestInterview", irdetail)
+                                            }
+                                            <input type="hidden" id="Mnflocationlist" value="@location_list" />
+                                            <input type="hidden" id="Mnfcitylist" value="@mnfcity_list" />
+                                            <input type="hidden" id="Mnfaddresslist" value="@mnfaddr_list" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingFour">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                    PRODUCTION TYPE
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                            <div class="panel-body">
+                                                <div class="form-excise" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <label class="col-md-3">Production Type<span class="red">*</span></label>
+                                                                <div class="col-md-9">
+                                                                    @{
+                                                                        string product_type_list = "";
+                                                                        int idx = 0;
+                                                                        string[] numerator = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+
+                                                                    }
+                                                                    @foreach (var prodtype in Model.PCDetails)
+                                                                    {
+                                                                        if (prodtype.IsChecked == "checked")
+                                                                        {
+                                                                            product_type_list += "<tr><td>" + numerator[idx] + ".</td><td>" + prodtype.ProdAlias + "</td></tr>";
+                                                                            idx++;
+                                                                        }
+                                                                        <div class="col-md-5">
+                                                                            <input id="PCDetails[@prodtype.ptIndex.ToString()].ProdCode)" type="checkbox" name="ProdCode" disabled="disabled" value="@prodtype.ProdCode" @prodtype.IsChecked>&nbsp;@prodtype.ProductType&nbsp;(@prodtype.ProdAlias)
+                                                                        </div>
+                                                                    }
+                                                                    <input type="hidden" id="product_type_list" value="@product_type_list" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <label class="col-md-3">Other Production Type</label>
+                                                                <div class="col-md-7">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <div class="col-md-1"></div>
+                                                                <div class="col-md-10">
+                                                                    <table id="otherprodtype" class="display table table-bordered table-striped" cellspacing="0">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="toggle-row" width="5%">#</th>
+                                                                                <th width="95%">Other Production Type</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @{
+                                                                                string otherproducttype_list = "";
+                                                                                int otheridx = 0;
+                                                                                string[] othernumerator = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+
+                                                                            }
+                                                                            @if (Model.OtherPCDetails != null)
+                                                                            {
+                                                                                var indx = 1;
+
+                                                                                for (int i = 0; i < Model.OtherPCDetails.Count; i++)
+                                                                                {
+                                                                                    otherproducttype_list += "<tr><td>" + othernumerator[otheridx] + ".</td><td>" + Model.OtherPCDetails[i].OtherProdCode + "</td></tr>";
+                                                                                    otheridx++;
+                                                                                    <tr id="other-exist-@Model.OtherPCDetails[i].ProdTypeId">
+                                                                                        <td>@indx <input type="hidden" id="other_idx_max" value="@Model.OtherPCDetails.Count" /></td>
+                                                                                        <td>
+                                                                                            <span id="field1">@Html.Raw(Model.OtherPCDetails[i].OtherProdCode)</span>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    indx++;
+                                                                                }
+                                                                                <input type="hidden" id="otherproducttype_list" value="@otherproducttype_list" />
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="col-md-1"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingFour">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                    ATTACHMENT DOCUMENT
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                            <div class="panel-body">
+                                                <div class="form-excise" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <label>Supporting Document</label>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <div class="col-md-12" id="div_body_supportingdoc">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        <div class="col-md-4">
+                                                            <label>Additional Documents</label>
+                                                        </div>
+                                                        @*<div class="col-md-8" @if (Model.IsFormReadOnly) { <text> style="display:none;" </text>     }>
+                                                            <div class="col-md-8">
+                                                                <div class="form-group div_file div_file_otherdoc">
+                                                                    <div class="col-md-12">
+                                                                        <div class="col-md-10">
+                                                                            <input type="text" id="txt_otherdocfile_name" class="form-control txt_file_name" readonly placeholder="Select file">
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <span class="input-group-btn">
+                                                                                <button id="btn_browseOtherDoc_file" class="btn_browse_file btn btn-blue" type="button">Browse</button>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <button class="btn btn-success" type="button" id="btn_add_otherdoc">Add</button>
+                                                            </div>
+                                                        </div>*@
+                                                        <div class="col-md-12">
+                                                            <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row" width="5%">#</th>
+                                                                        <th width="40%">File</th>
+                                                                        <th width="40%">File Name</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="div_otherDocsBody">
+                                                                    @{var otherIndex = 0;
+                                                                    }
+                                                                    @foreach (var _file in Model.LicenseRequestFileOtherList)
+                                                                    {
+                                                                        otherIndex++;                                                                        
+                                                                        <tr>
+                                                                            <td class="td_filename_number">@otherIndex</td>
+                                                                            <td class="td_filename">
+                                                                                <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank">@_file.Name</a>
+                                                                            </td>
+                                                                            <td>
+                                                                                @_file.FileName
+                                                                            </td>                                                                
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if (!Model.Status.ToLower().Contains("draft") && !Model.Status.ToLower().Equals("waiting_poa_approval"))
+                                {
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingFour">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                        FILL SKEP SECTION
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                                <div class="panel-body">
+                                                    <div class="form-excise" role="form">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Government Status<span class="red">*</span></label>
+                                                                    <div class="col-md-8">
+                                                                        @Html.DropDownListFor(model => model.DecreeStatus, Model.GovStatus_List, "Select", new { @disabled = "disabled", @class = "form-control", @id = "opt_govstatus" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Decree Number<span class="red">*</span></label>
+                                                                    <div class="col-md-8">
+                                                                        @Html.TextBoxFor(model => model.DecreeNo, new { @readonly = "readonly", @class = "form-control" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <label class="col-md-4">Decree Date<span class="red">*</span></label>
+                                                                    <div class="col-md-8">
+                                                                        <div class="input-group">
+                                                                            @*<div class="input-group date">*@
+                                                                            @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                                                            @*@Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @readonly = "readonly", @class = "form-control" })*@
+                                                                            @*<span class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+            </span>*@
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="row">
+                                                                    <label class="col-md-4">NPPBKC<span class="red">*</span></label>
+                                                                    <div class="col-md-8">
+                                                                        @Html.TextBoxFor(model => model.NppbkcID, new { @readonly = "readonly", @class = "form-control" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <div class="row">
+                                                                    <label class="col-md-3">Attachment<span class="red">*</span></label>                                                                    
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <table class="display table table-bordered table-striped" cellspacing="0" id="BaDocs">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="toggle-row" width="5%">#</th>
+                                                                                <th width="40%">File</th>
+                                                                                <th width="40%">File Name</th>                                                                                
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="div_body_ba_doc">
+                                                                            @{var baIndex = 0;
+                                                                            }
+                                                                            @foreach (var _file in Model.LicenseRequestFileBAList)
+                                                                            {
+                                                                                baIndex++;                                                                                
+                                                                                <tr>
+                                                                                    <td class="td_filename_number">@baIndex</td>
+                                                                                    <td class="td_filename">
+                                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank">@_file.Name</a>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        @_file.FileName
+                                                                                    </td>                                                                                    
+                                                                                </tr>
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                                }
+                                @if (Model.MnfRequestID != 0)
+                                {
+                                    <div class="panel-group" id="accordionFive" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingFive">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                                                        Workflow History
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseFive" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFive">
+                                                <div class="panel-body">
+                                                    <div class="table-container">
+                                                        @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="print">
+                                <div>
+                                    <button type="button" class="btn btn-blue pull-right" id="btn_download_printout">Download Printout</button>
+                                    
+                                </div>
+                                <div class="panel-body">
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingPrintOne">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePrintOne" aria-expanded="true" aria-controls="collapsePrintOne">
+                                                        Print Out PMCK-6
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrintOne">
+                                                <div class="white-wrapper">
+                                                    @if (!Model.IsNotViewer)
+                                                    {
+                                                        <button type="button" class="btn btn-blue pull-right btn_show_printouteditor" data-action="license1" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+                                                    <div class="row">
+                                                        @*@if (Model.Status == "DRAFT_EDIT_STATUS" || Model.Status == "DRAFT_NEW_STATUS" || Model.Status == "WAITING_POA_APPROVAL")
+                                                        {*@
+                                                            <div class="watermark">DRAFTED</div>
+                                                        @*}*@
+                                                        <div class="table-container tablekoe" id="div-print-layout_1" style="padding:50px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingPrintSec">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePrintSec" aria-expanded="true" aria-controls="collapsePrintSec">
+                                                        Print Out Surat Pernyataan Pembukuan 10 tahun terakhir
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintSec" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrintSec">
+                                                <div class="white-wrapper">
+                                                    @if (!Model.IsNotViewer)
+                                                    {
+                                                        <button type="button" class="btn btn-blue pull-right btn_show_printouteditor" data-action="license2" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+                                                    <div class="row">
+                                                        @*@if (Model.Status == "DRAFT_EDIT_STATUS" || Model.Status == "DRAFT_NEW_STATUS" || Model.Status == "WAITING_POA_APPROVAL")
+                                                        {*@
+                                                            <div class="watermark">DRAFTED</div>
+                                                        @*}*@
+                                                        <div class="table-container tablekoe" id="div-print-layout_2" style="padding:50px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingPrintThird">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePrintThird" aria-expanded="true" aria-controls="collapsePrintThird">
+                                                        Print Out Surat Pernyataan Tidak Terdapat Kesamaan Nama
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintThird" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrintThird">
+                                                <div class="white-wrapper">
+                                                    @if (!Model.IsNotViewer)
+                                                    {
+                                                        <button type="button" class="btn btn-blue pull-right btn_show_printouteditor" data-action="license3" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+                                                    <div class="row">
+                                                        
+                                                        <div class="watermark">DRAFTED</div>
+                                                        <div class="table-container tablekoe" id="div-print-layout_3" style="padding:50px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="changes">
+                                        <input type="hidden" id="txt_ischangelog_loaded" value="0" />
+                                        <div class="table-container contenttable changelog" id="divChangeLog">
+                                            @*@Html.Partial("_ChangesHistoryTable", Model)*@
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                </div>
+            </div>
+    </div>
+
+    <div class="modal fade in modal_ChangeStatus ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title"><label id="txt_label_forchangestatus"></label></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert_revise"></div>
+                    <div class="form-group">
+                        <label>Note for Creator <span class="red">*</span></label>
+                        <textarea id="txt_changestatus_comment" class="form-control" rows="5" data-val="true" data-val-required="Rejection message should not be empty!" placeholder="Write the reason of rejection to creator" required="required" name="Comment"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Reject</button>
+                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="reject" id="btn_changestatus_reject">Reject</button>
+                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="reviseskep" id="btn_changestatus_reviseskep">Reject</button>
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal ems-modal fade modal_editprintout" tabindex="-1" role="dialog" aria-labelledby="EditorModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title"><label>Edit Print Layout</label></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-blue pull-right" data-toggle="modal" data-target=".restoredefault-modal.licenserequest">Restore to Default</button>
+                        <button type="button" class="btn btn-blue pull-right" id="btn_change_printoutlayout">Save Layout</button>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="txt_printoutlayout" class="form-control tinymce-editor"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                                                                                }
+    @using (Html.BeginForm("DownloadPrintOut", "MLLicenseRequest", FormMethod.Post, new { @id = "form_DownloadPrintout" }))
+    {
+        @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_hd_id_forprint" })
+        @Html.HiddenFor(model => model.MnfFormNum, new { @id = "txt_hd_formnumber_forprint" })
+        @Html.HiddenFor(model => model.StatusKey, new { @id = "txt_hd_statuskey" })
+        
+    }
+
+@foreach (var confirmation in Model.Confirmation)
+{
+    @Html.Partial("_ConfirmDialog", confirmation)
+}                                                                                
+
+                @section scripts {
+            <script src="~/Scripts/js/custom.js"></script>
+            <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.32"></script>
+            <script src="~/scripts/tinymce/tinymce.min.js"></script>
+            <script type="text/javascript" language="javascript">
+                
+
+                $(document).ready(function () {
+                    $('#MenuManufactureLicenseLicenseRequestOpenDocument').addClass('active');
+                    $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('active');
+                    $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('open');
+                    $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('active');
+                    $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('open');
+
+                    if ($("#div_form_number").html() == "") {
+                        $("#div_form_number").hide();
+                    }
+                    
+                    var interId = $('#int_interview_id').val();
+                    //if (interId != null)
+                    //{   
+                    //    var b = document.getElementById('BANO_link');
+                    //    b.setAttribute("href", "/MLInterviewRequest/Detail/" + interId);
+                    //}
+                    //CompletingDetailForm();
+                    
+                    var CompId = $("#CompanyId").val();
+                    SupportingDocumentList(CompId);
+                    TinyMceInit();
+                });
+
+                function getUrl(ActionName) {
+                    var BaseUrl = '@Url.Action("", "MLLicenseRequest")';
+                    var URL = BaseUrl + "/" + ActionName;
+                    return URL;
+                }
+
+                function TinyMceInit() {
+                    tinyMCE.init({
+                        mode: "specific_textareas",
+                        editor_selector: "tinymce-editor",
+                        theme: "modern",
+                        plugins: 'code nonbreaking pagebreak',
+                        menubar: false,
+                        statusbar: false,
+                        toolbar: "undo redo | removeformat | pagebreak nonbreaking | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | justifyleft justifycenter justifyright justifyfull | bullist numlist | outdent indent",
+                        pagebreak_separator: "<br />",
+                        width: '100%',
+                        height: "500",
+                        theme_advanced_toolbar_location: "top",
+                        theme_advanced_toolbar_align: "left",
+                        theme_advanced_statusbar_location: "bottom",
+                        theme_advanced_resizing: true,
+                        setup: function (ed) {
+                            ed.on('keydown', function (e) {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                window.event.cancelBubble = true
+                            });
+                        }
+                    });
+                }
+
+                var arrayOther = [];
+                $('#other-prodtype-add-btn').click(function () {
+                    var other = $('#TxtOtherProdCode').val();
+                    if (other !== '' ) {
+                        var objOther = { other: other };
+                        arrayOther.push(objOther);
+                        CreateOtherList();
+                    }
+                });
+
+                function CreateOtherList() {
+                    for (var j = 0; j < arrayOther.length; j++) {
+                        $('#prodtype-other' + j).remove();
+                    }
+                    var idx = $('#other_idx_max').val();
+                    
+                    if (idx == 0)
+                    {
+                        idx = 1;    
+                    }
+                    else
+                    {
+                        idx++;
+                    }
+                    
+                    var indx = idx;
+                    for (var i = 0; i < arrayOther.length; i++) {
+                        $('#otherprodtype tbody').append('<tr id="prodtype-other' + i + '"><td>' + indx + '</td><td>' + arrayOther[i].other + '</td><td><input id="OtherPCDetails[' + i + '].OtherProdCode" name="OtherProdCode" type="hidden" value="' + arrayOther[i].other + '"/><a href="javascript:void(0)" onclick="deleteOther(' + i + ')" class="btn btn-danger full">delete</a></td></tr>');
+                        indx++;
+                    }
+                }
+
+                function deleteOther(index) {
+                    arrayOther.splice(index, 1);
+                    $('#prodtype-other' + index).remove();
+                    CreateOtherList();
+                }
+
+                function deleteExistingOther(id) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("RemoveOtherProdType", "MLLicenseRequest")',
+                        data: { OtherProdTypeId: id },
+                        success: function (data) {
+                            $('#other-exist-' + id).remove();
+
+                        }
+                    });
+                }
+                $(document).on("change", "#dd_IRformnum", function () {
+                    var IRId = $(this).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: getUrl("GetInterviewRequestDetail"),
+                        data: { IRId: IRId },
+                        success: function (data) {
+                            var result = data.Interview;
+                            if (result != null) {
+                                var a = document.getElementById('BANO_link');
+                                a.setAttribute("href","/MLInterviewRequest/Detail/" + IRId);
+                                $("#label_BANO").text(result.BANumber);
+                                $("#CompType").val(result.Company_Type);
+                                $("#Name").val(result.POAName);
+                                $("#Position").val(result.POAPosition);
+                                $("#KPPBC").val(result.KPPBC_ID);
+                                $("#POAName").val(result.POAName);
+                                $("#KppbcAddress").val(result.KPPBC_Address);
+                                $("#POAAddress").val(result.POAAddress);
+                                $("#Company").val(result.Company_Name);
+                                $("#Npwp").val(result.Npwp);
+                                $("#CompanyAddress").val(result.Company_Address);
+                                $("#txt_hd_interviewNumber").val(result.FormNumber);
+                                $("#txt_form_num").val(result.FormNumber);
+                            }
+
+                            var _result = data.InterviewDet;
+                            if (_result != null) {
+                                $("#div_interview_detail").empty();
+                                for (var i = 0; i < _result.length; i++) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: getUrl("GetInterviewRequestDetailFormView"),
+                                        data: {
+                                            IRId: IRId,
+                                            mfi: _result[i].MnfDetailId,
+                                            add: _result[i].MnfAddr,
+                                            village: _result[i].MnfVillage,
+                                            phone: _result[i].MnfPhone,
+                                            fax: _result[i].MnfFax,
+                                            province: _result[i].MnfProvince,
+                                            city: _result[i].MnfCity,
+                                            subdist: _result[i].MnfSubDist,
+                                            index: i
+                                        },
+                                        success: function (html) {                                            
+                                            if (html != null) {
+                                                $("#div_interview_detail").append(html);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        },
+                        complete: function (data) {
+                            
+                        }
+                    });
+                });
+/*
+                $(document).on("click", "#btnApprove", function () {
+                    ChangeStatus("approve", "WAITING FOR GOVERNMENT APPROVAL", "");
+                });
+
+                $(document).on("click", "#btnApproveFinal", function () {
+                    ChangeStatus("approve", "COMPLETED", "");
+                });
+                    
+
+                function ChangeStatus(Action, Status, Comment) {
+                    var LRId = $("#txt_req_id").val();
+                    $.ajax({
+                        type: 'POST',
+                        url: getUrl("ChangeStatus"),
+                        data: {
+                            LRId: LRId,
+                            Status: Status,
+                            Comment: Comment,
+                            Action: Action
+                        },
+                        success: function (data) {
+                            var errmessage = data;
+                            if (data == "") {
+                                window.location.replace(getUrl(""));
+                            }
+                        }
+                    });
+                }
+                    
+
+                $(document).on("click", ".btn_showmodal_changestatus", function () {
+                    var action = $(this).data("action");
+                    if (action == "Revise") {
+                        $("#txt_label_forchangestatus").text("Revise Form Confirmation");
+                        $("#btn_changestatus_reject").hide();
+                        $("#btn_changestatus_revise").show();
+                    }
+                    else if (action == "Reject") {
+                        $("#txt_label_forchangestatus").text("Reject Form Confirmation");
+                        $("#btn_changestatus_revise").hide();
+                        $("#btn_changestatus_reject").show();
+                    }
+                    else if (action == "FinalReject") {
+                        $("#txt_label_forchangestatus").text("Reject");
+                        $("#btn_finalreject").show();
+                    }
+                });
+
+                $(document).on("click", ".btn_changestatus_submit", function () {
+                    var action = $(this).data("action");
+                    var status = "";
+                    if (action == "revise") {
+                        status = "DRAFT EDIT";
+                    }
+                    else {
+                        if (action == "reject")
+                        {
+                            status = "REJECTED";
+                        }
+                        else
+                        {
+                            status = "WAITING FOR GOVERNMENT APPROVAL";
+                        }
+                    }
+                    var comment = $("#txt_changestatus_comment").val();
+                    ChangeStatus(action, status, comment);
+                });
+
+*/
+            </script>
+                }

@@ -1,0 +1,146 @@
+﻿@model Sampoerna.EMS.Website.Models.FinanceRatio.FinanceRatioViewModel
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Financial Ratio</h3>
+            @if (Model.IsNotViewer)
+            {
+                <div class="action-button new">
+                    <a href="@Url.Action("Create", "FinanceRatio")">
+                        <button class="btn btn-blue">NEW</button>
+                    </a>
+                    <a data-toggle="modal" data-target=".menu-maping-type">
+
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="financeRatioTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th> Filter </th>
+                            <th>#</th>
+                            <th>Company</th>
+                            <th>Period</th>
+                            <th>Liquidity Ratio</th>
+                            <th>Solvency Ratio</th>
+                            <th>Rentability Ratio</th>
+                            <th>Approval Status</th>
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int i = 1;}
+                        @foreach (var item in Model.ListFinanceRatios)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "FinanceRatio", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer && !item.IsSubmitted)
+                                    {
+                                        <a href="@Url.Action("Edit", "FinanceRatio", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
+                                    @if (Model.IsAdminApprover && !item.IsApproved && item.IsSubmitted)
+                                    {
+                                        <a href="@Url.Action("Approve", "FinanceRatio", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approve"> <i class="fa  fa-check"></i></a>
+                                    }
+                                </td>
+                                <td>@i</td>
+                                <td>@Html.DisplayFor(model => item.Company.Name)</td>
+                                <td>@Html.DisplayFor(model => item.YearPeriod)</td>
+                                <td>@Html.DisplayFor(model => item.LiquidityRatio)</td>
+                                <td>@Html.DisplayFor(model => item.SolvencyRatio)</td>
+                                <td>@Html.DisplayFor(model => item.RentabilityRatio)</td>
+                                <td>@Html.DisplayFor(model => item.ApprovalStatusDescription.Value)</td>
+                            </tr>
+                            i++;
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuFinanceRatio').addClass('active');
+
+            setupDataTables();
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#financeRatioTable')) {
+                table = $('#financeRatioTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#financeRatioTable').DataTable(
+                  {
+                      "order": [[1, "asc"]],
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#financeRatioTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+            //table.fnPageChange(2, true);
+
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+
+
+    </script>
+}
+
+

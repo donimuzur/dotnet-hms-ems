@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sampoerna.EMS.CustomService</RootNamespace>
+    <AssemblyName>Sampoerna.EMS.CustomService</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\Sampoerna.EMS.Website\ExtLib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\ConversionHelper.cs" />
+    <Compile Include="Core\Enumerations.cs" />
+    <Compile Include="Core\ItpiMailer.cs" />
+    <Compile Include="Core\PdfMerge.cs" />
+    <Compile Include="Core\ReferenceLookup.cs" />
+    <Compile Include="Data\ADMIN_APPROVAL_VIEW.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\BRAND_REGISTRATION_REQ.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\BRAND_REGISTRATION_REQ_DETAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\BROLE_MAP.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CHANGES_HISTORY.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CK1.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CK1_EXCISE_CALCULATE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CK1_EXCISE_CALCULATE_ADJUST.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CK1_ITEM.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\COMPANY_PLANT_MAPPING.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CONTENTEMAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\COUNTRY.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\DOC_NUMBER_SEQ.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EMAILVARIABEL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EMSDataModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMSDataModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EMSDataModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EMSDataModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMSDataModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EXCISE_ADJUSTMENT_CALCULATE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EXCISE_CREDIT.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EXCISE_CREDIT_ADJUST_CALDETAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EXCISE_CREDIT_APPROVED_DETAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\EXCISE_CREDIT_DETAILCK1.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\FILE_UPLOAD.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\INTERVIEW_REQUEST.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\INTERVIEW_REQUEST_DETAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\LFA1.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MANUFACTURING_BOUND_CONDITION.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MANUFACTURING_LISENCE_REQUEST.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MANUFACTURING_PRODUCT_TYPE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_CITY.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_FINANCIAL_RATIO.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_KPPBC.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_NPPBKC.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_PLANT.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_PRODUCT_TYPE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_STATE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MASTER_SUPPORTING_DOCUMENT.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\POA.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\POA_DELEGATION.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\POA_EXCISER.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\POA_MAP.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PRINTOUT_LAYOUT.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PRINTOUT_VARIABLE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PRINT_HISTORY.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PRODUCT_DETAIL_VIEW.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PRODUCT_DEVELOPMENT.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PRODUCT_DEVELOPMENT_DETAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PRODUCT_DEVELOPMENT_UPLOAD.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\RECEIVED_DECREE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\RECEIVED_DECREE_DETAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\REPLACEMENT_DOCUMENTS.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\REPLACEMENT_DOCUMENTS_DETAIL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ROLE_ADMIN_APPROVER_VIEW.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\SYS_REFFERENCES.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\SYS_REFFERENCES_TYPE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\T001.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\TARIFF.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\USER.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\USER_PRINTOUT_LAYOUT.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\vwBrandRegistration.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\vwMLInterviewRequest.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\vwMLLicenseRequest.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\vwPenetapanSKEP.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\vwProductDevDetail.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\WORKFLOW_HISTORY.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ZAIDM_EX_BRAND.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ZAIDM_EX_MARKET.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ZAIDM_EX_MATERIAL.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\DBSetExtension.cs" />
+    <Compile Include="Repositories\GenericRepository.cs" />
+    <Compile Include="Repositories\GenericService.cs" />
+    <Compile Include="Repositories\RepositoryFactory.cs" />
+    <Compile Include="Repositories\UnitOfWork.cs" />
+    <Compile Include="Services\BrandRegistrationTransactionService.cs" />
+    <Compile Include="Services\BrandRegistrationTransaction\BrandRegistrationService.cs" />
+    <Compile Include="Services\BrandRegistrationTransaction\PenetapanSKEPService.cs" />
+    <Compile Include="Services\BrandRegistrationTransaction\ProductDevelopmentService.cs" />
+    <Compile Include="Services\ExciseCreditService.cs" />
+    <Compile Include="Services\ManufactureLicense\ChangeRequestService.cs" />
+    <Compile Include="Services\ManufactureLicense\InterviewRequestService.cs" />
+    <Compile Include="Services\ManufactureLicense\LicenseRequestService.cs" />
+    <Compile Include="Services\MasterData\ConfigurationService.cs" />
+    <Compile Include="Services\MasterData\FinanceRatioManagementService.cs" />
+    <Compile Include="Services\MasterData\NppbkcManagementService.cs" />
+    <Compile Include="Services\MasterData\PoaExciserService.cs" />
+    <Compile Include="Services\MasterData\ProductTypeService.cs" />
+    <Compile Include="Services\MasterData\SupportDocManagementService.cs" />
+    <Compile Include="Services\MasterData\TariffManagementService.cs" />
+    <Compile Include="Services\SystemReferenceService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="Data\EMSDataModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EMSDataModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Data\EMSDataModel.edmx.diagram">
+      <DependentUpon>EMSDataModel.edmx</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\EMSDataModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EMSDataModel.edmx</DependentUpon>
+      <LastGenOutput>EMSDataModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Data\EMSDataModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EMSDataModel.edmx</DependentUpon>
+      <LastGenOutput>EMSDataModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
+      <Project>{B4021A69-2836-401B-8E06-92E8A6008219}</Project>
+      <Name>Sampoerna.EMS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
+      <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
+      <Name>Sampoerna.EMS.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -91,10 +91,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
-            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            if (isCompleted)
+            {
+                model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            }
 
             //var listPbck4 = _ck5Bll.GetAll();
             //model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
@@ -146,7 +150,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DetailsList = GetPbck4Items(model.IsCompletedType,model.SearchView);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            if (model.IsCompletedType)
+            {
+                model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            }
 
             return PartialView("_Pbck4OpenListDocuments", model);
         }

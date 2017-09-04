@@ -1,90 +1,122 @@
-﻿@model Sampoerna.EMS.Website.Models.ProductType.ProductTypeFormViewModel
+﻿@model Sampoerna.EMS.Website.Models.ProductType.ProductTypeIndexViewModel
 
 
-    <div class="container-wrap title-page">
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>Product Type</h3>
-                <div class="action-button">
-                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
-                </div>
-            </div>
-        </div>
-    </div>
-
+@{
+      ViewBag.Title = "Detail Product Type";
+}
+@Html.Partial("_ActionButton", Model);
     <div class="container-wrap">
         <div class="row">
             <div class="col-sm-12">
-                <div class="white-wrapper">
-
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Detail Product Type
-                                        <i class="fa fa-caret-down"></i>
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <form class="form-excise" role="form">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Product Code</label>
-                                                    <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.ProdCode, new { @class = "form-control", @disabled = "disabled" })
-                                                    </div>
-                                                </div>
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="information">
+                            <div class="tab-wrapper">
+                                <div class="white-wrapper">
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingOne">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                        Detail Product Type
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Product Type</label>
-                                                    <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.ProductType, new { @class = "form-control", @disabled = "disabled" })
+                                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                <form class="form-excise">
+                                                    <div class="panel-body">
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <label>@Html.LabelFor(model => model.ViewModel.ProdCode)</label>
+                                                            </div>
+                                                            <div class="col-md-6" id="type">
+                                                                @Html.TextBoxFor(model => model.ViewModel.ProdCode, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <label>@Html.LabelFor(model => model.ViewModel.ProductType)</label>
+                                                            </div>
+                                                            <div class="col-md-6" id="type">
+                                                                @Html.TextBoxFor(model => model.ViewModel.ProductType, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <label>@Html.LabelFor(model => model.ViewModel.ProductAlias)</label>
+                                                            </div>
+                                                            <div class="col-md-6" id="type">
+                                                                @Html.TextBoxFor(model => model.ViewModel.ProductAlias, new { @class = "form-control", @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <label>@Html.LabelFor(model => model.ViewModel.IsCk4CEditable)</label>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                @Html.CheckBoxFor(model => model.ViewModel.IsCk4CEditable, new { @disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <label>@Html.LabelFor(model => model.ViewModel.IsDeleted)</label>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                              @if (Model.ViewModel.IsDeleted == true)
+                                                              {
+                                                                @Html.CheckBoxFor(model => model.ViewModel.IsDeleted, new { @class = "checkgroup", @disabled = "disabled" }) <label>Active</label>
+                                                              }
+                                                              else
+                                                              {
+                                                                @Html.CheckBoxFor(model => model.ViewModel.IsDeleted, new { @class = "checkgroup", @disabled = "disabled", @checked = true }) <label>Active</label>
+                                                              }
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="heading7">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                        Workflow History
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                                <div class="panel-body">
+                                                    <div class="table-container">
+                                                        @Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">Product Alias</label>
-                                                    <div class="col-md-8">
-                                                        @Html.TextBoxFor(model => model.ProductAlias, new { @class = "form-control", @disabled = "disabled" })
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <label class="col-md-4">CK4C Editable</label>
-                                                    <div class="col-md-8">
-                                                        @Html.CheckBoxFor(model => model.IsCk4CEditable, new { @class = "checkgroup", @disabled = "disabled" })
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </form>
+                                    </div>
                                 </div>
+
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="table-container">
+                                @Html.Partial("_ChangesHistoryTable", Model)
                             </div>
                         </div>
                     </div>
-                    @*</div>*@
-                    @*<div class="row">
-                            <div class="col-md-12">
-                                <span class="red">*</span> ) This Field Required
-                            </div>
 
-                        </div>*@
                 </div>
             </div>
         </div>
@@ -99,9 +131,9 @@
         $(document).ready(function() {
             $('#MenuProductType').addClass('active');
 
-            $('#btnBack').click(function(e) {
+            @*$('#btnBack').click(function(e) {
                 location.href = '@Url.Action("Index", "ProductType")';
-            });
+            });*@
 
         });
 

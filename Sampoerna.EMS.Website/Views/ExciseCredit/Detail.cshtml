@@ -1,0 +1,156 @@
+﻿
+
+@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditFormModel
+@{
+    ViewBag.Title = "Detail";
+}
+
+@Html.HiddenFor(model => model.ViewModel.DocumentNumber)
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Excise Credit Form</h3>
+            <label class="status">@Model.ViewModel.ApprovalStatus.Value</label>
+            <label class="status" id="docNumber">@Model.ViewModel.DocumentNumber</label>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "ExciseCredit")" class="btn btn-grey">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    @Html.Partial("_DetailExciseForm", Model)
+                    @Html.Partial("_Printout", Model)
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ck1List" style="display:none;"></div>
+<div id="errModal" class="modal ems-modal fade bs-example-modal-sm danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>*@
+                <h4 class="modal-title" id="errModalTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="errModalContent"></p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    @*<script src="~/Scripts/autoNumeric.min.js"></script>*@
+    <script src="~/Scripts/excise-credit/terbilang.js"></script>
+    <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
+    <script src="~/Scripts/excise-credit/date.js"></script>
+    <script src="~/Scripts/excise-credit/main.js"></script>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript">
+        var formID = '@Model.ViewModel.Id';
+        var formType = '@Convert.ToInt64(Sampoerna.EMS.Core.Enums.FormList.ExciseRequest)';
+
+        $(document).ready(function () {
+
+            var amount = Number($("#ViewModel_Amount").val().split(',').join('.'));
+            var _terbilang = terbilang(amount.toString()) + " Rupiah";
+            $("#ExciseCreditAlphaText").html(_terbilang);
+            loadOtherDocs();
+            TinyMceInit("tinymce-editor");
+            //mapResetAction();
+
+        });
+
+        function loadOtherDocs() {
+
+            $("#customloader").show();
+            $.ajax({
+                url: '@Url.Action("GetOtherDocuments")',
+                type: 'POST',
+                data: JSON.stringify({
+                    type: Number(formType),
+                    id: formID
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#customloader").hide();
+                    if (response && response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            otherDocs[i] = response[i];
+                            otherDocsName[i] = response[i].FileName;
+                            var parts = response[i].PathURL.split('/');
+                            otherDocs[i].name = parts[parts.length - 1];
+                            otherDocs[i].url = response[i].PathURL;
+
+                        }
+                        //console.log("Other docs: ");
+                        //console.log(otherDocs);
+                        //console.log("Existing Other docs: ");
+                        //console.log(existingOtherDocs);
+                        _renderFileList();
+
+                    }
+                },
+                error: function () {
+                    $("#customloader").hide();
+                }
+            });
+        }
+
+        function _renderFileList() {
+            var container = $("#otherDocsBody");
+            var content = '';
+            if (!otherDocs || otherDocs.length <= 0) {
+                content += '<tr id="noOtherFileMsg">' +
+                            '<td colspan="3"><div class="alert alert-info">No Addional Documents</div>' + '</td></tr>';
+            }
+            for (var i = 0; i < otherDocs.length; i++) {
+                var url = undefined;
+                var linkOpen = "";
+                var linkClose = "";
+                if (otherDocs[i].url) {
+                    url = '@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))';
+                    url = url + otherDocs[i].url.replace("~/", "");
+                    linkOpen = '<a href="' + url + '" title="' + otherDocs[i].name  + '" target="_blank"><i class="fa fa-file-o"></i> ';
+                    linkClose = '</a>';
+                }
+                content +=
+                    '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + linkOpen + otherDocs[i].name + linkClose + '</td>' +
+                    '<td>' + otherDocsName[i] + '</td>' +
+                    '</tr>';
+            }
+            container.html(content);
+        }
+        
+
+    </script>
+}

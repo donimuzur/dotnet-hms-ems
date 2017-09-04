@@ -1,0 +1,415 @@
+﻿@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditFormModel
+@using Sampoerna.EMS.Website.Helpers
+
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    legend {
+        padding: 2px;
+        font-size: 16px !important;
+    }
+
+    .currency {
+        padding-left: 12px;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        padding: 2px 5px;
+    }
+
+    .file {
+        visibility: hidden;
+        position: absolute;
+    }
+</style>
+
+<div role="tabpanel" class="tab-pane active" id="home">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.SubmissionDate, "Submission Date")
+                </div>
+                <div class="col-md-8">
+                    <div class="input-group date">
+                        @Html.HiddenFor(model => model.ViewModel.SubmissionDate)
+                        @Html.TextBoxFor(model => model.SubmissionDate, "{0:dd MMM yyyy}", new { @class = "form-control", @required = "true", @id = "SubmissionDate" })
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-9 col-md-offset-3">
+                    @Html.ValidationMessageFor(model => model.SubmissionDate)
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.LabelFor(model => model.ViewModel.RequestType, "Request Type")
+                </div>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.ViewModel.RequestType, new { @class = "form-control", @readonly = true })
+                    @Html.HiddenFor(model => model.ViewModel.RequestTypeID)
+                </div>
+                <div class="col-md-9 col-md-offset-3">
+                    @Html.ValidationMessageFor(model => model.ViewModel.RequestType)
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-wrapper">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <!-- POA & NPPBKC Panel-->
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            POA & NPPBKC Information
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <!-- POA Information -->
+                                <div class="col-md-6">
+                                    <fieldset>
+                                        <legend><label>Responsible Person</label></legend>
+                                        <div class="row">
+                                            @Html.HiddenFor(model => model.POA.Id)
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.POA.Name, "Name")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.POA.Name, new { @class = "form-control", @type = "text", @readonly = true })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.POA.Position, "Title")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.POA.Position, new { @class = "form-control", @type = "text", @readonly = true })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.POA.Address, "Address")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.POA.Address, new { @class = "form-control", @type = "text", @readonly = true })
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!-- End POA Information -->
+                                <!-- NPPBKC -->
+                                <div class="col-md-6">
+                                    <fieldset>
+                                        <legend><label>Authorization Owner</label></legend>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                @Html.LabelFor(model => model.ViewModel.NppbkcId, "NPPBKC")
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ViewModel.NppbkcId, new { @class = "form-control", @readonly = true })
+                                            </div>
+                                            <div class="col-md-8 col-md-offset-4">
+                                                @Html.ValidationMessageFor(model => model.ViewModel.NppbkcId)
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.NPPBKC.KppbcId, "KPPBC")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.NPPBKC.KppbcId, new { @class = "form-control", @type = "text", @readonly = true, @id = "KppbcText" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.NPPBKC.City, "City")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.NPPBKC.City, new { @class = "form-control", @type = "text", @readonly = true, @id = "NppbkcCityText" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.NPPBKC.Region, "Kanwil")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.NPPBKC.Region, new { @class = "form-control", @type = "text", @readonly = true, @id = "NppbkcRegionText" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.NPPBKC.Address, "Kanwil Address")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.NPPBKC.Address, new { @class = "form-control", @rows = "5", @readonly = true, @id = "NppbkcAddressText" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4">
+                                                @Html.LabelFor(model => model.NPPBKC.Company, "Company")
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.HiddenFor(model => model.NPPBKC.Company.Id)
+                                                @Html.TextBoxFor(model => model.NPPBKC.Company.Name, new { @class = "form-control", @type = "text", @readonly = true, @id = "CompanyText" })
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!-- End NPPBKC -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End POA & NPPBKC Panel -->
+            </div>
+            <div class="panel panel-default">
+                <!-- Excise Credit & Calculation Detail -->
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            Excise Credit & Calculation Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label>@Html.LabelFor(model => model.ViewModel.Amount, "Excise Credit")</label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        @Html.HiddenFor(model => model.ViewModel.Amount)
+                                        @Html.TextBoxFor(model => model.ViewModel.AmountDisplay, new { @class = "form-control", @readonly = true })
+                                        <small id="ExciseCreditAlphaText"></small>
+                                    </div>
+                                    <div class="col-md-2">
+                                        @if (Model.ViewModel.RequestTypeID == 2)
+                                        {
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calcDetailAdjustmentModal" id="calcDetailButton">Show Calculation</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#calcDetailModal" id="calcDetailButton">Show Calculation</button>
+                                        }
+                                        
+
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-2 col-md-offset-4 text-center">
+                                        <label>Year</label>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <label>Liquidity</label>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <label>Solvency</label>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <label>Rentability</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Financial Statements</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[0].YearPeriod, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[0].LiquidityRatio, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[0].SolvencyRatio, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[0].RentabilityRatio, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-2 col-md-offset-4">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[1].YearPeriod, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[1].LiquidityRatio, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[1].SolvencyRatio, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.TextBoxFor(model => model.FinancialStatements[1].RentabilityRatio, new { @class = "form-control", @readonly = true })
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Guarantee</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.ViewModel.Guarantee, Model.GuaranteeTypes, null, new { @class = "form-control", @id = "GuaranteeSelector" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Excise Credit & Calculation Detail -->
+            </div>
+            <div class="panel panel-default">
+                <!-- Upload Documents -->
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                            Document Uploads
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        <form role="form">
+                            @Html.HiddenFor(model => model.FileUploadLimit)
+                            <div class="form-excise">
+                                <div class="col-md-12">
+                                    <div class="col-md-4">
+                                        <label>Supporting Documents</label>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-12" id="SupportingDocs">
+                                        <div id="supportDocContainer">
+                                            @foreach (var doc in Model.SupportingDocuments)
+                                            {
+                                                <div class="row">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            <label for="@doc.Id">@doc.Name</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <input type="file" accept="application/pdf" id="@string.Format("supportDocFile{0}", doc.Id)" class="file" required name="@string.Format("supportDocFile{0}", doc.Id)" />
+                                                                <div class="col-md-12">
+                                                                    <div class="col-md-10">
+                                                                        <input type="text" class="form-control" readonly placeholder="Select file" id="supportDocText@(doc.Id)" required />
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <span class="input-group-btn">
+                                                                            <button class="browse btn btn-blue" type="button" id="supportDoc@(doc.Id)" style="border-radius:20px!important">Browse</button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @if (doc.FileList != null && doc.FileList.Count > 0)
+                                                    {
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <label>Uploaded Files</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <a href="@string.Format("{0}", Url.Content(doc.FileList[0].PathURL))" title="@doc.Name" target="_blank">@string.Format("{0} uploaded at {1}", doc.Name, doc.FileList[0].CreatedDate.ToString("dd MMMM yyyy HH:mm:ss"))</a><br />
+
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+
+                                        @if (Model == null || Model.SupportingDocuments.Count <= 0)
+                                        {
+                                            <div class="alert alert-info">No Supporting Documents</div>
+                                        }
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div class="col-md-2">
+                                        <label>Additional Documents</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <input id="browseOtherDocFileName" type="text" name="browseOtherDocFileName" class="form-control" required placeholder="Document Name" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="form-group">
+                                                <input id="browseOtherDocFile" type="file" name="otherDocs[]" class="file" accept="application/pdf">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-10">
+                                                        <input type="text" id="browseOtherDocText" class="form-control" disabled placeholder="Select file">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <span class="input-group-btn">
+                                                            <button id="browseOtherDoc" class="browse btn btn-blue" type="button" style="border-radius:20px!important">Browse</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-blue" type="button" id="addOtherDocBtn">Add</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                            <thead>
+                                                <tr>
+                                                    <th class="toggle-row" width="5%">#</th>
+                                                    <th width="40%">File Name</th>
+                                                    <th width="40%">Document Name</th>
+                                                    <th width="15%">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="otherDocsBody">
+                                                <tr id="noOtherFileMsg">
+                                                    <td colspan="4">
+                                                        <div class="alert alert-info">No Addional Documents</div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- End Upload Documents-->
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="heading7">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                    Workflow History
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                            <div class="panel-body">
+                                <div class="table-container">
+                                    @Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

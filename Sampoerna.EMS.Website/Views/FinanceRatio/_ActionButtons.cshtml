@@ -1,0 +1,50 @@
+﻿@model Sampoerna.EMS.Website.Models.FinanceRatio.FinanceRatioViewModel
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Financial Ratio</h3>
+            @if (!Model.EnableFormInput)
+            {
+                <label class="status">@Model.ViewModel.ApprovalStatusDescription.Value</label>
+            }
+            <div class="action-button">
+                @if (Model.IsAdminApprover && ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Approve")
+                {
+                    <button type="button" class="btn btn-blue" id="ReviseButton" data-toggle="modal" data-target=".revise-modal.financeratio">Revise</button>
+                    <button type="button" class="btn btn-blue" id="ApproveButton" data-toggle="modal" data-target=".approve-modal.financeratio">Approve</button>
+                }
+
+                @if (Model.ShowActionOptions && Model.EnableFormInput)
+                {
+                    if (Model.EditMode)
+                    {
+                        if (!Model.ViewModel.IsSubmitted)
+                        {
+                            <input type="submit" class="btn btn-blue" value="Save" id="SaveButton">
+                            <button type="button" class="btn btn-blue" id="SubmitButton">Submit</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-grey" disabled>Submitted</button>
+                        }
+
+                    }
+                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Create")
+                    {
+                        <input type="submit" class="btn btn-blue" value="Save" id="SaveButton">
+                    }
+
+                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() != "Approve")
+                    {
+                        <a href="@Url.Action("Index", "FinanceRatio")" class="btn btn-grey">Cancel</a>
+                    }
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", "FinanceRatio")" class="btn btn-grey">Back</a>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

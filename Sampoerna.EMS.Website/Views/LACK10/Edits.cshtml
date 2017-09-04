@@ -1,0 +1,195 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK10.Lack10IndexViewModel
+@{
+    ViewBag.Title = "Edits";
+}
+
+@using (Html.BeginForm(Model.ActionType, "LACK10", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>LACK-10 Form</h3>
+                <label class="status">@Model.Details.StatusName</label>
+                <div class="action-button">
+
+                    <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+
+                    <input type="button" class="btn btn-grey" value="Print Preview" id="btnPrintPreview" />
+
+                    <input type="button" value="Back" class="btn btn-grey" id="btnCancelCompleted" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeCompletedSuperAdmin")
+                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_ChangeLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<div id="ModalCk4cDoc" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Decree Doc is required.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/lack10script.js"></script>
+    <script src="~/Scripts/lack10/doccompleted.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+        SetBasedOn();
+
+        SetPoaList();
+
+        SetStatusGov();
+
+        $('#divComment').hide();
+
+        $('#btnCancelCompleted').click(function (e) {
+            location.href = '@Url.Action("CompletedDocument", "LACK10")';
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateCompletedInput()) {
+                $('#DetailForm').submit();
+            }
+        });
+
+        $('#btnExportLack10Item').click(function (e) {
+            location.href = '@Url.Action("ExportXlsLack10Item", "LACK10", new { id = @Model.Details.Lack10Id })';
+        });
+
+        $('#btnPrintPreview').click(function (e) {
+            printPreview('@Url.EncryptedAction("PrintPreview", "LACK10", new { id = @Model.Details.Lack10Id })');
+        });
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportClientsListToExcel", "LACK10", new { id = Model.Details.Lack10Id })';
+        });
+    });
+
+    function SetStatusGov() {
+        var statusGov = '@Model.Details.StatusGoverment';
+        if (statusGov == 'Rejected') {
+            $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
+        }
+        else if (statusGov == 'Approved') {
+            $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+        }
+    }
+
+    function SetPoaList() {
+        var poa = '@Model.Details.ApprovedByPoa';
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plant = '@Model.Details.PlantId';
+        var url = '@Url.Action("PoaListPartial", "LACK10")';
+        var urlPlant = '@Url.Action("GetPoaByPlantId", "LACK10")';
+
+        if (poa == '') {
+            if (plant != '') {
+                ajaxSelectNppbck({ plantId: plant }, urlPlant);
+            }
+            else {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
+            }
+        }
+    }
+
+    function SetBasedOn() {
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plantId = '@Model.Details.PlantId';
+        var plantName = '@Model.Details.PlantName';
+
+        if (plantId == '') {
+            $('#basedNppbkc').prop('checked', true);
+        }
+
+        if (plantId != '') {
+            $('#Details_PlantName').val(plantId + '-' + plantName);
+        }
+    }
+
+    function printPreview(url) {
+        window.open(url, '_blank', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+    }
+
+    function openAttachment(url) {
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
+    }
+
+    function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        $.ajax({
+            type: 'POST',
+            url: addHistoryUrl,
+            data: { id: id },
+            success: function (response) {
+                $('#PrintOutHistoryTable').html("");
+                $('#PrintOutHistoryTable').html(response);
+                ResetPrintHistoryDataTable();
+            }
+        });
+    }
+
+    function ResetPrintHistoryDataTable() {
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+            table = $('#printHistoryTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#printHistoryTable').DataTable(
+            {
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
+                }
+            });
+    }
+
+</script>
+}
+

@@ -1,0 +1,155 @@
+﻿<div style='font-family: Calibri, sans-serif;'>
+    <table style='width:80%; background: none;'>
+        <tr>
+            <td style='width:15%;'>Nomor</td>
+            <td>:</td>
+            <td>#FORM_NUMBER</td>
+        </tr>
+        <tr>
+            <td>Lampiran</td>
+            <td>:</td>
+            <td>#LAMPIRAN_COUNT</td>
+        </tr>
+        <tr>
+            <td>Hal</td>
+            <td>:</td>
+            <td><p>Permohonan Nomor Pokok Pengusaha Barang </p>
+            <p>Kena Cukai (NPPBKC) sebagai Pengusaha</p>
+            <p>#COMPANY_TYPE *)</p></td>
+        </tr>
+    </table>
+    <br />
+    <p>Yth. Menteri Keuangan Republik Indonesia</p>
+    <p>u.p. #KPPBC</p>
+    <p>Jl. #ADDRESS_KPPBC</p>
+    <br />
+    <p>Dengan hormat,</p>
+    <p>Yang bertanda tangan di bawah ini:</p>
+    <table style='width:80%; background: none;'>
+        <tr>
+            <td style='width:15%;'>Nama</td>
+            <td>:</td>
+            <td>#POA_NAME</td>
+        </tr>
+        <tr>
+            <td>Jabatan</td>
+            <td>:</td>
+            <td>#POA_ROLE</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>:</td>
+            <td>#POA_ADDRESS</td>
+        </tr>
+    </table>
+    <br />
+    <p>Mengajukan permohonan untuk mendapatkan NPPBKC sebagai perusahaan #COMPANY_TYPE *)</p>
+    <p>dengan rincian penjelasan sebagai berikut :</p>
+    <br />
+    <p>1. Pabrik :</p>
+    #MANUFACTURE_INFO
+    <p>2. Jenis hasil tembakau yang&nbsp;#COMPANY_TYPE :</p>
+    <table style='background:none;'>#PROD_TYPE_LIST</table>
+    <p>3. Jenis-jenis hasil produksi sampingan :</p>
+    <table style='background:none;'>#OTHERPRODTYPE_LIST</table>
+    <p>4. Lampiran-lampiran :</p>
+    <table style='background:none;'>
+    #SUPPORTDOC_LIST
+    </table>
+    <br />
+    <p>Demikian permohonan ini kami ajukan untuk mendapatkan pertimbangan sebagaimana mestinya.</p>
+    <br />
+    <p align='right'>Dibuat di : #MNFCITY_LIST</p>
+    <p align="right">Pada tanggal : #REQUEST_DATE</p>
+    <br />
+    <p align='right'>Pemohon,&nbsp;&nbsp;&nbsp;&nbsp;</p>
+    <br /><br /><br />
+    <p align='right'>(&nbsp;#POA_NAME&nbsp;)</p>
+</div>
+<!-- Pembukuan 10 tahun terakhir -->
+<div style='font-family: Calibri, sans-serif;'>
+    <center><h2><b>SURAT PERNYATAAN</b></h2></center>
+    <br />
+    <br />
+    <p style="text-indent: 5em;">Yang bertanda tangan dibawah ini, saya:</p>
+    <table style='width:80%; background: none;'>
+        <tr>
+            <td style='width:15%;'>Nama</td>
+            <td>:</td>
+            <td>#POA_NAME</td>
+        </tr>
+        <tr>
+            <td>Pekerjaan</td>
+            <td>:</td>
+            <td>#POA_ROLE</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>:</td>
+            <td>#POA_ADDRESS
+            </td>
+        </tr>
+        <tr>
+            <td>Alamat Pabrik</td>
+            <td>:</td>
+            <td>#MNFADDR_LIST</td>
+        </tr>
+    </table>
+    <br />
+    <p>Yth. Menteri Keuangan Republik Indonesia</p>
+    <p>u.p. #KPPBC</p>
+    <p>Jl. #ADDRESS_KPPBC</p>
+    
+    <p>Dengan ini menyatakan untuk dan atas nama #COMPANY_NAME yang berlokasi di #MNFCITY_LIST yang menyelenggarakan pembukuan perusahaan berdasarkan standar Akuntansi Keuangan yang berlaku dan menyimpan dokumen, buku dan laporan selama 10(sepuluh) tahun pada tempat usaha saya.</p>
+    <p>Demikian Surat Pernyataan ini saya buat dengan sebenarnya.</p>
+    <br />
+    <p align='right'>#MNFCITY_LIST, #REQUEST_DATE</p>
+    <p align="right">Yang membuat pernyataan</p>
+    <br />
+    <br /><br /><br />
+    <p align='right'>(&nbsp;#POA_NAME&nbsp;)</p>
+</div>
+<!-- Surat Pernyataan tidak terdapat kesamaan nama -->
+<div style='font-family: Calibri, sans-serif;'>
+    <center><h2><b>SURAT PERNYATAAN</b></h2></center>
+    <br />
+    <br />
+    <p style="text-indent: 5em;">Yang bertanda tangan dibawah ini, saya:</p>
+    <table style='width:80%; background: none;'>
+        <tr>
+            <td style='width:15%;'>Nama</td>
+            <td>:</td>
+            <td>#POA_NAME</td>
+        </tr>
+        <tr>
+            <td>Pekerjaan</td>
+            <td>:</td>
+            <td>#POA_ROLE</td>
+        </tr>
+        <tr>
+            <td>Alamat</td>
+            <td>:</td>
+            <td>
+                #POA_ADDRESS
+            </td>
+        </tr>
+        <tr>
+            <td>Alamat Pabrik</td>
+            <td>:</td>
+            <td>#MNFADDR_LIST</td>
+        </tr>
+    </table>
+    <br />
+    <p>Yth. Menteri Keuangan Republik Indonesia</p>
+    <p>u.p. #KPPBC</p>
+    <p>Jl. #ADDRESS_KPPBC</p>
+
+    <p>Dengan ini menyatakan untuk dan atas nama #COMPANY_NAME yang berlokasi di #MNFCITY_LIST bahwa NPPBKC yang diajukan akan ditolak atau NPPBKC yang telah diberikan akan dibekukan dalam hal nama pabrik diatas memiliki kesamaan nama, baik tulisan maupun pengucapannya dengan nama pabrik yang telah mendapatkan NPPBKC terlebih dahulu atau atas permohonan/gugatan pengusaha pabrik lainnya yang berdasarkan keputusan pengadilan yang telah mempunyai kekuatan hukum tetap bahwa nama Pabrik Hasil Tembakau yang disengketakan merupakan hak pemohon.</p>
+    <p>Demikian Surat Pernyataan ini saya buat dengan sebenarnya.</p>
+    <br />
+    <p align='right'>#MNFCITY_LIST, #REQUEST_DATE</p>
+    <p align="right">Yang membuat pernyataan</p>
+    <br />
+    <br /><br /><br />
+    <p align='right'>(&nbsp;#POA_NAME&nbsp;)</p>
+</div>

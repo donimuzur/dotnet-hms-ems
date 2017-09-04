@@ -1,0 +1,133 @@
+﻿@model Sampoerna.EMS.Website.Models.Configuration.ConfigurationViewModel
+@{
+    ViewBag.Title = "Detail Configuration";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Master Configuration</h3>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "Configuration")">
+                    <button class="btn btn-grey">Back</button>
+                </a>            
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Detail Configuration
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <form class="form-excise" role="form">
+                                                <div class="row">                                                                                                            
+                                                    <div class="col-md-2">
+                                                        <label>@Html.LabelFor(model => model.REFF_TYPE)</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.DropDownListFor(model => model.REFF_TYPE, Model.TypeList, new { @class = "selectpicker form-control", @disabled = "disabled" })
+                                                    </div>                                                                                                                                                                                                                                                                                          
+                                                </div>
+
+                                                @if (Model.REFF_TYPE == "HINT_COMPONENT" || Model.REFF_TYPE == "APPROVAL_STATUS")
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            @if (Model.REFF_TYPE == "HINT_COMPONENT")
+                                                            {
+                                                                <label>Label Name</label>
+                                                            }
+                                                            else
+                                                            {
+                                                                <label>@Html.LabelFor(model => model.REFF_NAME)</label>
+                                                            }                                                               
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            @Html.TextBoxFor(model => model.REFF_NAME, new { @class = "form-control", @disabled = "disabled" })
+                                                        </div>
+                                                    </div>
+                                                }
+                                               
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        @if (Model.REFF_TYPE == "HINT_COMPONENT")
+                                                        {
+                                                            <label>Label Value</label>
+                                                        }
+                                                        else
+                                                        {
+                                                            <label>@Html.LabelFor(model => model.REFF_VALUE)</label>
+                                                        }                                                                                                                                                       
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.TextBoxFor(model => model.REFF_VALUE, new { @class = "form-control", @disabled = "disabled" })
+                                                        
+                                                    </div>  
+                                                    @if (Model.REFF_TYPE == "UPLOAD_FILE_LIMIT")
+                                                    {
+                                                        @Html.Label("Mb");
+                                                    }
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <label>@Html.LabelFor(model => model.IS_ACTIVE)</label>                                        
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.CheckBoxFor(model => model.IS_ACTIVE, new { @disabled = "disabled" }) Active
+                                                    </div>                                                                                                                                                           
+                                                </div> 
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#MenuMasterConfiguration').addClass('active');
+
+        });
+
+    </script>
+}

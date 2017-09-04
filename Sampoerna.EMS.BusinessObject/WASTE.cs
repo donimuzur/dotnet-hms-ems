@@ -32,5 +32,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<decimal> STAMP_WASTE_QTY { get; set; }
+        public Nullable<bool> USE_FOR_LACK10 { get; set; }
     }
 }

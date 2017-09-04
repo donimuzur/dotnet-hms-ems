@@ -134,6 +134,9 @@ namespace Sampoerna.EMS.XMLReader
                                     item.CREATED_BY = existingMaterial.CREATED_BY;
                                     item.CREATED_DATE = existingMaterial.CREATED_DATE;
                                     item.MODIFIED_DATE = DateTime.Now;
+
+                                    //DMS
+                                    item.USED_PRODUCT_DEVELOPMENT = existingMaterial.USED_PRODUCT_DEVELOPMENT;
                                     items.Add(item);
 
                                 }

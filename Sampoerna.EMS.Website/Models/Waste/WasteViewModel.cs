@@ -127,6 +127,8 @@ namespace Sampoerna.EMS.Website.Models.Waste
             get; set;
         }
 
+        public bool UseForLack10 { get; set; }
+        public string UseForLack10Name { get; set; }
 
         //SelectList
         public SelectList CompanyCodeList { get; set; }

@@ -1,0 +1,50 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+<div class="row">
+    <div id="contenttable" class="table-container">
+        <table id="brandTable" class="table table-bordered table-striped js-options-table">
+            <thead>
+                <tr>
+                    <th class="toggle-row"></th>
+                    <th>Status</th>
+                    <th>Import</th>
+                    <th nowrap>Brand Request No</th>
+                    <th>Company</th>
+                    <th nowrap>FA Code (OLD)</th>
+                    <th nowrap>FA Code (OLD) Description</th>
+                    <th nowrap>FA Code (NEW)</th>
+                    <th nowrap>FA Code (NEW) Description</th>
+                    <th nowrap>HL Code</th>
+                    <th>Market</th>
+                    <th>Plant</th>
+                    <th nowrap>Brand Reg Status</th>
+                    <th nowrap>Brand Reg No</th>
+                </tr>
+
+            <tbody>
+            @if (Model != null)
+            {
+                foreach (var row in Model.ListProductDevDetail)
+                {
+                    <tr>                          
+                        <td class="action"><input type="checkbox" name="checkId" onclick="stateCheckItem(@row.PD_DETAIL_ID)" id="@row.PD_DETAIL_ID" value="@row.PD_DETAIL_ID" /></td>
+                        <td nowrap>@row.ApprovalStatusDescription.Value</td>
+                        <td><input type="checkbox" checked="@row.Is_Import" id="@row.PD_DETAIL_ID" disabled/></td>                            
+                        <td nowrap>@row.Request_No</td>
+                        <td nowrap>@Html.DisplayFor(model => row.Company.Name)</td>
+                        <td>@row.Fa_Code_Old</td>
+                        <td nowrap>@row.Fa_Code_Old_Desc</td>
+                        <td>@row.Fa_Code_New</td>
+                        <td nowrap>@row.Fa_Code_New_Desc</td>
+                        <td>@row.Hl_Code</td>
+                        <td>@Html.DisplayFor(model=>row.Market.Market_Desc)</td>
+                        <td nowrap>@Html.DisplayFor(model => row.Plant.PlantName)</td>
+                        <td></td>
+                        <td></td>                         
+                    </tr>
+                }
+            }
+          
+            </tbody>
+        </table>
+    </div>
+</div>

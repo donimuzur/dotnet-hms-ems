@@ -1,0 +1,120 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK10.SummaryReportViewModel
+<input type="hidden" id="returnTotalData" value="@Model.TotalData" />
+<input type="hidden" id="returnTotalPerPage" value="@Model.TotalDataPerPage" />
+<input type="hidden" id="returnCurrentPage" value="@Model.CurrentPage" />
+
+<table id="lack10Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row" style="max-width: 20px"> No </th>
+            <th style="min-width: 220px">LACK-10 No</th>
+            <th style="min-width: 150px">Status</th>
+            <th style="min-width: 80px">LACK-10 Type</th>
+            <th style="min-width: 80px">Company</th>
+            <th style="min-width: 120px">NPPBKC</th>
+            <th style="min-width: 120px">KPPBC</th>
+            <th style="min-width: 55px">Month</th>
+            <th style="min-width: 55px">Year</th>
+            <th style="min-width: 130px">FA Code</th>
+            <th style="min-width: 130px">Brand Description</th>
+            <th style="min-width: 180px">Plant Id</th>
+            <th style="min-width: 450px">Plant Name</th>
+            <th style="min-width: 180px">Type</th>
+            <th style="min-width: 100px">Waste Value</th>
+            <th style="min-width: 130px">Uom</th>
+            <th style="min-width: 150px">Creator</th>
+            <th style="min-width: 150px">POA Approved by</th>
+            <th style="min-width: 120px">Submission Date</th>
+            <th style="min-width: 150px">Completed Date</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.Lack10No)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
+                    <td>@Html.DisplayFor(model => item.BasedOn)</td>
+                    <td>@Html.DisplayFor(model => item.CeOffice)</td>
+                    <td>@Html.DisplayFor(model => item.LicenseNumber)</td>
+                    <td>@Html.DisplayFor(model => item.Kppbc)</td>
+                    <td>@Html.DisplayFor(model => item.Month)</td>
+                    <td>@Html.DisplayFor(model => item.Year)</td>
+
+                    <td>
+                        <ol>
+                            @foreach (var data in item.FaCode)
+                            {
+                                <li>@data</li>
+                                <br />
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.BrandDesc)
+                            {
+                                <li>@data</li>
+                                <br />
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.Werks)
+                            {
+                                <li>@data</li>
+                                <br />
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.PlantName)
+                            {
+                                <li>@data</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.Type)
+                            {
+                                <li>@data</li>
+                                <br />
+                            }
+                        </ol>
+                    </td>
+                    <td class="number" style="padding-left:40px !important">
+                        <ol>
+                            @foreach (var data in item.WasteValue)
+                            {
+                                <li>@string.Format("{0:N3}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td>
+                        <ol>
+                            @foreach (var data in item.Uom)
+                            {
+                                <li>@data</li>
+                                <br />
+                            }
+                        </ol>
+                    </td>
+                    <td class="last">@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.PoaApproved)</td>
+                    <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
+                    <td class="last">@Html.DisplayFor(model => item.CompletedDate)</td>
+
+                </tr>
+                            row = row + 1;
+            }
+        }
+    </tbody>
+</table>

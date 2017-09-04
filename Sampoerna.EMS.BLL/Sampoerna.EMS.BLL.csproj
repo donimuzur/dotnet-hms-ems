@@ -41,7 +41,9 @@
     <Reference Include="Common.Logging">
       <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <HintPath>..\packages\CrystalDecisions.Shared.1.0.0\lib\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Sampoerna.EMS.Website\references\DocumentFormat.OpenXml.dll</HintPath>
@@ -72,7 +74,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Voxteneo.WebComponents.Logger">
-      <HintPath>..\packages\ILogger.1.3.0\lib\Voxteneo.WebComponents.Logger.dll</HintPath>
+      <HintPath>..\packages-reference\ILogger.1.3.0\lib\Voxteneo.WebComponents.Logger.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +83,7 @@
     <Compile Include="BLLMapperCK4C.cs" />
     <Compile Include="BLLMapperCK5.cs" />
     <Compile Include="BLLMapperLack1.cs" />
+    <Compile Include="BLLMapperLACK10.cs" />
     <Compile Include="BLLMapperLack2.cs" />
     <Compile Include="BLLMapperPBCK1.cs" />
     <Compile Include="BLLMapperPBCK4.cs" />
@@ -93,11 +96,14 @@
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
+    <Compile Include="LACK10BLL.cs" />
+    <Compile Include="LACK10DecreeDocBLL.cs" />
+    <Compile Include="LACK10ItemBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
-    <Compile Include="MonthClosingBLL.cs" />
-    <Compile Include="MonthClosingDocBLL.cs" />
     <Compile Include="MasterDataApprovalBLL.cs" />
     <Compile Include="MasterDataApprovalSettingBLL.cs" />
+    <Compile Include="MonthClosingBLL.cs" />
+    <Compile Include="MonthClosingDocBLL.cs" />
     <Compile Include="NlogBLL.cs" />
     <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
@@ -191,6 +197,10 @@
     <Compile Include="ZaidmExProdTypeBLL.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EMS.CustomService\Sampoerna.EMS.CustomService.csproj">
+      <Project>{2844b4e7-0cfc-4470-acd8-b6fd848f6198}</Project>
+      <Name>Sampoerna.EMS.CustomService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj">
       <Project>{3cddfd06-1254-4bd5-82ed-283f26c38eea}</Project>
       <Name>Sampoerna.EMS.AutoMapperExtensions</Name>

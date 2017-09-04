@@ -18,7 +18,6 @@ namespace Sampoerna.EMS.Website.Models.Settings
 
         [Required, Display(Name="Use BackDate")]
         public bool UseBackDate { get; set; }
-
         public bool IsSendXmlMasterData { get; set; }
         
 

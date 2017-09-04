@@ -50,6 +50,9 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     public class InvMovementUsageProportional
     {
         public string MaterialId { get; set; }
+
+        public string Uom { get; set; }
+
         public string Order { get; set; }
         public decimal Qty { get; set; }
         public decimal TotalQtyPerMaterialId { get; set; }
@@ -58,13 +61,41 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     }
 
 
+    public class ProportionalUsageCalculationNew {
+        public string MaterialId { get; set; }
+
+        public string Uom { get; set; }
+
+        public string Ordr { get; set; }
+
+        public decimal QtyUsage { get; set; }
+
+        public List<ProductionPerOrder> ProductionList {get;set;}
+    }
+
+    public class ProductionPerOrder{
+        public string FaCode{get;set;}
+                //ProductionDate = y.Key.PRODUCTION_DATE,
+        public string brandCe { get; set; }
+        public string PlantId { get; set; }
+        public string Ordr {get;set;}
+        public decimal TotalQtyOrdr {get;set;}
+
+        public decimal Convertion { get; set; }
+
+        public decimal Proportional { get; set; }
+    }
+
     public class InvMovementUsageProportionalBrand
     {
         public string MaterialId { get; set; }
+
+        public string PlantId { get; set; }
+
         public string FaCode { get; set; }
         public decimal Qty { get; set; }
         public decimal TotalUsagePerFaCode { get; set; }
 
-        
+        public string Uom { get; set; }
     }
 }

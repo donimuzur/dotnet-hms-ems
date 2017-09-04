@@ -1,0 +1,232 @@
+﻿
+@using DocumentFormat.OpenXml.Wordprocessing;
+@using System.Collections
+@model Sampoerna.EMS.Website.Models.ExciseCredit.CalculationAdjustmentModel
+@{
+    string summaryClass = "";
+}
+<style>
+    #calcDetailModal .modal-dialog {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #calcDetailModal .modal-content {
+        height: auto;
+        min-height: 100%;
+        border-radius: 0;
+    }
+</style>
+<div class="modal ems-modal fade" tabindex="-1" role="dialog" aria-labelledby="calcDetail" id="calcDetailModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Calculate Excise Credit Adjustment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <label>NPPBKC</label>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.NppbkcId, new { @readonly = true, @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row hide">
+                        <div role="tabpanel">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" id="credit12-tab" class="active"><a href="#credit12" aria-controls="credit12" role="tab" data-toggle="tab">12 Months Credit Range AVG</a></li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="credit12">
+                                    @foreach (var item in Model.CreditRanges[1])
+                                    {
+
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <label>@item.Key</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                @{
+                                                    var valueDisplay = String.Format("{0:N}", Math.Ceiling(item.Value));
+                                                }
+                                                @Html.TextBoxFor(model => valueDisplay, new { @class = "form-control text-right", @readonly = true })
+                                            </div>
+                                        </div>
+                                                    }
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <button type="button" class="btn btn-primary" id="ckListButton">Detail CK-1 View</button>
+                    </div>
+                    <br />
+
+                    @*                   detail code*@
+                    <div class="row">
+                        <div class="form-group">
+
+                            @foreach (var item in Model.Product)
+                            {
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>@item.ProductAlias Detail</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.DropDownListFor(n => n.FaCodeId, new SelectList(item.FaCode, "ItemId", "ItemString", 1),
+                                            "Please select an item", new { @class = "form-control itemid" })
+
+                                        @Html.Hidden("productCode", item.ProductCode, new { @class = "prodCode" })
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button class="btn btn-blue btnAddAdj" type="button">Add</button>
+                                    </div>
+                                    <input type="hidden" class="tblId" value="@item.ProductAlias" />
+                                    <div class="col-md-12">
+                                        <table class="display table table-bordered table-striped tbladj" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="toggle-row" width="5%">#</th>
+                                                    <th width="15%">Brand</th>
+                                                    <th width="15%">Old Tariff</th>
+                                                    <th width="15%">New Tariff</th>
+                                                    <th width="15%">Increase</th>
+                                                    <th width="15%">CK-1 12 Month</th>
+                                                    <th width="15%">Weighted Increase</th>
+                                                    <th width="5%">ACTION</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="tbladjBody">
+                                                <tr id="noOtherFileMsg">
+                                                    <td colspan="8">
+                                                        <div class="alert alert-info">No Addional Brand</div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="bold">
+                                                % Weighted Tariff Increase
+                                            </label>
+                                            <span class="help-block">sub total WI dibagi sub total CK-1 12 month * 100%</span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("pctweightincrease", "0.00", new { @class = "form-control c text-right disabled pctweightincrease", @readonly = true })
+                                          
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="bold">
+                                                Sub Total
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("subtotal", "0.00", new { @class = "form-control subtotal text-right disabled", @readonly = true })
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("subtotal2", "0.00", new { @class = "form-control subtotal2 text-right disabled", @readonly = true })
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="bold">
+                                                Latest SKEP Credit Tariff
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("SKEPCreditTariff ", "0.00", new { @class = "form-control SKEPCreditTariff text-right disabled", @readonly = true })
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="bold">
+                                                Weighted Tariff
+                                            </label>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            @Html.TextBox("wTariff", "0.00", new { @class = "form-control wTariff text-right disabled", @readonly = true })
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            }
+                        </div>
+                    </div>
+                    <br />
+                    <h4>Credit Adjustment</h4>
+
+                    @foreach (var pair in Model.MaxCreditRange)
+                    {
+                        {
+                            summaryClass = String.Format("{0}summary", pair.Key);
+                        }
+                        <div class="row @summaryClass">
+                            <div class="col-md-2">
+                                <div class="col-md-4">
+                                    <label>@pair.Key</label>
+                                </div>
+
+                            </div>
+                            <div class="col-md-10">
+                                <div class="col-md-3">
+                                    <input type="text" name="@pair.Key" class="form-control text-right disabled summaryweightedtariff" readonly value="0.00" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>+</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" name="@pair.Key" class="form-control text-right disabled summaryskep" readonly value="0.00" />
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>=</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="hidden" class="form-control text-right summaryTotal" value="0.00" readonly />
+                                            <input type="text" class="form-control text-right summaryTotalTemp" value="0.00" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-2">
+                            <div class="col-md-3 col-md-offset-6">
+                                <label class="pull-right">Grand Total</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <label>=</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control text-right grandtotalValue" value="@String.Format("{0:N}", 0)" id="grandTotal" readonly />
+                                        <input type="hidden" value="0" id="grandTotalValue" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="saveCalcResult" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
