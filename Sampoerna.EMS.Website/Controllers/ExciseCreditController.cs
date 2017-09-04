@@ -46,13 +46,15 @@ namespace Sampoerna.EMS.Website.Controllers
         private ExciseCreditService service;
         private IChangesHistoryBLL chBLL;
         private IWorkflowHistoryBLL whBLL;
-        public ExciseCreditController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.ExciseCredit)
+        private IPOABLL _poabll;
+        public ExciseCreditController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL, IPOABLL poaBll) : base(pageBLL, Enums.MenuList.ExciseCredit)
         {
             this.mainMenu = Enums.MenuList.ExciseCredit;
             this.service = new ExciseCreditService();
             this.refService = new SystemReferenceService();
             this.chBLL = changeHistoryBLL;
             this.whBLL = workflowHistoryBLL;
+            this._poabll = poaBll;
         }
 
         List<WorkflowHistoryViewModel> GetWorkflowHistory(long id)
@@ -1988,6 +1990,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     CreatedDate = entity.CREATED_DATE,
                     ModifiedBy = entity.LAST_MODIFIED_BY,
                     ModifiedDate = entity.LAST_MODIFIED_DATE,
+                    RegulationNumber = entity.REGULATION_NUMBER, // Added for Regulation Number Field
                     IsCreator = service.IsAllowedToModify(CurrentUser.USER_ID, entity.EXSICE_CREDIT_ID),
                     IsApprover = service.IsAllowedToApprove(CurrentUser.USER_ID, entity.EXSICE_CREDIT_ID),
                     POA = entity.POA_ID,
@@ -2335,6 +2338,25 @@ namespace Sampoerna.EMS.Website.Controllers
             var length = "Kantor Pelayanan dan Pengawasan".Length;
             var textto1 = String.Empty;
             var textto2 = String.Empty;
+            var poaDetail = this._poabll.GetDetailsById(excise.APPROVED_BY);
+            var poaTitle = "";
+            var poaPrinted = "";
+            var poaAddress = "";
+
+            if (excise.APPROVED_BY == null)
+            {
+                poaTitle = "";
+                poaPrinted = "";
+                poaAddress = "";
+            }
+            else
+            {
+                poaTitle = poaDetail.TITLE;
+                poaPrinted = poaDetail.PRINTED_NAME;
+                poaAddress = poaDetail.POA_ADDRESS;
+            }
+         
+
             if (idx < 0)
             {
                 idx = nppbkc.TEXT_TO.IndexOf("Kantor Pengawasan dan Pelayanan");
@@ -2400,9 +2422,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("SUBMISSION_DATE", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
                     parameters.Add("ATTACHMENTS", string.Format("{0} ({1}) Lampiran", lampiran, service.Terbilang(lampiran, false)));
                     parameters.Add("INDEX11", index11);
-                    parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
-                    parameters.Add("POATITLE", excise.POA.TITLE);
-                    parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
+                    parameters.Add("POAPRINTED_NAME", poaPrinted);  //origin: parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
+                    parameters.Add("POATITLE", poaTitle);    //origin: parameters.Add("POATITLE", excise.POA.TITLE);
+                    parameters.Add("POA_ADDRESS", poaAddress);   //parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
                     parameters.Add("COMPANY", nppbkc.COMPANY.BUTXT);
                     parameters.Add("NPPBKC", nppbkc.NPPBKC_ID);
                     parameters.Add("LOKASI_NPPBKC", Ucwords(nppbkc.CITY));
@@ -2445,7 +2467,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         
                     }
-                    parameters.Add("POA", excise.POA.PRINTED_NAME);
+                    parameters.Add("POA", poaPrinted);  //origin: parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", plantAddress);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
@@ -2493,7 +2515,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             plantAddress += "</ol>";
                         }
                     }
-                    parameters.Add("POA", excise.POA.PRINTED_NAME);
+                    parameters.Add("POA", poaPrinted)  ; //origin: parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", plantAddress);
                     parameters.Add("NPPBKC", excise.NPPBKC_ID);
@@ -2509,14 +2531,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("tanggal", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
                     parameters.Add("textto", String.Format("{0}<br />{1}", textto1, textto2));
                     parameters.Add("alamat", Ucwords(nppbkc.CITY));
-                    parameters.Add("poanama", excise.POA.PRINTED_NAME);
-                    parameters.Add("poajabatan", excise.POA.TITLE);
-                    parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
+                    parameters.Add("poanama", poaPrinted);  //origin: parameters.Add("poanama", excise.POA.PRINTED_NAME);
+                    parameters.Add("poajabatan", poaTitle);  //origin: parameters.Add("poajabatan", excise.POA.TITLE);
+                    parameters.Add("poaalamat", poaAddress); //origin: parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
                     parameters.Add("company", nppbkc.COMPANY.BUTXT);
                     parameters.Add("nppbkc", nppbkc.NPPBKC_ID);
                     parameters.Add("jaminan", guaranteeTranslation[excise.GUARANTEE]);
                     parameters.Add("kota", Ucwords(nppbkc.CITY));
-                    parameters.Add("poa", excise.POA.PRINTED_NAME);
+                    parameters.Add("poa", poaPrinted);  //origin: parameters.Add("poa", excise.POA.PRINTED_NAME);
                     break;
                 case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest:
                     
@@ -2531,14 +2553,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     var adjustment = GetAdjustmentExcise(model2, excise);
                     var delayAdjustment = GetDelayAdjustmentExcise(model2, excise);
                     var nppbkc2 = refService.GetNppbkc(excise.NPPBKC_ID);
+                  
                     parameters.Add("POA", excise.POA_ID);
                     parameters.Add("COMPANY_NAME", nppbkc2.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", nppbkc2.DGCE_ADDRESS);
-                    parameters.Add("SKEP_NO", lastSkep.DECREE_NO);
-                    parameters.Add("SKEPDATE", string.Format(cultureID, "{0:dd MMMM yyyy}", lastSkep.DECREE_DATE));
+                    parameters.Add("SKEP_NO", excise.REGULATION_NUMBER);    //origin: parameters.Add("SKEP_NO", lastSkep.DECREE_NO);
+                    //origin: parameters.Add("SKEPDATE", string.Format(cultureID, "{0:dd MMMM yyyy}", lastSkep.DECREE_DATE));
                     parameters.Add("HASIL", "Hasil Tembakau");
                     parameters.Add("CITY", nppbkc2.CITY);
-                    parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
+                    parameters.Add("PEMOHON", poaPrinted); //origin: parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
                     parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N}", excise.EXCISE_CREDIT_AMOUNT));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tablesa);
@@ -2584,9 +2607,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("SUBMISSION_DATE", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
                     parameters.Add("ATTACHMENTS", string.Format("{0} ({1}) Lampiran", lampiranAdjustment, service.Terbilang(lampiranAdjustment, false)));
                     parameters.Add("INDEX11", index11Adjustment);
-                    parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
-                    parameters.Add("POATITLE", excise.POA.TITLE);
-                    parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
+                    parameters.Add("POAPRINTED_NAME", poaPrinted);  //origin: parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
+                    parameters.Add("POATITLE", poaTitle);    //origin: parameters.Add("POATITLE", excise.POA.TITLE);
+                    parameters.Add("POA_ADDRESS", poaAddress);   //origin: parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
                     parameters.Add("COMPANY", nppbkc.COMPANY.BUTXT);
                     parameters.Add("NPPBKC", nppbkc.NPPBKC_ID);
                     parameters.Add("LOKASI_NPPBKC", Ucwords(nppbkc.CITY));
@@ -2625,7 +2648,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("TOTAL_CAPITAL_2", financialRatios[0].TOTAL_CAPITAL.ToString("N"));
                     parameters.Add("RENTABILITY_1", financialRatios[1].RENTABLE_RATIO.ToString("N"));
                     parameters.Add("RENTABILITY_2", financialRatios[0].RENTABLE_RATIO.ToString("N"));
-                    parameters.Add("POA", excise.POA.PRINTED_NAME);
+                    parameters.Add("POA", poaPrinted);  //origin: parameters.Add("POA", excise.POA.PRINTED_NAME);
                     break;
             }
             return parameters;

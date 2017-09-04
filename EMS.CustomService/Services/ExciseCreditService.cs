@@ -431,7 +431,8 @@ namespace Sampoerna.EMS.CustomService.Services
 
                         //var lastCount = (context.EXCISE_CREDIT.Count() + 1).ToString("D10");
                         entity.EXCISE_CREDIT_NO = String.Format("{0}/{1}/{2}/{3}/{4}", lastSeq, company.BUTXT_ALIAS, nppbkc.CITY_ALIAS, Utils.MonthHelper.ConvertToRomansNumeral(entity.SUBMISSION_DATE.Month), entity.SUBMISSION_DATE.Year);
-                        //entity.REGULATION_NUMBER = refService.GetRegulationNumber(ReferenceKeys.RegulationNumber.ExciseCredit);
+                        entity.REGULATION_NUMBER = refService.GetRegulationNumber(ReferenceKeys.RegulationNumber.ExciseCredit);
+                  
                         context.EXCISE_CREDIT.Add(entity);
                         context.SaveChanges();
                         if (entity.APPROVAL_STATUS == null)
@@ -490,7 +491,8 @@ namespace Sampoerna.EMS.CustomService.Services
                         var company = nppbkc.COMPANY;
                         var lastSeq = refService.GetCurrentSequence(Enums.FormType.ExciseCredit, context).ToString("D10");
                         entity.EXCISE_CREDIT_NO = String.Format("{0}/{1}/{2}/{3}/{4}", lastSeq, company.BUTXT_ALIAS, nppbkc.CITY_ALIAS, Utils.MonthHelper.ConvertToRomansNumeral(entity.SUBMISSION_DATE.Month), entity.SUBMISSION_DATE.Year);
-                        //entity.REGULATION_NUMBER = refService.GetRegulationNumber(ReferenceKeys.RegulationNumber.ExciseCredit);
+                        entity.REGULATION_NUMBER = refService.GetRegulationNumber(ReferenceKeys.RegulationNumber.ExciseCredit);
+                      
                         context.EXCISE_CREDIT.Add(entity);
                         context.SaveChanges();
                         if (entity.APPROVAL_STATUS == null)
@@ -876,8 +878,8 @@ namespace Sampoerna.EMS.CustomService.Services
                             var formType = (int)Enums.MenuList.ExciseCredit;
                             refService.LogsActivity(context, data.EXSICE_CREDIT_ID.ToString(), changes, formType, (int)Enums.ActionType.Completed, role, user, null, data.EXCISE_CREDIT_NO);
                             transaction.Commit();
-
-                            return SendEmail(data, ReferenceKeys.EmailContent.ExciseCreditSKEPApprovalRequest);
+                            return SendEmail(data, ReferenceKeys.EmailContent.ExciseCreditSKEPApprovalNotification);
+                            //origin: return SendEmail(data, ReferenceKeys.EmailContent.ExciseCreditSKEPApprovalRequest);
                         }
                     }
                     catch (Exception ex)

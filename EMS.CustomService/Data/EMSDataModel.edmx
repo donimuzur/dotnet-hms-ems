@@ -143,7 +143,7 @@
           <Property Name="CONTENTEMAILID" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EXCISE_ADJUSTMENT_CALCULATE">
           <Key>
             <PropertyRef Name="RATIO1" />
@@ -188,6 +188,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="EXCISE_CREDIT_AMOUNT" Type="decimal" Precision="19" Scale="2" Nullable="false" />
           <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SKEP_ATTACHMENT" Type="nvarchar" MaxLength="300" />
+          <Property Name="REGULATION_NUMBER" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="EXCISE_CREDIT_ADJUST_CALDETAIL">
           <Key>
@@ -832,7 +833,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="USED_PRODUCT_DEVELOPMENT" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.ZAIDM_EX_NPPBKC' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.ZAIDM_EX_NPPBKC' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
             <PropertyRef Name="NPPBKC_ID" />
@@ -879,7 +880,7 @@ warning 6002: The table/view 'EMSDMS.dbo.ZAIDM_EX_NPPBKC' does not have a primar
           <Property Name="APPROVED_STATUS" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.ADMIN_APPROVAL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.ADMIN_APPROVAL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ADMIN_APPROVAL_VIEW">
           <Key>
             <PropertyRef Name="USER_ID" />
@@ -889,7 +890,7 @@ warning 6002: The table/view 'EMSDMS.dbo.ADMIN_APPROVAL_VIEW' does not have a pr
           <Property Name="NAMA_USER" Type="nvarchar" MaxLength="101" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.CK1_EXCISE_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.CK1_EXCISE_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="CK1_EXCISE_CALCULATE">
           <Key>
             <PropertyRef Name="CK1_ID" />
@@ -907,7 +908,7 @@ warning 6002: The table/view 'EMSDMS.dbo.CK1_EXCISE_CALCULATE' does not have a p
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.CK1_EXCISE_CALCULATE_ADJUST' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.CK1_EXCISE_CALCULATE_ADJUST' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="CK1_EXCISE_CALCULATE_ADJUST">
           <Key>
             <PropertyRef Name="CK1_ID" />
@@ -930,7 +931,7 @@ warning 6002: The table/view 'EMSDMS.dbo.CK1_EXCISE_CALCULATE_ADJUST' does not h
           <Property Name="PRODUCTION" Type="decimal" Precision="38" Scale="6" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.PRODUCT_DETAIL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.PRODUCT_DETAIL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PRODUCT_DETAIL_VIEW">
           <Key>
             <PropertyRef Name="PD_NO" />
@@ -981,7 +982,7 @@ warning 6002: The table/view 'EMSDMS.dbo.PRODUCT_DETAIL_VIEW' does not have a pr
           <Property Name="LASTAPPROVED_STATUS" Type="bigint" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.ROLE_ADMIN_APPROVER_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.ROLE_ADMIN_APPROVER_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ROLE_ADMIN_APPROVER_VIEW">
           <Key>
             <PropertyRef Name="USER_ID" />
@@ -996,7 +997,7 @@ warning 6002: The table/view 'EMSDMS.dbo.ROLE_ADMIN_APPROVER_VIEW' does not have
           <Property Name="PAGE_NAME" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwBrandRegistration' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.vwBrandRegistration' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwBrandRegistration">
           <Key>
             <PropertyRef Name="REGISTRATION_ID" />
@@ -1065,7 +1066,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwBrandRegistration' does not have a pr
           <Property Name="BOTTOM_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwMLInterviewRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.vwMLInterviewRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMLInterviewRequest">
           <Key>
             <PropertyRef Name="VR_FORM_ID" />
@@ -1121,7 +1122,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwMLInterviewRequest' does not have a p
           <Property Name="FAX" Type="nvarchar" MaxLength="60" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwMLLicenseRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.vwMLLicenseRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMLLicenseRequest">
           <Key>
             <PropertyRef Name="MNF_FORM_NUMBER" />
@@ -1176,7 +1177,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwMLLicenseRequest' does not have a pri
           <Property Name="OWNERSHIP_STATUS" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwPenetapanSKEP' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.vwPenetapanSKEP' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwPenetapanSKEP">
           <Key>
             <PropertyRef Name="ID" />
@@ -1215,7 +1216,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwPenetapanSKEP' does not have a primar
           <Property Name="LASTAPPROVED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSDMS_QAS.dbo.vwProductDevDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwProductDevDetail">
           <Key>
             <PropertyRef Name="PD_NO" />
@@ -1310,6 +1311,18 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__EXCISE_CR__APPRO__6BCEF5F8">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="EXCISE_CREDIT" Type="Self.EXCISE_CREDIT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__EXCISE_CR__CK1_I__61BB7BD9">
           <End Role="CK1" Type="Self.CK1" Multiplicity="1" />
           <End Role="EXCISE_CREDIT_DETAILCK1" Type="Self.EXCISE_CREDIT_DETAILCK1" Multiplicity="*" />
@@ -1319,6 +1332,18 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Principal>
             <Dependent Role="EXCISE_CREDIT_DETAILCK1">
               <PropertyRef Name="CK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EXCISE_CR__CREAT__6ADAD1BF">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="EXCISE_CREDIT" Type="Self.EXCISE_CREDIT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT">
+              <PropertyRef Name="CREATED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1343,6 +1368,42 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Principal>
             <Dependent Role="EXCISE_CREDIT_ADJUST_CALDETAIL">
               <PropertyRef Name="EXCISE_CREDIT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EXCISE_CR__LAST___68F2894D">
+          <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
+          <End Role="EXCISE_CREDIT" Type="Self.EXCISE_CREDIT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SYS_REFFERENCES">
+              <PropertyRef Name="REFF_ID" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT">
+              <PropertyRef Name="LAST_STATUS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EXCISE_CR__LAST___6CC31A31">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="EXCISE_CREDIT" Type="Self.EXCISE_CREDIT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT">
+              <PropertyRef Name="LAST_MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EXCISE_CR__POA_I__049AA3C2">
+          <End Role="POA" Type="Self.POA" Multiplicity="1" />
+          <End Role="EXCISE_CREDIT" Type="Self.EXCISE_CREDIT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT">
+              <PropertyRef Name="POA_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3050,9 +3111,17 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="CONTENTEMAIL" EntitySet="CONTENTEMAIL" />
             <End Role="EMAILVARIABEL" EntitySet="EMAILVARIABEL" />
           </AssociationSet>
+          <AssociationSet Name="FK__EXCISE_CR__APPRO__6BCEF5F8" Association="Self.FK__EXCISE_CR__APPRO__6BCEF5F8">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
+          </AssociationSet>
           <AssociationSet Name="FK__EXCISE_CR__CK1_I__61BB7BD9" Association="Self.FK__EXCISE_CR__CK1_I__61BB7BD9">
             <End Role="CK1" EntitySet="CK1" />
             <End Role="EXCISE_CREDIT_DETAILCK1" EntitySet="EXCISE_CREDIT_DETAILCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EXCISE_CR__CREAT__6ADAD1BF" Association="Self.FK__EXCISE_CR__CREAT__6ADAD1BF">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
           </AssociationSet>
           <AssociationSet Name="FK__EXCISE_CR__EXCIS__66161CA2" Association="Self.FK__EXCISE_CR__EXCIS__66161CA2">
             <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
@@ -3061,6 +3130,18 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <AssociationSet Name="FK__EXCISE_CR__EXCIS__670A40DB" Association="Self.FK__EXCISE_CR__EXCIS__670A40DB">
             <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
             <End Role="EXCISE_CREDIT_ADJUST_CALDETAIL" EntitySet="EXCISE_CREDIT_ADJUST_CALDETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EXCISE_CR__LAST___68F2894D" Association="Self.FK__EXCISE_CR__LAST___68F2894D">
+            <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
+            <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EXCISE_CR__LAST___6CC31A31" Association="Self.FK__EXCISE_CR__LAST___6CC31A31">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EXCISE_CR__POA_I__049AA3C2" Association="Self.FK__EXCISE_CR__POA_I__049AA3C2">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
           </AssociationSet>
           <AssociationSet Name="FK__EXCISE_CR__PROD___61BB7BD9" Association="Self.FK__EXCISE_CR__PROD___61BB7BD9">
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
@@ -6105,6 +6186,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="SKEP_ATTACHMENT" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="ADJUSTMENT_CALCULATED" Type="Decimal" Precision="8" Scale="2" />
           <NavigationProperty Name="EXCISE_CREDIT_APPROVED_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" FromRole="EXCISE_CREDIT" ToRole="EXCISE_CREDIT_APPROVED_DETAIL" />
+          <Property Name="REGULATION_NUMBER" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK__EXCISE_CR__APPRO__6BCEF5F8">
           <End Type="Sampoerna.EMS.CustomService.Data.USER" Role="USER" Multiplicity="0..1" />
@@ -7902,6 +7984,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <EntitySetMapping Name="EXCISE_CREDIT">
             <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT">
               <MappingFragment StoreEntitySet="EXCISE_CREDIT">
+                <ScalarProperty Name="REGULATION_NUMBER" ColumnName="REGULATION_NUMBER" />
                 <ScalarProperty Name="ADJUSTMENT_CALCULATED" ColumnName="ADJUSTMENT_CALCULATED" />
                 <ScalarProperty Name="SKEP_ATTACHMENT" ColumnName="SKEP_ATTACHMENT" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />

@@ -143,7 +143,7 @@ namespace Sampoerna.EMS.XMLReader
                             {
                                 item.STATUS = false;
                             }
-                            
+                            item.IS_SENT_CHECK_BRAND = existingMaterial.IS_SENT_CHECK_BRAND;
                             items.Add(item);
 
                         }

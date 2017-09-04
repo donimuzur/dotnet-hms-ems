@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<ZAIDM_EX_BRAND> GetByFaCodeListAndPlantList(List<string> facodeList, List<string> plantList);
 
-        
+        List<ZAIDM_EX_BRAND> GetAllActiveBrand(string market);
 
         void Save(ZAIDM_EX_BRAND data);
 
