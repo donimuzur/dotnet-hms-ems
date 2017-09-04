@@ -1,5 +1,6 @@
 ﻿using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Core;
 using System.Collections.Generic;
@@ -39,6 +40,9 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_MATERIAL> getAllMaterial(string goodType);
 
-        
+        List<ZAIDM_EX_MATERIAL> getAllMaterialByListMaterialAndPlant(List<string> materialList,
+            List<string> plantList);
+
+        List<ZAIDM_EX_MATERIAL> GetMaterialByParam(MaterialInput input);
     }
 }

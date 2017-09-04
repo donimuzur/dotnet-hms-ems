@@ -53,13 +53,33 @@ namespace Sampoerna.EMS.BLL
             {
                 var detail = Mapper.Map<MasterDataApprovalSettingDetail>(table);
                 var isApproval = masterDataSettings.Where(x => x.COLUMN_NAME == detail.COLUMN_NAME).Select(x=> x.IS_APPROVAL).FirstOrDefault();
-                if (!table.IsNullable)
+                detail.IsPrimary = table.IsUniquePrimaryKey;
+                if (table.IsUniquePrimaryKey)
                 {
                     detail.IS_APPROVAL = true;
                 }
                 else
                 {
-                    detail.IS_APPROVAL = isApproval;    
+                    if (pageId == (int) Core.Enums.MenuList.POAMap)
+                    {
+                        if (!table.IsNullable)
+                        {
+                            detail.IS_APPROVAL = true;
+                            detail.IsPrimary = true;
+                        }
+                        else
+                        {
+                            detail.IS_APPROVAL = isApproval;
+                        }
+
+
+                    }else
+                    {
+                        detail.IS_APPROVAL = isApproval;    
+                    }
+
+                    
+
                 }
                 
 
@@ -78,6 +98,7 @@ namespace Sampoerna.EMS.BLL
                     COLUMN_NAME = "CONVERTION",
                     ColumnDescription = "Convertion",
                     IS_APPROVAL = true,
+                    IsPrimary = true,
                     PAGE_ID = pageId
                 });
             }

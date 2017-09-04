@@ -5,39 +5,27 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
-using Sampoerna.EMS.Website.Helpers;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    [AuthorizeAD]
+
     public class BaseController : Controller
     {
 
         private IPageBLL _pageBLL;
         private Enums.MenuList _menuID;
 
-        // AD bypass purpose
-        private IUserBLL _userBll;
-        protected string param;
-       
         public BaseController(IPageBLL pageBll, Enums.MenuList menuID)
         {
             _pageBLL = pageBll;
             _menuID = menuID;
         }
-
-        public BaseController(IPageBLL pageBll, IUserBLL userBLL, Enums.MenuList menuID) : this(pageBll: pageBll, menuID: menuID)
-        {
-            _userBll = userBLL;
-        }
-
         protected ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -80,64 +68,13 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public Login CurrentUser
         {
-
             get
             {
-                SetLoginSession();
                 return (Login)Session[Core.Constans.SessionKey.CurrentUser];
             }
-            
-        }
-
-        public void SetLoginSession()
-        {
-            if (Session[Core.Constans.SessionKey.CurrentUser] == null)
+            set
             {
-                var userId = User.Identity.Name.Split('\\')[User.Identity.Name.Split('\\').Length - 1]; //User.Identity.Name.Remove(0, 4);
-                //if (String.IsNullOrEmpty(userId.Trim())) // Bypass AD auth
-                //{
-                //    userId = param;
-                //}
-                IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
-                IPOABLL poabll = MvcApplication.GetInstance<POABLL>();
-                IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
-                var loginResult = userBll.GetLogin(userId);
-
-                if (loginResult != null)
-                {
-                    //CurrentUser = loginResult;
-                    loginResult.UserRole = poabll.GetUserRole(loginResult.USER_ID);
-                    loginResult.AuthorizePages = userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
-                    loginResult.NppbckPlants = userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
-                    loginResult.ListUserPlants = new List<string>();
-                    loginResult.ListUserNppbkc = new List<string>();
-                    switch (loginResult.UserRole)
-                    {
-                        case Enums.UserRole.User:
-                        case Enums.UserRole.Viewer:
-                        case Enums.UserRole.Controller:
-                            loginResult.ListUserPlants =
-                                userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
-                            loginResult.ListUserNppbkc =
-                                userAuthorizationBll.GetListNppbkcByUserId(loginResult.USER_ID);
-                            break;
-                        case Enums.UserRole.POA:
-                            loginResult.ListUserPlants = new List<string>();
-                            foreach (var nppbkcPlantDto in loginResult.NppbckPlants)
-                            {
-                                foreach (var plantDto in nppbkcPlantDto.Plants)
-                                {
-                                    loginResult.ListUserPlants.Add(plantDto.WERKS);
-                                }
-                            }
-                            loginResult.ListUserNppbkc = loginResult.NppbckPlants.Select(c => c.NppbckId).ToList();
-                            break;
-                    }
-
-
-
-                }
-                Session[Core.Constans.SessionKey.CurrentUser] = loginResult;
+                Session[Core.Constans.SessionKey.CurrentUser] = value;
             }
         }
 
@@ -163,30 +100,25 @@ namespace Sampoerna.EMS.Website.Controllers
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
-            
+
             var descriptor = filterContext.ActionDescriptor;
             var actionName = descriptor.ActionName;
             var controllerName = descriptor.ControllerDescriptor.ControllerName;
 
             if (controllerName == "Login" && actionName == "Index") return;
-            if (controllerName == "Home" && actionName == "Index") return;
 
             if (CurrentUser == null )
             {
+                filterContext.Result = new RedirectToRouteResult(
+                   new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
 
-                RedirectToAction("VerifyLogin", "Login", new { filterContext = filterContext });
-                //filterContext.Result = new RedirectToRouteResult(
-                //             new RouteValueDictionary { { "controller", "Error" }, { "action", "NotRegistered" } });
 
-                // Bypass AD auth
-                //filterContext.Result = new RedirectToRouteResult(
-                //           new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
-                //return;
+                return;
             }
             var isUsePageAuth = ConfigurationManager.AppSettings["UsePageAuth"] != null && Convert.ToBoolean(ConfigurationManager.AppSettings["UsePageAuth"]);
             if (isUsePageAuth)
             {
-                CurrentUser.AuthorizePages = _pageBLL.GetAuthPages(CurrentUser.USER_ID);
+                CurrentUser.AuthorizePages = _pageBLL.GetAuthPages(CurrentUser);
                 if (CurrentUser.AuthorizePages != null)
                 {
                     if (!CurrentUser.AuthorizePages.Contains(PageInfo.PAGE_ID))

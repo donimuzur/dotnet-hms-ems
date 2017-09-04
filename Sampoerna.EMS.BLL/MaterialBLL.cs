@@ -1,6 +1,8 @@
 ﻿using System.Linq.Expressions;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
@@ -461,5 +463,68 @@ namespace Sampoerna.EMS.BLL
 
             return data.ToList();
         }
+
+
+        public List<ZAIDM_EX_MATERIAL> getAllMaterialByListMaterialAndPlant(List<string> materialList,
+            List<string> plantList)
+        {
+            Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
+
+            queryFilter = queryFilter.And(x => materialList.Contains(x.STICKER_CODE));
+            queryFilter = queryFilter.And(x => plantList.Contains(x.WERKS));
+
+            var data = _repository.Get(queryFilter, null, "").ToList();
+
+            return data;
+        }
+
+
+        public List<ZAIDM_EX_MATERIAL> GetMaterialByParam(MaterialInput input)
+        {
+
+            if (input == null)
+            {
+                return _repository.Get(null, null, includeTables).ToList();
+            }
+
+            Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
+
+            if (!string.IsNullOrEmpty(input.MaterialNumberSource))
+            {
+                queryFilter = queryFilter.And(x => x.STICKER_CODE.ToLower().Contains(input.MaterialNumberSource.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(input.PlantIdSource))
+            {
+                queryFilter = queryFilter.And(x => x.WERKS == input.PlantIdSource);
+            }
+
+            if (!string.IsNullOrEmpty(input.GoodTypeSource))
+            {
+                queryFilter = queryFilter.And(x => x.EXC_GOOD_TYP == input.GoodTypeSource);
+            }
+
+            if (!string.IsNullOrEmpty(input.UomNameSource))
+            {
+                queryFilter = queryFilter.And(x => x.BASE_UOM_ID == input.UomNameSource);
+            }
+
+            if (!string.IsNullOrEmpty(input.MaterialDescSource))
+            {
+                queryFilter = queryFilter.And(x => x.MATERIAL_DESC.ToLower().Contains(input.MaterialDescSource.ToLower()));
+            }
+
+            if (input.ClientDeletionSource.HasValue)
+            {
+                queryFilter = queryFilter.And(x => x.CLIENT_DELETION == input.ClientDeletionSource.Value);
+            }
+
+            if (input.PlantDeletionSource.HasValue)
+            {
+                queryFilter = queryFilter.And(x => x.PLANT_DELETION == input.PlantDeletionSource.Value);
+            }
+
+            return _repository.Get(queryFilter, null, includeTables).ToList();
+        } 
     }
 }

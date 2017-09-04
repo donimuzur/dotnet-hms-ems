@@ -9,6 +9,7 @@ function uploadXmlFile(url) {
         alert('Please browse a correct excel file to upload');
         return false;
     }
+    $('#btn-save-upload').prop("disabled", true);
 
     var formData = new FormData();
     var totalFiles = document.getElementById("itemExcelFile").files.length;
@@ -56,6 +57,7 @@ function uploadXmlFile(url) {
                     classAction +
                     createColumn(i + 1) +
                     createColumn(uploaditems[i].FaCode) +
+                    createColumn(uploaditems[i].StickerCode) +
                     createColumn(uploaditems[i].ProdTypeAlias) +
                     createColumn(uploaditems[i].Brand) +
                     createColumn(uploaditems[i].Content) +
@@ -71,7 +73,7 @@ function uploadXmlFile(url) {
             }
             
             if (IsValidDataUploadPbck7())
-                $('#btn-save-upload').enable();
+                $('#btn-save-upload').prop("disabled", false);
         }
     });
 }
@@ -82,7 +84,7 @@ function IsValidDataUploadPbck7() {
 
     for (var i = 0; i < datarows.length; i++) {
 
-        if (datarows[i][13].length > 0)
+        if (datarows[i][14].length > 0)
             return false;
     }
 
@@ -161,19 +163,18 @@ $('#btn-save-upload').click(function () {
     //$('#information').addClass('active');
     //$('#tab-upload').removeClass("active");
     //$('#upload').removeClass("active");
-    
-    $('#upload-tab').removeClass('active');
-    $('#home-tab').addClass('active');
-
-    $('#information').addClass('active');
-    $('#upload').removeClass('active');
-    
 
     $('#body-tb-upload').html('');
     //$('#table-upload tbody').html('');
     
     for (var i = 0; i < uploaditems.length; i++) {
-      
+        
+        if (uploaditems[i][14].length > 0) {
+            $('#modalBodyMessage').text('Item Material Not Valid');
+            $('#ModalPbck7Items').modal('show');
+            return;
+        }
+
         var tr = '<tr>' +
             createColumn(i + 1) +
             createColumnWithHiddenField(uploaditems[i][2], 'UploadItems[' + i + '].FaCode') +
@@ -191,6 +192,12 @@ $('#btn-save-upload').click(function () {
         $('#body-tb-upload').append(tr);
         //$('#table-upload tbody').append(tr);
     }
+
+    $('#upload-tab').removeClass('active');
+    $('#home-tab').addClass('active');
+
+    $('#information').addClass('active');
+    $('#upload').removeClass('active');
 });
 
 function toUploadTab() {

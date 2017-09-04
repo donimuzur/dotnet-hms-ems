@@ -51,7 +51,8 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_BRAND> GetAllBrands()
         {
-            return _repository.Get(null, null, "T001W,ZAIDM_EX_SERIES,ZAIDM_EX_GOODTYP, ZAIDM_EX_PRODTYP, ZAIDM_EX_MARKET").ToList();
+            var data = _repository.Get(null, null, "T001W,ZAIDM_EX_SERIES,ZAIDM_EX_GOODTYP, ZAIDM_EX_PRODTYP, ZAIDM_EX_MARKET").ToList();
+            return data;
             //ZAIDM_EX_GOODTYP, ZAIDM_EX_PRODTYP, ZAIDM_EX_MARKET
         }
 

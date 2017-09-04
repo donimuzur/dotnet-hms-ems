@@ -98,6 +98,7 @@
                             @Html.HiddenFor(model => model.Detail.Lack1ToMonthId)
                             @Html.HiddenFor(model => model.Detail.Lack1ToYear)
                             @Html.HiddenFor(model => model.Detail.GovApprovalActionType)
+                            @Html.HiddenFor(model => model.Detail.QtyApprovedTemp)
                             @*@Html.HiddenFor(model => model.Detail.SupplierPlant)*@
                             @Html.Partial("_HomeGovApproval")
                         }
@@ -279,6 +280,7 @@
             });
 
             $('#Detail_StatusGov').on('change', function(e) {
+                
                 var valueSelected = this.value;
                 var request = $("input[name='Detail.RequestQty']:hidden").val();
                 $('#divComment').hide();
@@ -287,15 +289,19 @@
                 if (valueSelected == 'Rejected') {
                     $('#divComment').show();
                     $("input[name='Detail.QtyApproved']:hidden").val(0);
+                    $("input[name='Detail.QtyApprovedTemp']:hidden").val(0);
                     $("input[name='Detail.QtyApproved']:text").val(0);
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovReject');
                 } else if (valueSelected == 'PartialApproved') {
                     $("input[name='Detail.QtyApproved']:text").prop("readonly", false);
+                    $("input[name='Detail.QtyApprovedTemp']:hidden").val(request);
                     $("input[name='Detail.QtyApproved']:hidden").val(request);
                     $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovPartialApprove');
                 } else if (valueSelected == 'FullApproved') {
+                    $("input[name='Detail.QtyApprovedTemp']:hidden").val(request);
                     $("input[name='Detail.QtyApproved']:hidden").val(request);
+                    
                     $("input[name='Detail.QtyApproved']:text").val(ThausandSeperator(request, 2));
                     $('#Detail_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
                 }
@@ -458,6 +464,7 @@
                 $("input[name='Detail.QtyApproved']:text").keyup(function() {
                     $(this).val(ThausandSeperator($(this).val(), 2));
                     $("input[name='Detail.QtyApproved']:hidden").val(changeToNumber($(this).val()));
+                    $("input[name='Detail.QtyApprovedTemp']:hidden").val(changeToNumber($(this).val()));
                 });
             }
 
