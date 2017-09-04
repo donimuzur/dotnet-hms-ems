@@ -81,6 +81,13 @@ namespace Sampoerna.EMS.BusinessObject
             this.MASTER_DATA_APPROVAL = new HashSet<MASTER_DATA_APPROVAL>();
             this.MASTER_DATA_APPROVAL1 = new HashSet<MASTER_DATA_APPROVAL>();
             this.QUOTA_MONITORING_DETAIL = new HashSet<QUOTA_MONITORING_DETAIL>();
+            this.ZAIDM_EX_PRODTYP = new HashSet<ZAIDM_EX_PRODTYP>();
+            this.FILE_UPLOAD = new HashSet<FILE_UPLOAD>();
+            this.FILE_UPLOAD1 = new HashSet<FILE_UPLOAD>();
+            this.LACK10 = new HashSet<LACK10>();
+            this.LACK101 = new HashSet<LACK10>();
+            this.LACK102 = new HashSet<LACK10>();
+            this.LACK10_DECREE_DOC = new HashSet<LACK10_DECREE_DOC>();
         }
     
         public string USER_ID { get; set; }
@@ -160,5 +167,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<MASTER_DATA_APPROVAL> MASTER_DATA_APPROVAL { get; set; }
         public virtual ICollection<MASTER_DATA_APPROVAL> MASTER_DATA_APPROVAL1 { get; set; }
         public virtual ICollection<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
+        public virtual ICollection<ZAIDM_EX_PRODTYP> ZAIDM_EX_PRODTYP { get; set; }
+        public virtual ICollection<FILE_UPLOAD> FILE_UPLOAD { get; set; }
+        public virtual ICollection<FILE_UPLOAD> FILE_UPLOAD1 { get; set; }
+        public virtual ICollection<LACK10> LACK10 { get; set; }
+        public virtual ICollection<LACK10> LACK101 { get; set; }
+        public virtual ICollection<LACK10> LACK102 { get; set; }
+        public virtual ICollection<LACK10_DECREE_DOC> LACK10_DECREE_DOC { get; set; }
     }
 }

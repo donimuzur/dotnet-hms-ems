@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.CK4C_ITEM = new HashSet<CK4C_ITEM>();
             this.LACK1_PRODUCTION_DETAIL = new HashSet<LACK1_PRODUCTION_DETAIL>();
             this.PBCK1_PROD_CONVERTER = new HashSet<PBCK1_PROD_CONVERTER>();
+            this.LACK10_ITEM = new HashSet<LACK10_ITEM>();
         }
     
         public string UOM_ID { get; set; }
@@ -49,5 +50,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<CK4C_ITEM> CK4C_ITEM { get; set; }
         public virtual ICollection<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
         public virtual ICollection<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
+        public virtual ICollection<LACK10_ITEM> LACK10_ITEM { get; set; }
     }
 }

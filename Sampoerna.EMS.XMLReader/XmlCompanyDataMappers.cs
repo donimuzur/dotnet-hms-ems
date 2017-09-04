@@ -50,6 +50,9 @@ namespace Sampoerna.EMS.XMLReader
                             item.BUTXT_ALIAS = exisitingCompany.BUTXT_ALIAS;
                             item.NPWP = exisitingCompany.NPWP;
                             item.SPRAS = exisitingCompany.SPRAS;
+
+                            //DMS
+                            item.PKP = exisitingCompany.PKP;
                             items.Add(item);
 
                         }

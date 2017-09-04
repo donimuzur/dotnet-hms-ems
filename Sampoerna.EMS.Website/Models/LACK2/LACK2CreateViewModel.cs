@@ -44,6 +44,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string PoaList { get; set; }
         public string PoaListHidden { get; set; }
 
+        public string Npwp { get; set; }
+
         #endregion
 
     }

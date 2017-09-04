@@ -28,7 +28,11 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public string MODIFIED_BY { get; set; }
         public bool CK4CEDITABLE { get; set; }
+        public string LASTAPPROVED_BY { get; set; }
+        public Nullable<System.DateTime> LASTAPPROVED_DATE { get; set; }
+        public Nullable<long> APPROVED_STATUS { get; set; }
     
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

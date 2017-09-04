@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.BLL.Services
                 _repository.Get(
                     c =>
                         !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID == nppbkcId && c.IS_MAIN_PLANT.HasValue &&
-                        c.IS_MAIN_PLANT.Value).FirstOrDefault();
+                        c.IS_MAIN_PLANT.Value,null,"T001K,T001K.T001").FirstOrDefault();
         }
 
         public List<T001W> GetAll()

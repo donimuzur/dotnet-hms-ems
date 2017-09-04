@@ -72,6 +72,7 @@
     <Compile Include="Business\ExGoodTyp.cs.cs" />
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
+    <Compile Include="Business\InvalidBrand.cs" />
     <Compile Include="Business\Login.cs" />
     <Compile Include="Business\MailNotification.cs" />
     <Compile Include="Business\Material.cs" />
@@ -154,6 +155,10 @@
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
     <Compile Include="DTOs\InventoryMovementDto.cs" />
+    <Compile Include="DTOs\Lack10DecreeDocDto.cs" />
+    <Compile Include="DTOs\Lack10Dto.cs" />
+    <Compile Include="DTOs\Lack10ItemExportDto.cs" />
+    <Compile Include="DTOs\Lack10SummaryReportDto.cs" />
     <Compile Include="DTOs\Lack1DailyProdDto.cs" />
     <Compile Include="DTOs\Lack1DetailEaDto.cs" />
     <Compile Include="DTOs\Lack1DetailReportDto.cs" />
@@ -265,6 +270,7 @@
     <Compile Include="Inputs\EmailTemplateInputs.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\InventoryMovementInput.cs" />
+    <Compile Include="Inputs\Lack10GetByParamInput.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\Lack1Input.cs" />
@@ -308,6 +314,18 @@
     <Compile Include="LACK1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="LACK10.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK10_DECREE_DOC.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK10_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_CALCULATION_DETAIL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK1_DOCUMENT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -315,6 +333,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="LACK1_PBCK1_MAPPING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK1_PERIOD_SUMMARY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="LACK1_PLANT.cs">
@@ -341,9 +362,15 @@
     <Compile Include="LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="MASTER_DATA_APPROVAL.cs" />
-    <Compile Include="MASTER_DATA_APPROVAL_DETAIL.cs" />
-    <Compile Include="MASTER_DATA_APPROVE_SETTING.cs" />
+    <Compile Include="MASTER_DATA_APPROVAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MASTER_DATA_APPROVAL_DETAIL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MASTER_DATA_APPROVE_SETTING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="MATERIAL_UOM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -353,8 +380,12 @@
     <Compile Include="MONTH.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="MONTH_CLOSING.cs" />
-    <Compile Include="MONTH_CLOSING_DOCUMENT.cs" />
+    <Compile Include="MONTH_CLOSING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MONTH_CLOSING_DOCUMENT.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="NlogLogs.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -450,6 +481,9 @@
     <Compile Include="POA_DELEGATION.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="POA_EXCISER.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="POA_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -464,8 +498,12 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
-    <Compile Include="QUOTA_MONITORING.cs" />
-    <Compile Include="QUOTA_MONITORING_DETAIL.cs" />
+    <Compile Include="QUOTA_MONITORING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QUOTA_MONITORING_DETAIL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="REVERSAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

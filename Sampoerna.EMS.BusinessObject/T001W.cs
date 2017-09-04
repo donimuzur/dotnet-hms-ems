@@ -42,6 +42,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_DELETED { get; set; }
         public string NPPBKC_IMPORT_ID { get; set; }
         public string ADDRESS_IMPORT { get; set; }
+        public Nullable<long> CITY_ID { get; set; }
+        public Nullable<long> STATE_ID { get; set; }
     
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
         public virtual ICollection<VIRTUAL_PLANT_MAP> VIRTUAL_PLANT_MAP { get; set; }
