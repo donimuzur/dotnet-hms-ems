@@ -700,6 +700,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //master info
             var dMasterRow = dsReport.Lack1.NewLack1Row();
             // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+           
             dMasterRow.Lack1Id = data.Lack1Id.ToString();
             dMasterRow.Lack1Number = data.Lack1Number;
             dMasterRow.CompanyCode = data.Bukrs;
@@ -911,7 +912,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var amountUsage = item.AmountUsage;
                     var amountProd = item.AmountProduction;
-                    
+
+                    if (data.IsEtilAlcohol)
+                    {
+                        var dataCurrent =
+                            data.PeriodSummaries.Where(x => x.Type == Enums.Lack1SummaryPeriod.Current).FirstOrDefault();
+                        if (dataCurrent != null) amountUsage = dataCurrent.Usage;
+                        
+                    }
 
                     detailRow.AmountMaterial = amountUsage.ToString("N3");
                     detailRow.JenisProduksi = item.BrandCe;
@@ -936,6 +944,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     else dMasterRow.ProdUom = "batang";
                 }
             }
+
+            dMasterRow.IsImportir = data.IsSupplierNppbkcImport ? "y" : "n";
 
             dMasterRow.Npwp = data.Npwp;
 

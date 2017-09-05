@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public string POA_ID { get; set; }
         public string SKEP_ATTACHMENT { get; set; }
         public Nullable<decimal> ADJUSTMENT_CALCULATED { get; set; }
+        public string REGULATION_NUMBER { get; set; }
     
         public virtual USER APPROVER { get; set; }
         public virtual USER USER1 { get; set; }

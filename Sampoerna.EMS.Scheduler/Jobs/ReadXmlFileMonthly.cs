@@ -59,7 +59,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 {
 
                     logger.Info("Reading XML Monthly start on " + DateTime.Now);
-                    errorFileList.AddRange(_svc.Run(false));
+                    errorFileList.AddRange(_svc.Run(SchedulerEnums.Schedule.MonthLy));
                     foreach (var errorFile in errorFileList)
                     {
                         logger.Warn(String.Format("Error on files : {0}", errorFile.FileName));
@@ -82,7 +82,8 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 {
 
                     logger.Error("Reading XML crashed", ex);
-                    var body = ex.Message;
+                    var body = String.Format("<p>{0}</p>", ex.Message);
+                    body += String.Format("<p>{0}</p>", ex.StackTrace);
                     if (!String.IsNullOrEmpty(body))
                         logger.Error(EmailUtility.Email(body, "Scheduler is down"));
                 }
