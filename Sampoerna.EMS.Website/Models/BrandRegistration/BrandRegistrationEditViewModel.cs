@@ -15,7 +15,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string StickerCode { get; set; }
 
         public SelectList StickerCodeList { get; set; }
-
         [Required]
         public string PlantId { get; set; }
         public SelectList PlantList { get; set; }
@@ -147,7 +146,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string BahanKemasan { get; set; }
         public SelectList BahanKemasanList { get; set; }
         public bool IsPackedAdjusted { get; set; }
-
         public string SAPBrandDescription { get; set; }
     }
 }

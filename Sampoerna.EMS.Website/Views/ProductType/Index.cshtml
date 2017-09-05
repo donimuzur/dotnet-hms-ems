@@ -1,9 +1,20 @@
 ﻿@model Sampoerna.EMS.Website.Models.ProductType.ProductTypeIndexViewModel
-
+@{
+    string state = "";
+    //var i = 0;
+}
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
             <h3 id="lblTitle">Product Type List</h3>
+            @if (Model.IsNotViewer)
+            {
+                <div class="action-button new">
+                    <a href="@Url.Action("Create", "ProductType")">
+                        <button class="btn btn-blue">New</button>
+                    </a>
+                </div>
+            }
             
         </div>
     </div>
@@ -17,40 +28,56 @@
                     <thead>
                         <tr>
                             <th class="toggle-row"> Filter </th>
+                            @*<th>#</th>*@
                             <th>Product Code</th>
                             <th>Product Type</th>
                             <th>Product Alias</th>
                             <th>CK4C Editable</th>
+                            <th>Status Active</th>
+                            <th>Approval Status</th>
                         </tr>
                     </thead>
                     <thead class="filters">
                         <tr>
                             <th> Action</th>
+                            @*<th></th>*@
                             <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
-                            
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
+                        
                         @foreach (var item in Model.ListProductTypes)
                         {
+                           // i++;
                             <tr>
                                 <td class="action">
-                                    <a href="@Url.Action("Detail", "ProductType", new { id = item.ProdCode })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
-                                    @if (Model.IsNotViewer)
+                                    <a href="@Url.Action("Detail", "ProductType", new { id = item.ProdCode })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>                                    
+                                    @if (Model.IsNotViewer && !item.IsSubmitted)
                                     {
                                         <a href="@Url.Action("Edit", "ProductType", new { id = item.ProdCode })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
                                     }
+                                    @if (Model.IsAdminApprover && !item.IsApproved && item.IsSubmitted)
+                                    {
+                                        <a href="@Url.Action("Approve", "ProductType", new { id = item.ProdCode })" data-toggle="tooltip" data-placement="top" title="Approve"> <i class="fa  fa-check"></i></a>
+                                    }
                                 </td>
+                                @*<td>@i</td>*@
                                 <td>@Html.DisplayFor(model => item.ProdCode)</td>
                                 <td>@Html.DisplayFor(model => item.ProductType)</td>
                                 <td>@Html.DisplayFor(model => item.ProductAlias)</td>
                                 <td>@Html.DisplayFor(model => item.Ck4CEditable)</td>
-
+                                <td>@if (item.IsDeleted == true)
+                                { state = "No"; }
+                                else
+                                { state = "Yes"; }
+                                @state   </td>
+                                <td>@Html.DisplayFor(model => item.ApprovalStatusDescription.Value)</td>
                             </tr>
-
                         }
                     </tbody>
                 </table>
@@ -82,6 +109,7 @@
 
             table = $('#wasteRoleTable').DataTable(
                   {
+                      "order": [[1, "desc"]],
                       "sDom": "Rlfrtip",
                       "language": {
                           "zeroRecords": "No records found",

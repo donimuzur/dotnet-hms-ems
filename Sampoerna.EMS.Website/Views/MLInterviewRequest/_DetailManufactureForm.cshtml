@@ -1,0 +1,166 @@
+﻿@model Sampoerna.EMS.Website.Models.ManufacturingLicense.InterviewRequestDetailModel
+@{ 
+    var indexLabel = (Model.Index + 1).ToString();
+}
+<div class='panel-body div_body_detmanufactform stillActive'>
+    @Html.Hidden("interviewRequestDetail[" + Model.Index.ToString() + "].DetId", Model.DetId, new { @class = "txt_manufactdet_id" })
+    <div class='form-excise' role='form'>
+        <div class='panel-group' id='accordion_sub' role='tablist' aria-multiselectable='true'>
+            <div class='panel panel-default'>
+                <div class='panel-heading' role='tab' id='heading_sub'>
+                    <div class='row'>                        
+                        <h4 class='panel-title col-md-12'>
+                            <input class='checkbox cb_panel_detailmanufacture' type='checkbox' style='width:2%; margin:0px;padding:0px;float:left;' />
+                            <a data-toggle='collapse' data-parent='#accordion_sub' href='#collapse_sub' aria-expanded='true' aria-controls='collapse_sub'>
+                                <b class="label_header_irdet">&nbsp; Detail Manufacture @indexLabel</b>
+                                <i class='fa fa-caret-down'></i>
+                            </a>
+                        </h4>
+                    </div>
+                </div>
+                <div id='collapse_sub' class='sub_panel_parentbody panel-collapse collapse in' role='tabpanel' aria-labelledby='heading_sub' data-index="@Model.Index.ToString()">
+                    <div class='panel-body'>                    
+                        <div class='form-excise' role='form'>
+                            <div class='row'>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-6'>
+                                    <div class='row'>
+                                        <label class='col-md-4'>Manufacture Address<span class="red">*</span></label>
+                                        <div class='col-md-8'>
+                                            @if (Model.IsFormReadOnly)
+                                            {
+                                                @Html.TextArea("interviewRequestDetail[" + Model.Index.ToString() + "].Manufacture_Address", Model.Manufacture_Address, new { @class = "form-control txt_manufact_address", @readonly = Model.IsFormReadOnly })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextArea("interviewRequestDetail[" + Model.Index.ToString() + "].Manufacture_Address", Model.Manufacture_Address, new { @class = "form-control txt_manufact_address", @required = "required", @data_fieldname = "Manufacture Address", @maxlength = "300" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-md-6'>
+                                    <div class='row'>
+                                        <label class='col-md-4'>Village<span class="red">*</span></label>
+                                        <div class='col-md-8'>   
+                                            @if (Model.IsFormReadOnly)
+                                            {
+                                                @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Village", Model.Village, new { @class = "form-control", @readonly = Model.IsFormReadOnly })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Village", Model.Village, new { @class = "form-control", @required = "required", @data_fieldname = "Village", @maxlength = "200" })
+                                            }
+                                        </div>
+                                    </div>                                    
+                                </div>                                
+                            </div>
+                            <div class='row'>                                
+                                <div class='col-md-6'>                                    
+                                    <div class='row'>                                        
+                                        <label class='col-md-4'>District / City<span class="red">*</span></label>
+                                        <div class='col-md-8'>
+                                            <select class='form-control selectpicker opt_city' id='opt_city_@Model.Index.ToString()' name='interviewRequestDetail[@Model.Index.ToString()].City_Id' required = "required" data-fieldname = "District / City" @if (Model.IsFormReadOnly) { <text> disabled </text> } >
+                                                <option value='' data-stateid="0" data-statename="">Select</option>
+                                                @foreach (var item in Model.City_List)
+                                                {
+                                                    <option value='@item.Id' data-stateid="@item.StateId" data-statename="@item.StateName" @if (Model.City_Id == item.Id) { <text>selected='selected'</text> }>@item.Name</option>
+                                                }
+                                            </select>
+                                            @*<input type="hidden" class="txt_hd_cityid" value="@Model.City_Id" />
+                                            <fieldset style="border:none;margin:0px" @if (Model.IsFormReadOnly) { <text> disabled="disabled" </text>   }>
+                                                @Html.DropDownList("interviewRequestDetail[" + Model.Index.ToString() + "].City_Id", Model.City_List_option, "Select", new { @class = "form-control selectpicker opt_city", @id = "opt_city_" + @Model.Index.ToString(), @data_fieldname = "District / City" })
+                                            </fieldset>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-md-6'>                                    
+                                    <div class='row'>                                        
+                                        <label class='col-md-4'>Phone<span class="red">*</span></label>
+                                        <div class='col-md-8'>
+                                            <div class="col-md-3" style="padding-left:0px;">
+                                                @if (Model.IsFormReadOnly)
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Phone_Area_Code", Model.Phone_Area_Code, new { @class = "form-control txt_phonecode numeric-form", @readonly = Model.IsFormReadOnly })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Phone_Area_Code", Model.Phone_Area_Code, new { @class = "form-control txt_phonecode numeric-form", @required = "required", @data_fieldname = "Phone", @maxlength = "10" })
+                                                }
+                                            </div>
+                                            <div class="col-md-9" style="padding-right:0px;">
+                                                @if (Model.IsFormReadOnly)
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Phone", Model.Phone, new { @class = "form-control txt_phone numeric-form", @readonly = Model.IsFormReadOnly })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Phone", Model.Phone, new { @class = "form-control txt_phone numeric-form", @required = "required", @data_fieldname = "Phone", @maxlength = "20" })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class='row'>                                
+                                <div class='col-md-6'>                                    
+                                    <div class='row'>
+                                        <input type="hidden" value="@Model.Province_Id" name='interviewRequestDetail[@Model.Index.ToString()].Province_Id' class="txt_hd_stateid" id='txt_hd_stateid_@Model.Index.ToString()' />                                        
+                                        <label class='col-md-4'>Province</label>
+                                        <div class='col-md-8'>
+                                            @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Province_Name", Model.Province_Name, new { @class = "form-control txt_state", @id = "txt_state_" + @Model.Index.ToString(), @readonly = "readonly", @required = "required", @data_fieldname = "Province" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-md-6'>                                    
+                                    <div class='row'>                                        
+                                        <label class='col-md-4'>Fax</label>
+                                        <div class='col-md-8'>                                                                                        
+                                            <div class="col-md-3" style="padding-left:0px;">
+                                                @if (Model.IsFormReadOnly)
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Fax_Area_Code", Model.Fax_Area_Code, new { @class = "form-control txt_faxcode numeric-form", @readonly = Model.IsFormReadOnly })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Fax_Area_Code", Model.Fax_Area_Code, new { @class = "form-control txt_faxcode numeric-form", @data_fieldname = "Fax", @maxlength = "10" })
+                                                }
+                                            </div>
+                                            <div class="col-md-9" style="padding-right:0px;">
+                                                @if (Model.IsFormReadOnly)
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Fax", Model.Fax, new { @class = "form-control txt_fax numeric-form", @readonly = Model.IsFormReadOnly })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Fax", Model.Fax, new { @class = "form-control txt_fax numeric-form", @data_fieldname = "Fax", @maxlength = "20" })
+                                                }
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class='row'>                                
+                                <div class='col-md-6'>                                    
+                                    <div class='row'>                                        
+                                        <label class='col-md-4'>Sub District<span class="red">*</span></label>
+                                        <div class='col-md-8'>
+                                            @if (Model.IsFormReadOnly)
+                                            {
+                                                @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Sub_District", Model.Sub_District, new { @class = "form-control", @readonly = Model.IsFormReadOnly })
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Sub_District", Model.Sub_District, new { @class = "form-control", @required = "required", @data_fieldname = "Sub District", @maxlength = "200" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>                            
+                        </div>                        
+                    </div>
+                </div>                
+            </div>            
+        </div>        
+    </div>    
+</div>

@@ -146,6 +146,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         [UIHint("FormatQty")]
         public decimal QtyApproved { get; set; }
 
+        public decimal QtyApprovedTemp { get; set; }
+
         [RequiredIf("Status", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "Decree Date")]
         //[UIHint("FormatDateTime")]
         public DateTime? DecreeDate { get; set; }

@@ -484,6 +484,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Qty Approved</label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Detail.QtyApproved)
                                             @Html.TextBoxFor(model => model.Detail.QtyApproved, new { @class = "decimal form-control", @disabled = "disabled" })
                                         </div>
                                     </div>

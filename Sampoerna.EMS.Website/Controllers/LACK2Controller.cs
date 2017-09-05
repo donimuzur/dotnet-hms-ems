@@ -492,6 +492,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GetPoaListByNppbkcId(model.NppbkcId);
             model.PoaListHidden = model.PoaList;
 
+            model.Npwp = _companyBll.GetById(model.CompanyCode).NPWP;
+
             return model;
         }
 
@@ -650,6 +652,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.PoaList = GetPoaListByNppbkcId(model.NppbkcId);
             model.PoaListHidden = model.PoaList;
+            model.Npwp = _companyBll.GetById(model.CompanyCode).NPWP;
             model = SetDetailActiveMenu(model);
 
             return model;
@@ -735,6 +738,14 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             return Json(GetNppbkcDataByCompanyId(companyId));
+        }
+
+        [HttpPost]
+        public JsonResult GetNpwpByCompany(string company)
+        {
+            var data = _companyBll.GetById(company);
+
+            return Json(data.NPWP);
         }
 
         public void ExportChangesLogToExcel(int id)
@@ -2176,21 +2187,129 @@ namespace Sampoerna.EMS.Website.Controllers
                 drow[11] = string.Format("{0} {1} {2}", lack2DecreeDate.Day, lack2Month, lack2DecreeDate.Year);
 
             }
+
+            drow[12] = _companyBll.GetById(lack2.Burks).NPWP;
+            drow[13] = lack2.Items.Sum(x => x.Ck5ItemQty).ToString("N3");
+
             dt.Rows.Add(drow);
 
             var dtDetail = dsLack2.Tables[1];
-            foreach (var item in lack2.Items)
+            int nomorUrut = 1;
+            int countNppbkc = 1;
+            int countRow = 0;
+            var isData = "Data";
+            var subTotal = Convert.ToDecimal(0);
+            foreach (var item in lack2.Items.OrderBy(x => x.CompanyAddress).OrderBy(x => x.CompanyNppbkc))
             {
-                DataRow drowDetail;
-                drowDetail = dtDetail.NewRow();
-                drowDetail[0] = item.Ck5Number;
-                drowDetail[1] = item.Ck5GIDate;
-                drowDetail[2] = item.Ck5ItemQty.ToString("N2");
-                drowDetail[3] = item.CompanyName;
-                drowDetail[4] = item.CompanyNppbkc;
-                drowDetail[5] = item.CompanyAddress;
-                dtDetail.Rows.Add(drowDetail);
+                //for first data
+                if (nomorUrut == 1)
+                { 
+                    DataRow drowDetail;
+                    drowDetail = dtDetail.NewRow();
+                    drowDetail[0] = item.Ck5Number;
+                    drowDetail[1] = item.Ck5GIDate;
+                    drowDetail[2] = item.Ck5ItemQty.ToString("N3");
+                    drowDetail[3] = item.CompanyName;
+                    drowDetail[4] = item.CompanyNppbkc;
+                    drowDetail[5] = item.CompanyNpwp;
+                    drowDetail[6] = item.CompanyAddress;
+                    drowDetail[7] = nomorUrut;
 
+                    dtDetail.Rows.Add(drowDetail);
+
+                    nomorUrut++;
+                    countRow++;
+
+                    isData = item.CompanyAddress;
+                    subTotal = subTotal + item.Ck5ItemQty;
+                }
+                else
+                {
+                    //same address plant
+                    if (isData == item.CompanyAddress)
+                    {
+                        DataRow drowDetail;
+                        drowDetail = dtDetail.NewRow();
+                        drowDetail[0] = item.Ck5Number;
+                        drowDetail[1] = item.Ck5GIDate;
+                        drowDetail[2] = item.Ck5ItemQty.ToString("N3");
+                        drowDetail[3] = item.CompanyName;
+                        drowDetail[4] = item.CompanyNppbkc;
+                        drowDetail[5] = item.CompanyNpwp;
+                        drowDetail[6] = item.CompanyAddress;
+                        drowDetail[7] = nomorUrut;
+
+                        dtDetail.Rows.Add(drowDetail);
+
+                        subTotal = subTotal + item.Ck5ItemQty;
+
+                        if (nomorUrut == lack2.Items.Count && countNppbkc > 1)
+                        { 
+                            //add last subtotal
+                            DataRow drowDetailSub;
+                            drowDetailSub = dtDetail.NewRow();
+                            drowDetailSub[0] = "Subtotal";
+                            drowDetailSub[1] = "";
+                            drowDetailSub[2] = subTotal.ToString("N3");
+                            drowDetailSub[3] = "";
+                            drowDetailSub[4] = "";
+                            drowDetailSub[5] = "";
+                            drowDetailSub[6] = "";
+                            drowDetailSub[7] = "";
+
+                            dtDetail.Rows.Add(drowDetailSub);
+
+                        }
+
+                        countRow++;
+                        nomorUrut++;
+
+                        isData = item.CompanyAddress;
+                    }
+                    //different address plant
+                    else
+                    {
+                        //subtotal
+                        if (countRow > 1) { 
+                            DataRow drowDetailSub;
+                            drowDetailSub = dtDetail.NewRow();
+                            drowDetailSub[0] = "Subtotal";
+                            drowDetailSub[1] = "";
+                            drowDetailSub[2] = subTotal.ToString("N3");
+                            drowDetailSub[3] = "";
+                            drowDetailSub[4] = "";
+                            drowDetailSub[5] = "";
+                            drowDetailSub[6] = "";
+                            drowDetailSub[7] = "";
+
+                            dtDetail.Rows.Add(drowDetailSub);
+                        }
+
+                        countRow = 0;
+                        subTotal = Convert.ToDecimal(0);
+
+                        //different nppbkc
+                        DataRow drowDetail;
+                        drowDetail = dtDetail.NewRow();
+                        drowDetail[0] = item.Ck5Number;
+                        drowDetail[1] = item.Ck5GIDate;
+                        drowDetail[2] = item.Ck5ItemQty.ToString("N3");
+                        drowDetail[3] = item.CompanyName;
+                        drowDetail[4] = item.CompanyNppbkc;
+                        drowDetail[5] = item.CompanyNpwp;
+                        drowDetail[6] = item.CompanyAddress;
+                        drowDetail[7] = nomorUrut;
+
+                        dtDetail.Rows.Add(drowDetail);
+
+                        nomorUrut++;
+                        countNppbkc++;
+                        countRow++;
+
+                        isData = item.CompanyAddress;
+                        subTotal = subTotal + item.Ck5ItemQty;
+                    }
+                }
             }
             // object of data row 
 
@@ -2224,6 +2343,8 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("PoaPrintedName", System.Type.GetType("System.String"));
             dt.Columns.Add("Preview", System.Type.GetType("System.String"));
             dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
+            dt.Columns.Add("Npwp", System.Type.GetType("System.String"));
+            dt.Columns.Add("Total", System.Type.GetType("System.String"));
 
             //detail
             DataTable dtDetail = new DataTable("Lack2Item");
@@ -2233,7 +2354,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             dtDetail.Columns.Add("NamaPerusahaan", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Nppbkc", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Npwp", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Alamat", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("NomorUrut", System.Type.GetType("System.String"));
 
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);

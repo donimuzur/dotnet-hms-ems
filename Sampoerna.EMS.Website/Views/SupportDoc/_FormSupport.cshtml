@@ -1,0 +1,102 @@
+﻿@model Sampoerna.EMS.Website.Models.SupportDoc.SupportDocViewModel
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" style="padding-left: 30px">
+        @Html.ValidationSummary()
+    </div>
+}
+<div class="alert alert-danger" style="display:none" id="CheckExistanceLabel">
+
+</div>
+@Html.HiddenFor(model => model.ViewModel.DocumentID)
+<div class="row">       
+        <div class="col-md-2">
+            @Html.LabelFor(model => model.ViewModel.Company, "Company")
+            @if (Model.EnableFormInput)
+            {
+                <span class="red">*</span>
+            }
+        </div>
+        <div class="col-md-6">
+            @if (Model.EnableFormInput)
+            {
+                @Html.DropDownListFor(model => model.ViewModel.Bukrs, Model.CompanyList, null, new { @class = "selectpicker form-control", @id = "CompanySelector" })
+            }
+            else
+            {
+                @Html.TextBoxFor(model => model.ViewModel.Company.Name, new { @class = "form-control", @type = "text", @id = "CompanySelector", @readonly = "true" })
+            }
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+            @Html.ValidationMessageFor(model => model.ViewModel.Bukrs)
+        </div>            
+</div>
+
+<div class="row">   
+        <div class="col-md-2">
+            @Html.LabelFor(model => model.ViewModel.FormID, "Form Name")
+            @if (Model.EnableFormInput)
+            {
+                <span class="red">*</span>
+            }
+        </div>
+        <div class="col-md-6">
+            @if (Model.EnableFormInput)
+            {              
+                @Html.DropDownListFor(model => model.ViewModel.FormID, Model.ListForm, null, new { @class = "selectpicker form-control", @id = "FormNameSelector" })
+            }
+            else
+            {
+                @Html.DropDownListFor(model => model.ViewModel.FormID, Model.ListForm, null, new { @class = "selectpicker form-control", @id= "FormNameSelector", @disabled = "disabled"})
+            }
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+            @Html.ValidationMessageFor(model => model.ViewModel.FormID)
+        </div>        
+</div>
+
+<div class="row">    
+        <div class="col-md-2">
+            @Html.LabelFor(model => model.ViewModel.SupportDocName, "Document Name")
+            @if (Model.EnableFormInput)
+            {
+                <span class="red">*</span>
+            }
+        </div>
+        <div class="col-md-6">
+            @if (Model.EnableFormInput)
+            {
+                @Html.TextBoxFor(model => model.ViewModel.SupportDocName, new { @class = "form-control", @type = "text", @id = "SupportDocName" })
+            }
+            else
+            {
+                @Html.TextBoxFor(model => model.ViewModel.SupportDocName, new { @class = "form-control", @type = "text", @id = "SupportDocName", @readonly = true })
+            }
+            @Html.HiddenFor(model => model.ViewModel.SupportDocName)
+        </div>
+        <div class="col-md-6 col-md-offset-3">@Html.ValidationMessageFor(model => model.ViewModel.SupportDocName)</div>        
+</div>
+
+<div class="row">
+    <div class="col-md-2">@Html.LabelFor(model=>model.ViewModel.IsActive)</div>
+    <div class="col-md-6">
+    @if (Model.EnableFormInput)
+    {
+        @Html.CheckBoxFor(model => model.ViewModel.IsActive, new { @id="ActiveState"})
+    }
+    else
+    {
+        @Html.CheckBoxFor(model => model.ViewModel.IsActive, new { @disabled = "disabled", @id = "ActiveState" }) 
+    }        Active
+    </div>    
+</div>
+
+@if (Model.EnableFormInput)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
+        </div>
+    </div>
+}

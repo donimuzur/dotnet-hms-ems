@@ -1,0 +1,539 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    legend {
+        width: 38%;
+        padding: 2px;
+        font-size: 16px !important;
+        text-align: left;
+    }
+</style>
+
+@Html.Partial("_ActionButtonProduct", Model)
+@using (Html.BeginForm("EditProductDevelopment", "BrandRegistrationController", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(model=>model.ViewModel.PD_ID, new { @id="PD_ID" })
+<div class="modal fade" id="myModalItem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>*@
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" id="addItem" data-dismiss="modal">Add</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-wrap">
+
+                    <div class="panel-group" id="accordion-8" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading8">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                                        Item Information
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-8">
+                                            <div class="col-md-3"><label>Request No</label></div>
+                                            <div class="col-md-9">@Html.TextBoxFor(model => model.ViewDetailModel.Request_No, new { @class = "form-control", @readonly = "true", @id = "brandRequestNo", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+                                    <hr width="100%" />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-4"><label>Company</label></div>
+                                            <div class="col-md-8">@Html.DropDownListFor(model => model.ViewDetailModel.Bukrs, Model.CompanyList, null, new { @class = "selectpicker form-control", @id = "CompanySelector" })</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-4"><label>Plant</label></div>
+                                            @*<div class="col-md-8">@Html.DropDownListFor(model => model.ViewDetailModel.Werks, Model.PlantList, new { @class = "selectpicker form-control", @id = "PlantSelector" })</div>*@
+                                            <div class="col-md-8">@Html.TextBox("plant", Model.Plant, new { @class = "form-control", @id = "plantSelector" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <fieldset>
+                                                <legend><label>FA Code (Old)</label></legend>
+                                                <div class="row">
+                                                    <div class="col-md-4"><label>FA Code</label></div>
+                                                    <div class="col-md-8">@Html.DropDownListFor(model => model.ViewDetailModel.Fa_Code_Old, Model.MaterialList, "- Select -", new { @class = "selectpicker form-control", @id = "FaCodeOldSelector" })</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4"><label>Description</label></div>
+                                                    <div class="col-md-8">@Html.TextArea("FaCodeOldDesc", Model.ViewDetailModel.Fa_Code_Old_Desc, new { @class = "form-control", @maxlength = "22", @readonly = "true" })</div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <fieldset>
+                                                <legend><label>FA Code (New)</label></legend>
+                                                <div class="row">
+                                                    <div class="col-md-4"><label>FA Code</label></div>
+                                                    <div class="col-md-8">@Html.DropDownListFor(model => model.ViewDetailModel.Fa_Code_New, Model.MaterialList, "- Select -", new { @class = "selectpicker form-control", @id = "FaCodeNewSelector" })</div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4"><label>Description</label></div>
+                                                    <div class="col-md-8">@Html.TextArea("FaCodeNewDesc", Model.ViewDetailModel.Fa_Code_New_Desc, new { @class = "form-control", @maxlength = "22", @readonly = "true" })</div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-4"><label>Market</label></div>
+                                            <div class="col-md-8">@Html.DropDownListFor(model => model.ViewDetailModel.Market_Id, Model.MarketList, new { @class = "selectpicker form-control", @id = "MarketSelector" })</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-4"><label>HL Code</label></div>
+                                            <div class="col-md-8">@Html.TextBox("hlCode", Model.ViewDetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">@Html.CheckBoxFor(model => model.ViewDetailModel.Is_Import,new { @id ="isImport"})<label>Import</label></div>
+                                            <div class="col-md-6"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="panel-group" id="accordion-1" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading1">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-1" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                        Attachment Document
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6"><label>Supporting Document</label></div>
+                                    </div>
+
+                                    <div class="wrapSupport"></div>
+
+                                    <hr width="100%" />
+
+                                    <div class="row">
+                                        <div class="col-md-6"><label>Other Document</label></div>
+                                    </div>
+
+                                    <div class="input_fields_wrap">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <button class="add_field_button btn btn-primary btn-sm">Add </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div role="tabpanel">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Workflow History</a></li>
+                                <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="information">
+                                    <div class="tab-wrapper">
+                                        <div class="white-wrapper">
+                                            <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading" role="tab" id="heading7">
+                                                        <h4 class="panel-title">
+                                                            <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                                Workflow History
+                                                                <i class="fa fa-caret-down"></i>
+                                                            </a>
+                                                        </h4>
+                                                    </div>
+                                                    <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                                        <div class="panel-body">
+                                                            <div class="table-container">
+                                                                @*@Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div role="tabpanel" class="tab-pane" id="changes">
+                                    <div class="table-container">
+                                        @Html.Partial("_ChangesHistoryTable", Model)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="information">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-3"><label>First Name</label></div>
+                                    <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.FirstName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-3"><label>Last Name</label></div>
+                                    <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.LastName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="col-md-3"><label>Email</label></div>
+                                    <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.Email, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                </div>
+                            </div>
+                            <div class="row"></div>
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="overflow-x: scroll;">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Product Development
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                      
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        @*<button type="button" id="uploadItem" class="btn btn-primary btn-sm"> Upload </button>*@
+                                                    </div>
+                                                    <div class="col-md-3"></div>                                                    
+                                                    <div class="col-md-6 text-right">
+                                                                                                          
+                                                        @*<button type="button" id="modalItem" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalItem">Add Item</button>
+                                                        <button type="button" id="delItem" onclick="Delete()" class="btn btn-primary btn-sm">Del</button>
+                                                        <button type="button" onclick="CheckAll()" class="btn btn-primary btn-sm">Check All</button>*@
+
+                                                        @if (!Model.IsExciser)
+                                                        { 
+                                                            <button type="button" id="modalItem" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalItem">Add Item</button>
+                                                            <button type="button" id="delItem" onclick="Delete()" class="btn btn-danger btn-sm">Del</button>
+                                                            <button type="button" onclick="CheckAll()" class="btn btn-primary btn-sm">Check All</button>
+                                                            <button type="button" class="btn btn-success btn-sm" id="SubmitButton">Submit</button>
+                                                        }
+                                                        @if (Model.IsExciser)
+                                                        {
+                                                            <button type="button" class="btn btn-success btn-sm" id="ApproveButton">Approve</button>
+                                                            <button type="button" class="btn btn-danger btn-sm" id="ReviseButton" data-toggle="modal" data-target=".revise-modal.product">Revise</button>
+                                                        }
+                                                    </div>
+                                                </div>  
+                                                @Html.Partial("_ProductListItem")                                           
+                                            </div>                                     
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading2">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-2" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                                Next Action
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                @foreach (var action in Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction)))
+                                                {
+                                                    <div class="col-md-3">
+                                                        @Html.RadioButton("Action", ((int)Model.ViewModel.Next_Action).ToString())
+                                                        @Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), action.ToString()))
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading3">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-3" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                                Notes Action
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+                                        <div class="panel-body">
+                                            <div class="table-container">
+                                                <p>New Brand Registration: Using Brand Registration Form for New Brand Request</p>
+                                                <p>Update HJE: Using Brand Registration for Update HJE</p>
+                                                <p>Map SKEP: Mapping Brand Registration</p>
+                                                <p>Penetapan SKEP: Penetapan SKEP Form</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@*@using (Html.BeginForm("SubmitProduct", "BrandRegistrationTransaction", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", @id = "SubmitForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ViewModel.PD_ID,new { @id=""})
+}*@
+@Html.Partial("_ReviseModalProduct", Model);
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/autoNumeric.min.js"></script>
+    <script src="~/Scripts/brand-registration-trans/main_product.js"></script>
+    
+    <script type="text/javascript">
+         // register events
+        $(document)
+            .on("ready", EntryPoint)
+            .on("unload", Cleanup);
+
+        function EntryPoint() {
+           
+            $("#SubmitButton").on("click", submit);            
+            $("#ApproveButton").on("click", approve);
+            $("#ReviseButton").on("click", revise);
+            
+        }
+     
+        //function revise() {
+        //    detail_ID
+        //    $('#TempAction').val(parseInt(selectedRadio));
+        //}
+
+        @*function revise() {
+            var urlApprove = '@Url.Action("ReviseDetail", "BrandRegistrationTransaction")';
+            if (!tempItem.length) {
+                alert("Choose Item to be Revised.");
+                console.log("no item");
+
+            }
+            else {
+                $("#SubmitButton").prop('disabled', true);
+                $("#ApproveButton").prop('disabled', true);
+                console.log("approve here");
+                for (var i = 0; i < tempItem.length; i++) {
+                    var objDetail = { ProductDetailID: tempItem[i] };
+                    arrayDetail.push(objDetail);
+                    console.log(arrayDetail);
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: urlApprove,
+                    data: {
+                        model: JSON.stringify(arrayDetail)
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        if (result) {
+                            console.log("Approved.");
+                            document.location.href = '/BrandRegistrationTransaction/IndexProductDevelopment';
+                        } else {
+                            showErrorDialog("Approve failed!");
+                            saveButton.prop("disabled", false);
+                            $("#customloader").hide();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        var err = "Error " + " " + status + " " + p3 + " " + p4;
+                        if (xhr.responseText && xhr.responseText[0] == "{")
+                            err = JSON.parse(xhr.responseText).Message;
+                        showErrorDialog(err);
+                        $("#customloader").hide();
+                    }
+                });
+            }
+        }*@
+
+        function approve() {
+            var urlApprove = '@Url.Action("ApproveDetail", "BrandRegistrationTransaction")';
+            if (!tempItem.length) {
+                alert("Choose Item to be Approved.");
+                console.log("no item");
+              
+            }
+            else {
+                $("#SubmitButton").prop('disabled', true);
+                $("#ApproveButton").prop('disabled', true);
+                console.log("approve here");
+                for (var i = 0; i < tempItem.length; i++) {
+                    var objDetail = { ProductDetailID: tempItem[i] };
+                    arrayDetail.push(objDetail);
+                    console.log(arrayDetail);
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: urlApprove,
+                    data: {
+                        model: JSON.stringify(arrayDetail)
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        if (result) {
+                            console.log("Approved.");
+                            document.location.href = '/BrandRegistrationTransaction/IndexProductDevelopment';
+                        } else {
+                            showErrorDialog("Approve failed!");
+                            saveButton.prop("disabled", false);
+                            $("#customloader").hide();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        var err = "Error " + " " + status + " " + p3 + " " + p4;
+                        if (xhr.responseText && xhr.responseText[0] == "{")
+                            err = JSON.parse(xhr.responseText).Message;
+                        showErrorDialog(err);
+                        $("#customloader").hide();
+                    }
+                });
+            }
+        }
+
+        function submit() {
+            var urlSubmit = '@Url.Action("SubmitDetail", "BrandRegistrationTransaction")';
+            if (!tempItem.length) {
+                alert("Choose Item to be Submitted.");
+                console.log("no item");
+             
+            }
+            else {
+                $("#SubmitButton").prop('disabled', true);
+                $("#ApproveButton").prop('disabled', true);
+                console.log("submit here");
+                for (var i = 0; i < tempItem.length; i++) {
+                    var objDetail = { ProductDetailID: tempItem[i] };
+                    arrayDetail.push(objDetail);
+                    console.log(arrayDetail);
+                }
+                var pd_id = $('#PD_ID').val();
+                $.ajax({
+                    type: 'POST',
+                    url: urlSubmit,
+                    data: {
+                        model: JSON.stringify(arrayDetail),
+                        PD_ID: Number(pd_id)
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        if (result) {
+                            console.log("Submitted.");
+                            document.location.href = '/BrandRegistrationTransaction/IndexProductDevelopment';
+                        } else {
+                            showErrorDialog("Submit failed!");
+                            saveButton.prop("disabled", false);
+                            $("#customloader").hide();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        var err = "Error " + " " + status + " " + p3 + " " + p4;
+                        if (xhr.responseText && xhr.responseText[0] == "{")
+                            err = JSON.parse(xhr.responseText).Message;
+                        showErrorDialog(err);
+                        $("#customloader").hide();
+                    }
+                });
+            }         
+        }
+
+        function Cleanup() {
+
+         //   $("#SubmitButton").off("click", submit);
+        }
+
+        function CheckAll() {
+
+        }
+
+        function Delete() {
+
+        }
+
+        function stateCheckItem(val) {
+           // alert(val);
+        }
+
+        $('input:checkbox').click(function () {
+            if ($(this).is(':checked')) {
+                var idDetail = $(this).val();
+                tempItem.push(idDetail);
+            
+
+            } else {
+                var idItem = $(this).val();
+                var index = tempItem.indexOf(idItem);
+               
+                if (index > -1) {
+                    tempItem.splice(index, 1);
+                }
+               
+            }
+        });
+    </script>
+}

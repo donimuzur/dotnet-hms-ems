@@ -68,6 +68,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string CompanyNppbkc { get; set; }
 
+        public string CompanyNpwp { get; set; }
+
         public string CompanyAddress { get; set; }
     }
 

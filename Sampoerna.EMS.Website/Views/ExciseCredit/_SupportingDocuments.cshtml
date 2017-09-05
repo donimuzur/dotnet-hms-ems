@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditSupportingDocument>
+
+<script type="text/javascript">
+
+    $(function(){
+        var container = $("#supportDocContainer");
+
+        function mapBrowseAction() {
+            console.log("Map additional action");
+            @foreach (var doc in Model)
+                {
+                    <text>
+            handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
+            $("#supportDocFile" + @doc.Id).change(function(){
+                var input =document.getElementById("supportDocFile" + @doc.Id);
+                if (!input) {
+                    showErrorDialog("Um, couldn't find the fileinput element.");
+                }
+                else if (!input.files) {
+                    showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+                }
+                else if (!input.files[0]) {
+                    showErrorDialog("Please select a file");
+                }
+                else {
+                    var file = input.files[0];
+                    //var sizeMB = fileUploadLimitElm.val();
+                    //console.log("Size Limit: " + sizeMB);
+                    //var allowedFilesize = Number(sizeMB) * 1024 * 1024;
+                    //if (file.size > allowedFilesize) {
+                    //    showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+                    //    //return;
+                    //}
+                    if(!supportingDocs) {
+                        supportingDocs = {};
+                    }
+                    supportingDocs[@doc.Id] = file;
+                    //console.log(supportingDocs);
+                    
+                }
+            });
+
+            </text>
+                }
+        }
+
+
+        @if(Model.Count() > 0)
+        {
+            <text>mapBrowseAction();</text>
+
+        }
+    });
+</script>
+
+
+<style>
+    .file {
+        visibility: hidden;
+        position: absolute;
+    }
+</style>
+<div id="supportDocContainer">
+    @foreach (var doc in Model)
+    {
+        <div class="row">
+            <div class="form-group">
+                <div class="col-md-4">
+                    <label for="@String.Format("supportDocFile{0}", doc.Id)">@doc.Name<span class="red">*</span></label>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        @*@Html.TextBoxFor(model => doc.File, new { @type = "file", @id = "supportDocFile" + doc.Id, accept = "application/pdf", @class = "file", @required = true })*@
+                        <input type="file" accept="application/pdf" id="@String.Format("supportDocFile{0}", doc.Id)" class="file" required name="@String.Format("supportDocFile{0}", doc.Id)"  />
+                        <div class="col-md-12">
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" readonly placeholder="Select file" id="supportDocText@(doc.Id)" required />
+                            </div>
+                            <div class="col-md-2">
+                                <span class="input-group-btn">
+                                    <button class="browse btn btn-primary" type="button" id="supportDoc@(doc.Id)" style="border-radius: 20px!important;">Browse</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+
+@if (Model == null || Model.Count() <= 0)
+{
+    <div class="alert alert-info">No Supporting Documents</div>
+}

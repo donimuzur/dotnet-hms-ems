@@ -58,6 +58,16 @@ namespace Sampoerna.EMS.BLL
                     pages.Add(page.Page.Id);
                 }
             }
+            var refService = new CustomService.Services.SystemReferenceService();
+            if (refService.IsAdminApprover(userid))
+            {
+                var additionalPages = refService.GetAuthorizedPages(userid).ToList();
+                foreach (var page in additionalPages)
+                {
+                    if (pages.IndexOf(page.PAGE_ID) <= 0)
+                        pages.Add(page.PAGE_ID);
+                }
+            }
             return pages;
         }
 

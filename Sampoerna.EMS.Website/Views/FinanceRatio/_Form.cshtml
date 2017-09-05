@@ -1,0 +1,309 @@
+﻿@model Sampoerna.EMS.Website.Models.FinanceRatio.FinanceRatioViewModel
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    legend {
+        padding: 2px;
+        font-size: 16px !important;
+    }
+
+    .currency {
+        padding-left: 12px;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        padding: 2px 5px;
+    }
+</style>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" style="padding-left: 30px">
+        @Html.ValidationSummary()
+    </div>
+}
+<div class="alert alert-info" style="display:none" id="CheckExistanceLabel">
+
+</div>
+
+
+
+<div class="row">
+    @Html.HiddenFor(model => model.ViewModel.Id)
+    <!-- Company Selector -->
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-3">
+                @Html.LabelFor(model => model.ViewModel.Company, "Company")
+                @if (Model.EnableFormInput)
+                {
+                    <span class="red">*</span>
+                }
+            </label>
+            <div class="col-md-9">
+                @if (Model.EnableFormInput)
+                {
+                    @Html.DropDownListFor(model => model.ViewModel.Bukrs, Model.CompanyList, null, new { @class = "selectpicker form-control", @id = "CompanySelector" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.ViewModel.Company.Name, new { @class = "form-control", @type = "text", @id = "CompanySelector", @readonly = "true" })
+                }
+            </div>
+            <div class="col-md-9 col-md-offset-3">
+                @Html.ValidationMessageFor(model => model.ViewModel.Bukrs)
+            </div>
+        </div>
+    </div>
+    <!-- End Company Selector -->
+    <!-- Period Selector -->
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-3">
+                @Html.LabelFor(model => model.ViewModel.YearPeriod, "Period")
+                @if (Model.EnableFormInput)
+                {
+                    <span class="red">*</span>
+                }
+            </label>
+            <div class="col-md-9">
+                @if (Model.EnableFormInput)
+                {
+                    @Html.DropDownListFor(model => model.ViewModel.YearPeriod, Model.YearPeriods, null, new { @class = "selectpicker form-control", @id = "PeriodSelector" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.ViewModel.YearPeriod, new { @class = "form-control", @type = "text", @id = "PeriodSelector", @readonly = "true" })
+                }
+            </div>
+            <div class="col-md-9 col-md-offset-3">
+                @Html.ValidationMessageFor(model => model.ViewModel.YearPeriod)
+            </div>
+        </div>
+    </div>
+    <!-- End Period Selector -->
+</div>
+<div class="row">
+    <!-- Liquidity Ratio Group -->
+    <div class="col-md-6">
+        <fieldset>
+            <legend><label>Liquidity Ratio</label></legend>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.CurrentAssets, "Current Assets")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @if (Model.EnableFormInput)
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.CurrentAssetsDisplay, new { @class = "form-control text-right", @type = "text", @id = "CurrentAssetsText", @required = "true" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.CurrentAssetsDisplay, new { @class = "form-control text-right", @type = "text", @id = "CurrentAssetsText", @readonly = true })
+                    }
+                    @Html.HiddenFor(model => model.ViewModel.CurrentAssets)
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.CurrentAssets)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.CurrentDebts, "Current Debts")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @if (Model.EnableFormInput)
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.CurrentDebtsDisplay, new { @class = "form-control text-right", @type = "text", @id = "CurrentDebtsText", @required = "true" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.CurrentDebtsDisplay, new { @class = "form-control text-right", @type = "text", @id = "CurrentDebtsText", @readonly = true })
+                    }
+                    @Html.HiddenFor(model => model.ViewModel.CurrentDebts)
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.CurrentDebts)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.LiquidityRatio, "Liquidity Ratio")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.ViewModel.LiquidityRatio, new { @class = "form-control text-right", @type = "text", @readonly = "true", @id = "LiquidityRatioText", @required = "true" })
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.LiquidityRatio)</div>
+            </div>
+        </fieldset>
+    </div>
+
+    <!-- Solvability Ratio Group-->
+    <div class="col-md-6">
+        <fieldset>
+            <legend><label>Solvability Ratio</label></legend>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.TotalAssets, "Total Assets")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @if (Model.EnableFormInput)
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.TotalAssetsDisplay, new { @class = "form-control text-right", @type = "text", @id = "TotalAssetsText", @required = "true" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.TotalAssetsDisplay, new { @class = "form-control text-right", @type = "text", @id = "TotalAssetsText", @readonly = true })
+                    }
+                    @Html.HiddenFor(model => model.ViewModel.TotalAssets)
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.TotalAssets)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.TotalDebts, "Total Debts")
+                    @if (Model.EnableFormInput)
+            {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @if (Model.EnableFormInput)
+            {
+                        @Html.TextBoxFor(model => model.ViewModel.TotalDebtsDisplay, new { @class = "form-control text-right", @type = "text", @id = "TotalDebtsText", @required = "true" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.TotalDebtsDisplay, new { @class = "form-control text-right", @type = "text", @id = "TotalDebtsText", @readonly = true })
+                    }
+                    @Html.HiddenFor(model => model.ViewModel.TotalDebts)
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.TotalDebts)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.SolvencyRatio, "Solvability Ratio")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.ViewModel.SolvencyRatio, new { @class = "form-control text-right", @type = "text", @readonly = "true", @id = "SolvabilityRatioText" })
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.SolvencyRatio)</div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="row">
+    <!--Rentability Ratio Group-->
+    <div class="col-md-6">
+        <fieldset>
+            <legend><label>Rentability Ratio</label></legend>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.NetProfit, "Net Profit")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @if (Model.EnableFormInput)
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.NetProfitDisplay, new { @class = "form-control text-right", @type = "text", @id = "NetProfitText", @required = "true" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.NetProfitDisplay, new { @class = "form-control text-right", @type = "text", @id = "NetProfitText", @readonly = true })
+                    }
+                    @Html.HiddenFor(model => model.ViewModel.NetProfit)
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.NetProfit)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.TotalCapital, "Total Capital")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @if (Model.EnableFormInput)
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.TotalCapitalString, new { @class = "form-control text-right", @type = "text", @id = "TotalCapitalText", @required = "true" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.TotalCapitalString, new { @class = "form-control text-right", @type = "text", @id = "TotalCapitalText", @readonly = true })
+                    }
+                    @Html.HiddenFor(model => model.ViewModel.TotalCapital)
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.TotalCapital)</div>
+            </div>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.RentabilityRatio, "Rentability Ratio")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.ViewModel.RentabilityRatio, new { @class = "form-control text-right", @type = "text", @readonly = "true", @id = "RentabilityRatioText" })
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.RentabilityRatio)</div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+        </div>
+    </div>
+</div>
+@if (Model.EnableFormInput)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
+        </div>
+    </div>
+}
+
+<div id="ExistModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="ExistModal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <h4 class="modal-title">ERROR</h4>
+        </div>
+        <div class="modal-body">
+            <p id="ExistModalMessage"></p>
+
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+        </div>
+    </div>
+</div>
+
+

@@ -30,7 +30,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<EMAIL_TEMPLATE> EMAIL_TEMPLATE { get; set; }
         public virtual DbSet<EX_GROUP_TYPE> EX_GROUP_TYPE { get; set; }
         public virtual DbSet<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
-        public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
         public virtual DbSet<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual DbSet<HEADER_FOOTER_FORM_MAP> HEADER_FOOTER_FORM_MAP { get; set; }
         public virtual DbSet<MENGETAHUI> MENGETAHUI { get; set; }
@@ -114,7 +113,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<WASTE_STOCK> WASTE_STOCK { get; set; }
         public virtual DbSet<WASTE> WASTE { get; set; }
         public virtual DbSet<GOOD_PROD_TYPE> GOOD_PROD_TYPE { get; set; }
-        public virtual DbSet<NlogLogs> NlogLogs { get; set; }
         public virtual DbSet<LACK1_TRACKING_ALCOHOL> LACK1_TRACKING_ALCOHOL { get; set; }
         public virtual DbSet<XML_LOGS> XML_LOGS { get; set; }
         public virtual DbSet<XML_LOGS_DETAILS> XML_LOGS_DETAILS { get; set; }
@@ -131,5 +129,13 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<MONTH_CLOSING_DOCUMENT> MONTH_CLOSING_DOCUMENT { get; set; }
         public virtual DbSet<QUOTA_MONITORING> QUOTA_MONITORING { get; set; }
         public virtual DbSet<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
+        public virtual DbSet<FILE_UPLOAD> FILE_UPLOAD { get; set; }
+        public virtual DbSet<POA_EXCISER> POA_EXCISER { get; set; }
+        public virtual DbSet<LACK1_PERIOD_SUMMARY> LACK1_PERIOD_SUMMARY { get; set; }
+        public virtual DbSet<LACK1_CALCULATION_DETAIL> LACK1_CALCULATION_DETAIL { get; set; }
+        public virtual DbSet<LACK10> LACK10 { get; set; }
+        public virtual DbSet<LACK10_DECREE_DOC> LACK10_DECREE_DOC { get; set; }
+        public virtual DbSet<LACK10_ITEM> LACK10_ITEM { get; set; }
+        public virtual DbSet<NlogLogs> NlogLogs { get; set; }
     }
 }

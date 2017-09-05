@@ -9,6 +9,8 @@ namespace Sampoerna.EMS.Contract.Services
         ZAIDM_EX_MATERIAL GetByMaterialAndPlantId(string materialId, string plantId);
         List<ZAIDM_EX_MATERIAL> GetByPlantId(string plantId);
         List<ZAIDM_EX_MATERIAL> GetByMaterialListAndPlantId(List<string> materialList, string plantId);
+
+        List<ZAIDM_EX_MATERIAL> GetByMaterialListAndPlantList(List<string> materialList, List<string> plantList);
         List<ZAIDM_EX_MATERIAL> GetByPlantIdAndExGoodType(List<string> plantId, string exGoodType);
         List<ZAIDM_EX_MATERIAL> GetAll();
 

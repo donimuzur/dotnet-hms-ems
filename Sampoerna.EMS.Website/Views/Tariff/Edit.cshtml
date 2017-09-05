@@ -1,0 +1,134 @@
+﻿
+
+@model Sampoerna.EMS.Website.Models.Tariff.TariffViewModel
+
+@{
+    ViewBag.Title = "Edit Master Tariff Entry";
+}
+@using (Html.BeginForm("Edit", "Tariff", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", id = "editForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Partial("_ActionButtons", Model);
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="information">
+                            <div class="tab-wrapper">
+                                <div class="white-wrapper">
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingOne">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                        Edit Master Tariff
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                <form class="form-excise">
+                                                    <div class="panel-body">
+                                                        @Html.Partial("_Form", Model)
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="heading7">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                        Workflow History
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                                <div class="panel-body">
+                                                    <div class="table-container">
+                                                        @Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="table-container">
+                                @Html.Partial("_ChangesHistoryTable", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm("Submit", "Tariff", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", @id = "SubmitFormTariff" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ViewModel.Id)
+}
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/autoNumeric.min.js"></script>
+    <script src="~/Scripts/master/tariff.js"></script>
+
+    <script type="text/javascript">
+        // register events
+        $(document)
+            .on("ready", EntryPoint)
+            .on("unload", Cleanup);
+
+        function EntryPoint() {
+            init();
+            attachEvents();
+
+
+            $.extend($.fn.autoNumeric.defaults, {
+                aSep: '@System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator',
+                aDec: '@System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator',
+                aSign: '',
+                vMin: '0.00',
+                vMax: '999999999999999999999.99',
+                lZero: 'allow',
+                wEmpty: 'press'
+            });
+            inititeAutoNumeric();
+            $("#SubmitButton").on("click", submit);
+        }
+
+        function Cleanup() {
+            detachEvents();
+            $("#SubmitButton").off("click", submit);
+        }
+
+        function submit() {
+            $("#SubmitFormTariff").submit();
+            $("#SubmitButton").prop("disabled", true);
+        }
+
+
+    </script>
+}

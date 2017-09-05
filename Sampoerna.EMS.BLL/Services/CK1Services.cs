@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
@@ -70,5 +71,41 @@ namespace Sampoerna.EMS.BLL.Services
                WERKS = x.Key.WERKS
            }).ToList();
        }
+
+       public List<CK1_ITEM> GetLastXMonthsCk1(int month, int compesationDays, bool getBeforeData = false)
+       {
+           DateTime monthfilter = DateTime.Today.AddMonths(-1 * month).AddDays(-1 * compesationDays);
+
+           List<CK1> ck1List = new List<CK1>();
+
+           if (!getBeforeData)
+           {
+               ck1List =
+                   _repository.Get(x => x.CK1_DATE >= monthfilter && x.CK1_DATE <= DateTime.Today, null, "CK1_ITEM")
+                       .ToList();
+           }
+           else
+           {
+               ck1List = _repository.Get(x => x.CK1_DATE < monthfilter, null, "CK1_ITEM")
+                       .ToList();
+           }
+           
+
+           List<CK1_ITEM> ck1Items = new List<CK1_ITEM>();
+           foreach (var ck1 in ck1List)
+           {
+               ck1Items.AddRange(ck1.CK1_ITEM);
+           }
+
+           return ck1Items;
+       }
+
+       public List<CK1> GetCk1ByListContainIds(List<long> listCk1Id)
+       {
+           return _repository.Get(x => listCk1Id.Contains(x.CK1_ID)).ToList();
+       }
     }
+
+
+    
 }

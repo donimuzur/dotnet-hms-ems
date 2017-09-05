@@ -1,0 +1,43 @@
+﻿@model Sampoerna.EMS.Website.Models.ChangeRequest.ChangeRequestSummaryReportsViewModel
+@using Sampoerna.EMS.Core
+<table id="changeRequestTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Type</th>
+            <th>Request Date</th>
+            <th>NPPBKC ID</th>
+            <th>Document Number</th>
+            <th>Created By</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ChangeRequestDocuments)
+            {
+            <tr>
+                <td class="action">
+                </td>
+                <td>@Html.DisplayFor(model => item.DocumentType)</td>
+                <td>@Html.DisplayFor(model => item.RequestDate)</td>
+                <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
+                <td>@Html.DisplayFor(model => item.CreatedBy)</td>
+                <td>@Html.DisplayFor(model => item.LastApprovedStatus)</td>
+@*                <td class="last">@Html.DisplayFor(model => item.ApprovalStatus.Value)</td>*@
+            </tr>
+        }
+    </tbody>
+</table>
+

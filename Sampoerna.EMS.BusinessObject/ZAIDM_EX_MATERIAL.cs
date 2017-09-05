@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public Nullable<bool> USED_PRODUCT_DEVELOPMENT { get; set; }
     
         public virtual ICollection<MATERIAL_UOM> MATERIAL_UOM { get; set; }
         public virtual T001W T001W { get; set; }

@@ -1,0 +1,276 @@
+﻿@model Sampoerna.EMS.Website.Models.Configuration.ConfigurationCreateViewModel
+
+@using (Html.BeginForm("Edit", "Configuration", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+<div class="modal fade" id="myModalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">User List</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-wrap">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="contenttable" class="table-container">
+                                <table id="userTable" class="display" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="toggle-row"> Filter </th>
+                                            <th>User ID</th>
+                                            <th>User Name</th>
+                                        </tr>
+                                    </thead>
+                                    <thead class="filters">
+                                        <tr>
+                                            <th> Action</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.UserList)
+                                        {
+                                            <tr>
+                                                <td class="action">
+                                                    @Html.RadioButton("UserId", item.UserId, item.UserId == Model.ConfigModel.REFF_VALUE ? true : false)
+                                                </td>
+                                                <td>@item.UserId</td>
+                                                <td>@item.FullName</td>  
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Master Configuration</h3>
+            <div class="action-button">
+                <input type="submit"  id="submitSave" class="btn btn-blue" value="Save" />
+                <a href="@Url.Action("Index", "Configuration")" class="btn btn-grey">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Update</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Update Configuration
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    @Html.HiddenFor(x => x.ConfigModel.REFF_ID)
+                                    @Html.HiddenFor(x => x.ConfigModel.REFF_KEYS)
+                                    @*@Html.HiddenFor(x => x.ConfigModel.IS_ACTIVE)*@
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>@Html.LabelFor(model => model.ConfigModel.REFF_TYPE)<span class="red">*</span></label>
+                                                </div>
+                                                <div class="col-md-6" id="type">
+                                                    @Html.DropDownListFor(model => model.ConfigModel.REFF_TYPE, Model.TypeList, new { @class = "form-control ConfigType", disabled="disabled" })
+                                                    @Html.HiddenFor(model => model.ConfigModel.REFF_TYPE, "ConfigType")
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @Html.ValidationMessageFor(model => model.ConfigText)
+                                                </div>
+                                            </div>
+
+                                            @if (Model.ConfigModel.REFF_TYPE == "HINT_COMPONENT" || Model.ConfigModel.REFF_TYPE == "APPROVAL_STATUS")
+                                            {
+                                                <div class="row" >
+                                                    <div class="col-md-2">
+                                                        @if (Model.ConfigModel.REFF_TYPE == "HINT_COMPONENT")
+                                                        {
+                                                            <label>Label Name</label><span class="red">*</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <label>@Html.LabelFor(model => model.ConfigModel.REFF_NAME)</label><span class="red">*</span>
+                                                        }                                                        
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.TextBoxFor(model => model.ConfigModel.REFF_NAME, new { @class = "form-control", @readonly = "true" })
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        @Html.ValidationMessageFor(model => model.ConfigModel.REFF_NAME)
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    @if (Model.ConfigModel.REFF_TYPE == "HINT_COMPONENT")
+                                                    {
+                                                        <label>Label Value</label><span class="red">*</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label>@Html.LabelFor(model => model.ConfigModel.REFF_VALUE)</label><span class="red">*</span>
+                                                    }
+                                                                                                        
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @if (Model.ConfigModel.REFF_TYPE == "UPLOAD_FILE_LIMIT")
+                                                    {
+                                                        @Html.TextBoxFor(model => model.ConfigModel.REFF_VALUE, new { @class = "form-control", @type = "number"})
+                                                    }
+                                                    else if (Model.ConfigModel.REFF_TYPE == "ADMIN_APPROVER")
+                                                    {
+                                                        @Html.TextBoxFor(model => model.ConfigModel.REFF_VALUE, new { @class = "form-control", @id = "ConfigValue", @readonly = true })                                                                                                              
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBoxFor(model => model.ConfigModel.REFF_VALUE, new { @class = "form-control", @id = "ConfigValue" })
+                                                    }                                                    
+                                                </div>
+                                                @if (Model.ConfigModel.REFF_TYPE == "ADMIN_APPROVER")
+                                                {
+                                                    <div class="col-md-3">
+                                                        <button type="button" id="modalUser" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalUser">
+                                                            Search User
+                                                        </button>
+                                                    </div>
+                                                }
+                                                else if (Model.ConfigModel.REFF_TYPE == "UPLOAD_FILE_LIMIT")
+                                                {
+                                                    <div class="col-md-3">
+                                                         @Html.Label("Mb")
+                                                    </div>
+                                                }                                                
+                                                <div class="col-md-4">
+                                                    @Html.ValidationMessageFor(model => model.ConfigModel.REFF_VALUE)
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>@Html.LabelFor(model => model.IsActive)</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @if (Model.ConfigModel.REFF_TYPE == "UPLOAD_FILE_LIMIT" || Model.ConfigModel.REFF_TYPE == "APPROVAL_STATUS")
+                                                    {  @Html.CheckBoxFor(model => model.ConfigModel.IS_ACTIVE, new { @disabled="disabled"}) }
+                                                    else
+                                                    {  @Html.CheckBoxFor(model => model.ConfigModel.IS_ACTIVE) }
+                                                   Active
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <span class="red">*</span> ) This Field Required
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
+                </div>                      
+            </div>
+        </div>
+    </div>
+</div>
+}
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#MenuMasterConfiguration').addClass('active');
+
+            var tempType = $("#type").find('.ConfigType :selected').text();
+            var valueType = $("#type").find('.ConfigType :selected').val();
+
+            if (tempType == "ADMIN APPROVER") {
+                document.getElementById("modalUser").disabled = false;
+            }
+            else {
+                document.getElementById("modalUser").disabled = true;
+            }
+
+            $('input:radio').change(function () {
+                var is_external = $("input[name='UserId']:checked").val()
+                document.getElementById("ConfigValue").value = is_external;
+            });
+                                  
+            setupDataTables();
+
+        });
+
+        $("#submitSave").click(function () {
+            //$("#customloader").show();
+            document.getElementById("ConfigModel_IS_ACTIVE").disabled = false;
+        });
+       
+        function setupDataTables() {
+
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#userTable')) {
+                table = $('#userTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#userTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+            $('#userTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+        }
+
+    </script>
+}

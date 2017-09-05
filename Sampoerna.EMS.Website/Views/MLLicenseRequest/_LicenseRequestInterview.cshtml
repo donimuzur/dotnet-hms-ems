@@ -1,0 +1,201 @@
+﻿
+@model Sampoerna.EMS.Website.Models.ManufacturingLicense.InterviewRequestDetails
+@using Sampoerna.EMS.Core
+
+<input type="hidden" name="IRDetails[@Model.Index.ToString()].MnfDetailId" value="@Model.MnfDetailId" />
+
+<div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+    <div class="panel-body">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOneX">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOneX" aria-expanded="true" aria-controls="collapseOneX">
+                            DETAIL MANUFACTURE @Html.Label((Model.NumList).ToString())
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOneX" class="sub_panel_parentbody panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOneX">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Manufacture Address</label>
+                                        <div class="col-md-8">
+                                            @Html.TextArea("IRDetails[" + Model.Index.ToString() + "].MnfAddr", Model.MnfAddr, new { @readonly = "readonly", @class = "txt_manufact_address form-control", @rows = "4" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Village</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfVillage", Model.MnfVillage, new { @readonly = "readonly", @class = "txt_manufact_village form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-4">Phone</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfPhone", Model.MnfPhone, new { @readonly = "readonly", @class = "txt_manufact_phone form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Province</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfProvince", Model.MnfProvince, new { @readonly = "readonly", @class = "txt_manufact_province form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Fax</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfFax", Model.MnfFax, new { @readonly = "readonly", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Distric/City</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfCity", Model.MnfCity, new { @readonly = "readonly", @class = "txt_manufact_district form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Sub Distric</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfSubDist", Model.MnfSubDist, new { @readonly = "readonly", @class = "txt_manufact_subdistrict form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <fieldset>
+                                        <legend><label>The Boundary & Condition</label></legend>
+                                        <div class="row">
+                                            <label class="col-md-3">North<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @if (Model.ActionName == "Detail")
+                                                {
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].North", Model.North, new { @readonly = "readonly", @class = "txt_manufact_north form-control" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].North", Model.North, new { @class = "txt_manufact_north form-control", @required = "required", @data_fieldname = "North " + Model.Index })
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3">East<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @if (Model.ActionName == "Detail")
+                                                {
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].East", Model.East, new { @readonly = "readonly", @class = "txt_manufact_east form-control" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].East", Model.East, new { @class = "txt_manufact_east form-control", @required = "required", @data_fieldname = "East " + Model.Index })
+                                                }
+
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3">South<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @if (Model.ActionName == "Detail")
+                                                {
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].South", Model.South, new { @readonly = "readonly", @class = "txt_manufact_south form-control" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].South", Model.South, new { @class = "txt_manufact_south form-control", @required = "required", @data_fieldname = "South " + Model.Index }) 
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3">West<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                @if (Model.ActionName == "Detail")
+                                                {
+                                                @Html.TextBox("IRDetails[" + Model.Index + "].West", Model.West, new { @readonly = "readonly", @class = "txt_manufact_west form-control" })
+                                                }
+                                                else
+                                                {
+                                                @Html.TextBox("IRDetails[" + Model.Index + "].West", Model.West, new { @class = "txt_manufact_west form-control", @required = "required", @data_fieldname = "West " + Model.Index })
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3">Land Area<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    @if (Model.ActionName == "Detail")
+                                                    {
+                                                        <div class="col-md-3">
+                                                            @Html.TextBox("IRDetails[" + Model.Index + "].LandArea", Model.LandArea, new { @readonly = "readonly", @class = "txt_manufact_landarea form-control numeric-form" })
+                                                        </div>
+                                                        <label class="col-md-1">m2</label>
+                                                        <label class="col-md-3 text-right">Building Area</label>
+                                                        <div class="col-md-3">
+                                                            @Html.TextBox("IRDetails[" + Model.Index + "].BuildingArea", Model.BuildingArea, new { @readonly = "readonly", @class = "txt_manufact_buildarea form-control numeric-form" })
+                                                        </div>
+                                                        <label class="col-md-1">m2</label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-md-3">
+                                                            @Html.TextBox("IRDetails[" + Model.Index + "].LandArea", Model.LandArea, new { @class = "txt_manufact_landarea form-control numeric-form", @required = "required", @data_fieldname = "Land Area " + Model.Index })
+                                                        </div>
+                                                        <label class="col-md-1">m2</label>
+                                                        <label class="col-md-3 text-right">Building Area</label>
+                                                        <div class="col-md-3">
+                                                            @Html.TextBox("IRDetails[" + Model.Index + "].BuildingArea", Model.BuildingArea, new { @class = "txt_manufact_buildarea form-control numeric-form", @required = "required", @data_fieldname = "Building Area " + Model.Index })
+                                                        </div>
+                                                        <label class="col-md-1">m2</label>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3">Ownership Status<span class="red">*</span></label>
+                                            <div class="col-md-9">
+                                                
+                                                @if (Model.ActionName == "Detail")
+                                                {
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].OwnershipStatus", Model.OwnershipStatus, new { @readonly = "readonly", @class = "txt_manufact_owner form-control" })
+                                                }
+                                                else
+                                                {
+                                                    @*@Html.TextBox("IRDetails[" + Model.Index + "].OwnershipStatus", Model.OwnershipStatus, new { @class = "txt_manufact_owner form-control", @data_fieldname = "Ownership Status " + Model.Index })*@
+                                                    <select name="IRDetails[@Model.Index].OwnershipStatus" class="txt_manufact_owner form-control" data-field="Ownership Status @Model.Index">
+                                                        <option value="" >Select</option>
+                                                        <option value="Milik Sendiri" @{if (Model.OwnershipStatus == "Milik Sendiri")
+                                                            { <text> selected</text>} }> Milik Sendiri</option>
+                                                        <option value="Sewa" @{if (Model.OwnershipStatus == "Sewa")
+                                                            { <text> selected</text>} }>Sewa</option>
+                                                    </select>
+                                                            }
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

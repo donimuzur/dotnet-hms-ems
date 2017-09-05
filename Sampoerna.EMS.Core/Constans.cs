@@ -9,7 +9,8 @@
         public const string Lack2FolderPaht = UploadPath + "Lack2/";
         public const string CK5FolderPath = UploadPath + "CK5/";
         public const string Ck4cDecreeDocFolderPath = UploadPath + "ck4cdecreedoc/";
-        public const string MonthClosingDocFolderPath = UploadPath + "monthClosing/";
+		public const string MLFolderPath = UploadPath + "Manufacture/";
+		public const string MonthClosingDocFolderPath = UploadPath + "monthClosing/";
 
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
@@ -61,9 +62,9 @@
         }
         public class SubmitMessage
         {
-            public const string Saved = "Save Succefully";
-            public const string Updated = "Update Succefully";
-            public const string Deleted = "Delete Succefully";
+            public const string Saved = "Save Successfully";
+            public const string Updated = "Update Successfully";
+            public const string Deleted = "Delete Successfully";
             public const string DataExist = "Data Already Exist";
             public const string DataExistPlant = "Main Plant With NPPBKC ID is Already Exists";
         }

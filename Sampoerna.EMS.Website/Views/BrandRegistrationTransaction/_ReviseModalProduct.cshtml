@@ -1,0 +1,32 @@
+﻿
+ @model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+
+
+    <div id="modalRevise" class="modal ems-modal fade revise-modal product" tabindex="-1" role="dialog" aria-labelledby="ReviseModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Request for Revision</h4>
+                </div>
+                <div class="modal-body">                                        
+                    @Html.HiddenFor(model=>model.DetailModel.PD_DETAIL_ID, new { @id="detail_ID" })
+                    <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckReviseLabel"></div>
+                    <div class="row col-md-12">
+                        <div class="form-group">
+                            <label>Note for Creator <span class="red">*</span></label>
+                            <textarea required class="form-control" id="commentText" rows="5" data-val="true" data-val-required="Rejection message should not be empty!" name="DetailModel.RevisionData.Comment" placeholder="Write the reason of rejection to creator">@Model.DetailModel.RevisionData.Comment</textarea>
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        @Html.ValidationMessageFor(model => model.DetailModel.RevisionData.Comment)
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-blue btn-sm" id="ReviseButtonSubmit">Reject</button>
+                    <button type="button" class="btn btn-blue btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+

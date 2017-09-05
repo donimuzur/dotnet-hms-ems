@@ -1,0 +1,166 @@
+﻿@model Sampoerna.EMS.Website.Models.ChangeRequest.ChangeRequestModel
+<div class="tab-content">
+    <div class="white-wrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">@Model.CityAlias, @Model.RequestDate.ToString("dd MMM yyyy") </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-5">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr>
+                                <td style="vertical-align:top">Nomor</td>
+                                <td style="vertical-align:top">:</td>
+                                <td> @Model.DocumentNumber</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:top">Lampiran</td>
+                                <td style="vertical-align:top">:</td>
+                                <td> @Model.Count_Lamp</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:top">Perihal</td>
+                                <td style="vertical-align:top">:</td>
+                                <td> Permohonan Perubahan @Model.DocumentType
+                                <br />Pabrik Hasil Tembakau @Model.CompanyAlias</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-12" style="height:50px"></div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-8">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr>
+                                <td>Kepada Yth. </td>
+                            </tr>
+                            <tr>
+                                <td>@Model.TextTo</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="height:50px"></div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-8">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr><td>Dengan Hormat, </td></tr>
+                            <tr><td>Yang bertanda tangan dibawah ini : </td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr>
+                                <td style="vertical-align:top;width:40%;">Nama</td>
+                                <td style="vertical-align:top">:</td>
+                                <td>@Model.POA.Name</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:top">Jabatan</td>
+                                <td style="vertical-align:top">:</td>
+                                <td>@Model.POA.Position</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:top">Alamat</td>
+                                <td style="vertical-align:top">:</td>
+                                <td>@Model.POA.Address</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr><td>Bertindak atas nama</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr>
+                                <td style="vertical-align:top;width:40%;">Nama Perusahaan</td>
+                                <td style="vertical-align:top">:</td>
+                                <td>@Model.CompanyAlias</td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:top">NPPBKC</td>
+                                <td style="vertical-align:top">:</td>
+                                <td>@Model.NppbkcId</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="height:50px"></div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr>
+                                <td>Memberitahukan kepada saudara, bahwa pabrik Hasil Tembakau @Model.NPPBKC.Company.Name di Kabupaten/Kota @Model.CityAlias telah melakukan perubahan @Model.DocumentType dengan tidak merubah luas tanah bangunan / data perizinan / kuasa perusahaan pabrik hasil tembakau</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="height:50px"></div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">Adapun perubahan sebagai berikut</div>
+                            <div class="col-md-12" style="margin-left:10px">
+                                <ol>
+                                    @if (Model.ListOfUpdateNotes != null)
+                                    {
+                                        foreach (var updateNote in Model.ListOfUpdateNotes)
+                                        {
+                                            <li>@updateNote.UpdateNotes</li>
+                                        }
+                                    }
+                                </ol>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="height:50px"></div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table cellpadding="0" cellspacing="0" style="background-color:#fff">
+                            <tr>
+                                <td>Demikian permohonan ini kami sampaikan untuk mendapatkan persetujuan dan pegesahan sebagaimana mestinya.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="height:50px"></div>
+            <div class="col-md-12">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">Pemohon,</div>
+            </div>
+            <div class="col-lg-12" style="height:150px"></div>
+            <div class="col-md-12">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">@Model.POA.Name</div>
+            </div>
+        </div>
+        </div>
+    </div>

@@ -273,7 +273,42 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilterCk5, null, "CK5_MATERIAL").ToList();
         }
 
-        
+        public List<CK5_MATERIAL> GetLastXMonthsCk5(int month, int compesationDays, bool getBeforeData = false)
+        {
+            DateTime monthfilter = DateTime.Today.AddMonths(-1 * month).AddDays(-1 * compesationDays);
+            //DateTime monthDeactive = DateTime.Today.AddMonths(-1 * (month + 1));
+            List<CK5> ck5List = new List<CK5>();
+
+            if (!getBeforeData)
+            {
+                ck5List =
+                    _repository.Get(x => x.REGISTRATION_DATE >= monthfilter && x.REGISTRATION_DATE <= DateTime.Today 
+                                        && x.CK5_TYPE != Enums.CK5Type.MarketReturn
+                                        && x.STATUS_ID == Enums.DocumentStatus.Completed, null, "CK5_MATERIAL")
+                        .ToList();
+            }
+            else
+            {
+                ck5List = _repository.Get(x => x.REGISTRATION_DATE < monthfilter
+                    && x.CK5_TYPE != Enums.CK5Type.MarketReturn
+                    && x.STATUS_ID == Enums.DocumentStatus.Completed, null, "CK5_MATERIAL")
+                        .ToList();
+            }
+
+
+            List<CK5_MATERIAL> ck5Items = new List<CK5_MATERIAL>();
+            foreach (var ck5 in ck5List)
+            {
+                ck5Items.AddRange(ck5.CK5_MATERIAL);
+            }
+
+            return ck5Items;
+        }
+
+        public List<CK5> GetCk5ByListContainIds(List<long> listCk5Id)
+        {
+            return _repository.Get(x => listCk5Id.Contains(x.CK5_ID)).ToList();
+        }
     }
 
 }

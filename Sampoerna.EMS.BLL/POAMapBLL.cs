@@ -10,14 +10,14 @@ namespace Sampoerna.EMS.BLL
     public class POAMapBLL : IPOAMapBLL
     {
 
-        
+        private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA_MAP> _repository;
         private ChangesHistoryBLL _changeBLL;
         private string _includeProperties = "T001W, POA, POA.USER";
         public POAMapBLL(IUnitOfWork uow, ILogger logger)
         {
-            
+            _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<POA_MAP>();
             _changeBLL = new ChangesHistoryBLL(uow, logger);

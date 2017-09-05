@@ -1,0 +1,45 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegSummaryReportsViewModel
+@using Sampoerna.EMS.Core
+<table id="changeRequestTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Requestor</th>
+            <th>NPPBKC</th>
+            <th>Submission Date</th>
+            <th>Company</th>
+            <th>Type</th>
+            <th>Effective Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DetailsList)
+            {
+            <tr>
+                <td class="action">
+                </td>
+                <td>@Html.DisplayFor(model => item.CreatedBy)</td>
+                <td>@Html.DisplayFor(model => item.NPPBKCId)</td>
+                <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
+                <td>@Html.DisplayFor(model => item.CompanyName)</td>
+                <td>@Html.DisplayFor(model => item.RegistrationType)</td>
+                <td>@Html.DisplayFor(model => item.EffectiveDate)</td>
+                <td>@Html.DisplayFor(model => item.LastApprovedStatusValue)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

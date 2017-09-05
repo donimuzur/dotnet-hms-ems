@@ -13,5 +13,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             return View();
         }
+        public ActionResult NotRegistered()
+        {
+            return View();
+        }
     }
 }

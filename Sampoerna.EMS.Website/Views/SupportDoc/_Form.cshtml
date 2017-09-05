@@ -1,0 +1,130 @@
+﻿@model Sampoerna.EMS.Website.Models.SupportDoc.SupportDocViewModel
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    legend {
+        padding: 2px;
+        font-size: 16px !important;
+    }
+
+    .currency {
+        padding-left: 12px;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        padding: 2px 5px;
+    }
+</style>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" style="padding-left: 30px">
+        @Html.ValidationSummary()
+    </div>
+}
+<div class="alert alert-danger" style="display:none" id="CheckExistanceLabel">
+
+</div>
+<div class="row">
+
+    <!-- Company Selector -->
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-3">
+                @Html.LabelFor(model => model.ViewModel.Company, "Company")
+                @if (Model.EnableFormInput)
+                {
+                    <span class="red">*</span>
+                }
+            </label>
+            <div class="col-md-9">
+                @if (Model.EnableFormInput)
+                {
+                    @Html.DropDownListFor(model => model.ViewModel.Bukrs, Model.CompanyList, null, new { @class = "selectpicker form-control", @id = "CompanySelector" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.ViewModel.Company.Name, new { @class = "form-control", @type = "text", @id = "CompanySelector", @readonly = "true" })
+                }
+            </div>
+            <div class="col-md-9 col-md-offset-3">
+                @Html.ValidationMessageFor(model => model.ViewModel.Bukrs)
+            </div>
+        </div>
+    </div>
+    <!-- End Company Selector -->
+
+    <!-- Form Name Selector -->
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-3">
+                @Html.LabelFor(model => model.ViewModel.YearPeriod, "Form Name")
+                @if (Model.EnableFormInput)
+                {
+                    <span class="red">*</span>
+                }
+            </label>
+            <div class="col-md-9">
+                @if (Model.EnableFormInput)
+                {
+                    @Html.DropDownListFor(model => model.ViewModel.YearPeriod, Model.YearPeriods, null, new { @class = "selectpicker form-control", @id = "PeriodSelector" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.ViewModel.YearPeriod, new { @class = "form-control", @type = "text", @id = "PeriodSelector", @readonly = "true" })
+                }
+            </div>
+            <div class="col-md-9 col-md-offset-3">
+                @Html.ValidationMessageFor(model => model.ViewModel.YearPeriod)
+            </div>
+        </div>
+    </div>
+    <!-- End Form Name Selector -->
+</div>
+
+<div class="row">
+    <!-- Document Name -->
+    <div class="col-md-6">
+        <fieldset>
+            <legend><label>Document Name</label></legend>
+            <div class="row">
+                <label class="col-md-4">
+                    @Html.LabelFor(model => model.ViewModel.DocumentNames, "Document Name")
+                    @if (Model.EnableFormInput)
+                    {
+                        <span class="red">*</span>
+                    }
+                </label>
+                <div class="col-md-8">
+                    @if (Model.EnableFormInput)
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.CurrentAssetsDisplay, new { @class = "form-control", @type = "text", @id = "CurrentAssetsText" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.ViewModel.CurrentAssetsDisplay, new { @class = "form-control", @type = "text", @id = "CurrentAssetsText", @readonly = true })
+                    }
+                    @Html.HiddenFor(model => model.ViewModel.DocumentNames)
+                </div>
+                <div class="col-md-8 col-md-offset-4">@Html.ValidationMessageFor(model => model.ViewModel.DocumentNames)</div>
+            </div>
+            </div>
+</div>
+<!-- End Document Name -->
+
+@if (Model.EnableFormInput)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
+        </div>
+    </div>
+}
+
+
