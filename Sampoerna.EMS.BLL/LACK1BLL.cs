@@ -759,7 +759,8 @@ namespace Sampoerna.EMS.BLL
                         (c.CK5_TYPE != Enums.CK5Type.Waste && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
 
-            
+            rc.TotalLaboratorium =
+                rc.PeriodSummaries.Where(x => x.Type == Enums.Lack1SummaryPeriod.Current).Sum(x => x.Laboratorium);
 
             return rc;
         }
@@ -2967,7 +2968,7 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.CalculationDetails.AddRange(usageNotHaveProd);
             }
-            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - rc.TotalLaboratorium - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
             rc.WasteAmountUom = rc.Lack1UomId;
 
             oReturn.Data = rc;
@@ -3025,7 +3026,7 @@ namespace Sampoerna.EMS.BLL
             var currentPeriodData = new PeriodSummary()
             {
                 Income = rc.TotalIncome,
-                Usage = rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value - (rc.TotalLaboratorium) : 0),
+                Usage = rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0),
                 Laboratorium = rc.TotalLaboratorium,
                 Return = rc.TotalReturn,
                 Saldo = rc.TotalIncome - rc.TotalUsage - rc.TotalLaboratorium - rc.TotalReturn,
@@ -3551,14 +3552,14 @@ namespace Sampoerna.EMS.BLL
 
                 //recalculate total usage from income list ck5 type manual and reduce trial true
                 var ck5ReduceTrial =
-                rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial && !c.IsForLab).ToList();
+                rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial && c.IsForLab != true).ToList();
                 if (ck5ReduceTrial.Count > 0)
                 {
                     rc.TotalUsageTisToTis = rc.TotalUsageTisToTis + ck5ReduceTrial.Sum(d => d.Amount);
                     
                 }
 
-                var ck5Lab = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial && c.IsForLab);
+                var ck5Lab = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial && c.IsForLab).ToList();
                 if(ck5Lab.Count() > 0)  rc.TotalLaboratorium = rc.TotalLaboratorium + ck5Lab.Sum(x => x.GrandTotalEx);
 
                 //set Production tis to tis

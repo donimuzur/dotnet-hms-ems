@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
+        public decimal TotalLaboratorium { get; set; }
         public decimal? TotalUsageTisToTis { get; set; }
         public decimal EndingBalance { get; set; }
         public decimal CloseBalance { get; set; }

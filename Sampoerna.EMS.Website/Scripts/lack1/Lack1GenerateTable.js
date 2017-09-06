@@ -567,7 +567,7 @@ function generateTableCk5(data) {
 
 function generateTableWithTisToTis(data) {
     console.log('With Tis To Tis');
-    console.log(data);
+    debugger;
     
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>';
@@ -636,7 +636,7 @@ function generateContentTableLack1WithTisToTisOnlyOneIncomeList(data) {
     //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
     
     /*Second record*/
-    rc = rc + '<tr><td style="border-bottom:none">' + ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
+    rc = rc + '<tr><td style="border-bottom:none">' + ThausandSeperator(data.TotalUsageTisToTis + data.TotalLaboratorium, 2) + '</td>' +
         '<td style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
         '<td style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
 
@@ -680,7 +680,7 @@ function generateContentTableLack1WithTisToTis(data) {
     rowIndex = rowIndex + 1;
     rc = rc + '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[rowSpan1].RegistrationNumber + ' - ' + data.IncomeList[rowSpan1].StringRegistrationDate + '</td>' +
                     '<td>' + ThausandSeperator(data.IncomeList[rowSpan1].Amount) + '</td>' +
-                    '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
+                    '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + ThausandSeperator(data.TotalUsageTisToTis + data.TotalLaboratorium, 2) + '</td>' +
                     '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
                     '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
 
