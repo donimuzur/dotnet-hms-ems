@@ -172,6 +172,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IsEtilAlcohol, opt => opt.MapFrom(src => src.IsEtilAlcohol))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
                 .ForMember(dest => dest.TotalUsageTisToTis, opt => opt.MapFrom(src => src.UsageTisToTis))
+                .ForMember(dest => dest.TotalLaboratorium, opt => opt.MapFrom(src => src.TotalLaboratorium))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Noted) ? src.Noted.Replace("<br />", Environment.NewLine) : ""))
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DocumentNoted))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
