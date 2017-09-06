@@ -6260,7 +6260,11 @@ namespace Sampoerna.EMS.BLL
             {
                 inputChangeLogs.GI_DATE = input.GI_DATE;
                 inputChangeLogs.GR_DATE = input.GR_DATE;
+
+                inputChangeLogs.REDUCE_TRIAL = input.IS_REDUCE_PBCK1;
+                inputChangeLogs.FLAG_FOR_LACK1_LAB = input.IS_LAB;
             }
+
 
             //add to change log
             SetChangesHistory(origin, inputChangeLogs, input.UserId);
@@ -6282,6 +6286,9 @@ namespace Sampoerna.EMS.BLL
             {
                 dbData.GI_DATE = input.GI_DATE;
                 dbData.GR_DATE = input.GR_DATE;
+
+                dbData.REDUCE_TRIAL = input.IS_REDUCE_PBCK1;
+                dbData.FLAG_FOR_LACK1_LAB = input.IS_LAB;
             }
 
             dbData.MODIFIED_DATE = DateTime.Now;
