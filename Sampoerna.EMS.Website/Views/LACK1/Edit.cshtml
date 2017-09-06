@@ -187,6 +187,7 @@
                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize
                        })));*@
             var jsonData = @(Html.Raw(@Model.JsonData));
+            debugger;
             //console.log(jsonData);
             if (jsonData.IsEtilAlcohol) {
                 /*force to use tis to fa generate table*/
@@ -198,11 +199,11 @@
                 /*console.log(tableGenerated2);*/
                 $('#generated-data-container-old').append(tableGeneratedEtilAlcoholOld);
             } else {
-                if (jsonData.IsWithTisToTisReport) {
+                if (jsonData.IsTisToTisReport) {
                     var tableGenerated1 = generateTableNew(jsonData);
                     /*console.log(tableGenerated1);*/
                     $('#generated-data-container').append(tableGenerated1);
-
+                    
                     var tableOldGenerated1 = generateTableWithTisToTis(jsonData);
                     /*console.log(tableGenerated1);*/
                     $('#generated-data-container-old').append(tableOldGenerated1);

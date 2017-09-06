@@ -568,13 +568,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var dataToSave = Mapper.Map<Lack10Dto>(model.Details);
 
-                if (dataToSave.Lack10Item.Count == 0)
-                {
-                    AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
-                    model.Details.StatusName = "Draft";
-                    model = InitialModel(model);
-                    return View(model);
-                }
+                //if (dataToSave.Lack10Item.Count == 0)
+                //{
+                //    AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
+                //    model.Details.StatusName = "Draft";
+                //    model = InitialModel(model);
+                //    return View(model);
+                //}
 
                 var plant = _plantBll.GetT001WById(model.Details.PlantId);
                 var company = _companyBll.GetById(model.Details.CompanyId);

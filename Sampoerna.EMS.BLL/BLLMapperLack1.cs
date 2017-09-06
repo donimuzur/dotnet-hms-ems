@@ -146,7 +146,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue && src.FLAG_FOR_LACK1.Value))
                 .ForMember(dest => dest.IsCk5ReduceTrial, opt => opt.MapFrom(src => src.REDUCE_TRIAL.HasValue && src.REDUCE_TRIAL.Value))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
-                .ForMember(dest => dest.IsForLab, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1_LAB))
+                .ForMember(dest => dest.IsForLab, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1_LAB.HasValue ? src.FLAG_FOR_LACK1_LAB.Value : false))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedDto, LACK1>().IgnoreAllNonExisting()
