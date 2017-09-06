@@ -237,6 +237,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public bool IsCk5Waste { get; set; }
         public bool IsCk5Manual { get; set; }
 
+        public bool IS_REDUCE_PBCK1 { get; set; }
+        public bool IS_LAB { get; set; }
+
         public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
     }
 
