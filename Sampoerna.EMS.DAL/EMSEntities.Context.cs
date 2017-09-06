@@ -133,6 +133,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA_EXCISER> POA_EXCISER { get; set; }
         public virtual DbSet<LACK1_PERIOD_SUMMARY> LACK1_PERIOD_SUMMARY { get; set; }
         public virtual DbSet<LACK1_CALCULATION_DETAIL> LACK1_CALCULATION_DETAIL { get; set; }
+        public virtual DbSet<LACK10> LACK10 { get; set; }
+        public virtual DbSet<LACK10_DECREE_DOC> LACK10_DECREE_DOC { get; set; }
+        public virtual DbSet<LACK10_ITEM> LACK10_ITEM { get; set; }
         public virtual DbSet<NlogLogs> NlogLogs { get; set; }
     }
 }

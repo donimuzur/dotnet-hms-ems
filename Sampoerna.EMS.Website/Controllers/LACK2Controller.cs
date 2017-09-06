@@ -2196,9 +2196,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var dtDetail = dsLack2.Tables[1];
             int nomorUrut = 1;
             int countNppbkc = 1;
+            int countRow = 0;
             var isData = "Data";
             var subTotal = Convert.ToDecimal(0);
-            foreach (var item in lack2.Items.OrderBy(x => x.CompanyNppbkc))
+            foreach (var item in lack2.Items.OrderBy(x => x.CompanyAddress).OrderBy(x => x.CompanyNppbkc))
             {
                 //for first data
                 if (nomorUrut == 1)
@@ -2217,14 +2218,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     dtDetail.Rows.Add(drowDetail);
 
                     nomorUrut++;
+                    countRow++;
 
-                    isData = item.CompanyNppbkc;
+                    isData = item.CompanyAddress;
                     subTotal = subTotal + item.Ck5ItemQty;
                 }
                 else
                 {
-                    //same nppbkc
-                    if (isData == item.CompanyNppbkc)
+                    //same address plant
+                    if (isData == item.CompanyAddress)
                     {
                         DataRow drowDetail;
                         drowDetail = dtDetail.NewRow();
@@ -2259,27 +2261,31 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         }
 
+                        countRow++;
                         nomorUrut++;
 
-                        isData = item.CompanyNppbkc;
+                        isData = item.CompanyAddress;
                     }
-                    //different nppbkc
+                    //different address plant
                     else
                     {
                         //subtotal
-                        DataRow drowDetailSub;
-                        drowDetailSub = dtDetail.NewRow();
-                        drowDetailSub[0] = "Subtotal";
-                        drowDetailSub[1] = "";
-                        drowDetailSub[2] = subTotal.ToString("N3");
-                        drowDetailSub[3] = "";
-                        drowDetailSub[4] = "";
-                        drowDetailSub[5] = "";
-                        drowDetailSub[6] = "";
-                        drowDetailSub[7] = "";
+                        if (countRow > 1) { 
+                            DataRow drowDetailSub;
+                            drowDetailSub = dtDetail.NewRow();
+                            drowDetailSub[0] = "Subtotal";
+                            drowDetailSub[1] = "";
+                            drowDetailSub[2] = subTotal.ToString("N3");
+                            drowDetailSub[3] = "";
+                            drowDetailSub[4] = "";
+                            drowDetailSub[5] = "";
+                            drowDetailSub[6] = "";
+                            drowDetailSub[7] = "";
 
-                        dtDetail.Rows.Add(drowDetailSub);
+                            dtDetail.Rows.Add(drowDetailSub);
+                        }
 
+                        countRow = 0;
                         subTotal = Convert.ToDecimal(0);
 
                         //different nppbkc
@@ -2298,8 +2304,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                         nomorUrut++;
                         countNppbkc++;
+                        countRow++;
 
-                        isData = item.CompanyNppbkc;
+                        isData = item.CompanyAddress;
                         subTotal = subTotal + item.Ck5ItemQty;
                     }
                 }

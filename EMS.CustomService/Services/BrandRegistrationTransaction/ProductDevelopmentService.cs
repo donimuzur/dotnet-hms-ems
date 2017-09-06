@@ -360,7 +360,7 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
         {
             try
             {
-                var result = this.uow.MaterialRepository.GetAll().Where(m => m.EXC_GOOD_TYP == "01" && m.USED_PRODUCT_DEVELOPMENT == false && m.WERKS == werks);
+                var result = this.uow.MaterialRepository.GetAll().Where(m => m.EXC_GOOD_TYP == "01" && (m.USED_PRODUCT_DEVELOPMENT == false || m.USED_PRODUCT_DEVELOPMENT == null) && m.WERKS == werks);
                 return result;
             }
             catch (Exception ex)

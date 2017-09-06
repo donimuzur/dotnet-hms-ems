@@ -2,3 +2,7 @@ ALTER TABLE WASTE ADD
 	USE_FOR_LACK10 bit NULL
 GO
 
+<<<<<<< HEAD
+UPDATE WASTE SET USE_FOR_LACK10 = 1
+=======
+>>>>>>> story/20171-lack1-update-cr8

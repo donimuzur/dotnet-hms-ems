@@ -21,5 +21,6 @@ namespace Sampoerna.EMS.BusinessObject.Business
 
         public List<string> CC { get; set; }
         public bool IsCCExist { get; set; }
+        public bool IsDataExist { get; set; }
     }
 }

@@ -72,6 +72,7 @@
     <Compile Include="Business\ExGoodTyp.cs.cs" />
     <Compile Include="Business\HeaderFooter.cs" />
     <Compile Include="Business\HeaderFooterMap.cs" />
+    <Compile Include="Business\InvalidBrand.cs" />
     <Compile Include="Business\Login.cs" />
     <Compile Include="Business\MailNotification.cs" />
     <Compile Include="Business\Material.cs" />
@@ -154,6 +155,10 @@
     <Compile Include="DTOs\HEADER_FOOTERDto.cs" />
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
     <Compile Include="DTOs\InventoryMovementDto.cs" />
+    <Compile Include="DTOs\Lack10DecreeDocDto.cs" />
+    <Compile Include="DTOs\Lack10Dto.cs" />
+    <Compile Include="DTOs\Lack10ItemExportDto.cs" />
+    <Compile Include="DTOs\Lack10SummaryReportDto.cs" />
     <Compile Include="DTOs\Lack1DailyProdDto.cs" />
     <Compile Include="DTOs\Lack1DetailEaDto.cs" />
     <Compile Include="DTOs\Lack1DetailReportDto.cs" />
@@ -265,6 +270,7 @@
     <Compile Include="Inputs\EmailTemplateInputs.cs" />
     <Compile Include="Inputs\GenerateDocNumberInputs.cs" />
     <Compile Include="Inputs\InventoryMovementInput.cs" />
+    <Compile Include="Inputs\Lack10GetByParamInput.cs" />
     <Compile Include="Inputs\Lack1GetByParamInput.cs" />
     <Compile Include="Inputs\HeaderFooterInputs.cs" />
     <Compile Include="Inputs\Lack1Input.cs" />
@@ -306,6 +312,15 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="LACK1.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK10.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK10_DECREE_DOC.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LACK10_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="LACK1_CALCULATION_DETAIL.cs">
