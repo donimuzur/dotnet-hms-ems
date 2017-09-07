@@ -2806,7 +2806,15 @@ namespace Sampoerna.EMS.BLL
                             var totalUsage = totalPerMaterialUsage.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountUsage);
                             var totalProd = totalPerMaterialProd.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountProduction);
 
-                            calc.Proportional = calc.AmountProduction * calc.Convertion / totalProd;
+                            if (totalProd == 0)
+                            {
+                                calc.Proportional = 0;
+                            }
+                            else
+                            {
+                                calc.Proportional = calc.AmountProduction * calc.Convertion / totalProd;    
+                            }
+                            
                             calc.AmountUsage = totalUsage * calc.Proportional;
                         }
 
@@ -2999,7 +3007,7 @@ namespace Sampoerna.EMS.BLL
 
             
 
-            var lastPeriodSummary = lastLack1.LACK1_PERIOD_SUMMARY.FirstOrDefault(x => x.TYPE == Enums.Lack1SummaryPeriod.End);
+            var lastPeriodSummary = lastLack1 != null ? lastLack1.LACK1_PERIOD_SUMMARY.FirstOrDefault(x => x.TYPE == Enums.Lack1SummaryPeriod.End) : null;
             PeriodSummary startPeriodData = Mapper.Map<PeriodSummary>(lastPeriodSummary);
             if (startPeriodData != null)
             {
