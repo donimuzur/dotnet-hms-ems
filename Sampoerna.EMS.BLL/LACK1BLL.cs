@@ -2707,261 +2707,267 @@ namespace Sampoerna.EMS.BLL
                 //var calculationOri = rc.CalculationDetails;
                 var pbck1Convertion = rc.Pbck1List.FirstOrDefault().Pbck1Convertion;
             
-                    if (pbck1Convertion != null)
+                if (pbck1Convertion != null)
+                {
+                    var calcuLationFa = new List<Lack1CalculationDetail>();
+                    var calcuLationTis = new List<Lack1CalculationDetail>();
+                    if (rc.InventoryProductionTisToFa.CalculationDetails != null)
                     {
-                        var calcuLationFa = new List<Lack1CalculationDetail>();
-                        var calcuLationTis = new List<Lack1CalculationDetail>();
-                        if (rc.InventoryProductionTisToFa.CalculationDetails != null)
+                        calcuLationFa.AddRange(from calc in rc.InventoryProductionTisToFa.CalculationDetails
+                                                        join brand in brandList on new { calc.FaCode, calc.PlantId } equals new { FaCode = brand.FA_CODE, PlantId = brand.WERKS }
+                                                        select new Lack1CalculationDetail()
+                                                        {
+                                                            PlantId = calc.PlantId,
+                                                            MaterialId = calc.MaterialId,
+                                                            //Ordr = calc.Ordr,
+                                                            FaCode = calc.FaCode,
+                                                            UomProduction = calc.UomProduction,
+                                                            AmountProduction = calc.AmountProduction,
+                                                            AmountUsage = calc.AmountUsage,
+                                                            Proportional = calc.Proportional,
+                                                            Type = calc.Type,
+                                                            UomUsage = calc.UomUsage,
+                                                            BrandCe = brand.BRAND_CE
+
+                                                        });
+
+                        var calculationFaConvertionTemp = new List<Lack1CalculationDetail>();
+                            
+
+                        foreach (var calc in calcuLationFa)
                         {
-                            calcuLationFa.AddRange(from calc in rc.InventoryProductionTisToFa.CalculationDetails
-                                                           join brand in brandList on new { calc.FaCode, calc.PlantId } equals new { FaCode = brand.FA_CODE, PlantId = brand.WERKS }
-                                                           select new Lack1CalculationDetail()
-                                                           {
-                                                               PlantId = calc.PlantId,
-                                                               MaterialId = calc.MaterialId,
-                                                               //Ordr = calc.Ordr,
-                                                               FaCode = calc.FaCode,
-                                                               UomProduction = calc.UomProduction,
-                                                               AmountProduction = calc.AmountProduction,
-                                                               AmountUsage = calc.AmountUsage,
-                                                               Proportional = calc.Proportional,
-                                                               Type = calc.Type,
-                                                               UomUsage = calc.UomUsage,
-                                                               BrandCe = brand.BRAND_CE
+                                
+                            //var totalProduction = totalPerMaterialUsage.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountProduction);
 
-                                                           });
 
-                            var calculationFaConvertionTemp = new List<Lack1CalculationDetail>();
-                            
+                            var dataConvertion = pbck1Convertion.Select(x => new { BrandCE = x.BrandCE.Replace(' ', '_').Replace(Char.ConvertFromUtf32(160).ToString(), "_"), x.ConverterOutput, CharCHeck = x.BrandCE.ToCharArray() });
+                                
 
-                            foreach (var calc in calcuLationFa)
+                            var conv = dataConvertion.Where(x => x.BrandCE == calc.BrandCe.Replace(' ', '_')).FirstOrDefault();
+                            decimal convertion = 0;
+                            if (conv != null)
                             {
-                                
-                                //var totalProduction = totalPerMaterialUsage.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountProduction);
 
+                                convertion = conv.ConverterOutput.HasValue ? conv.ConverterOutput.Value : 0;
 
-                                var dataConvertion = pbck1Convertion.Select(x => new { BrandCE = x.BrandCE.Replace(' ', '_').Replace(Char.ConvertFromUtf32(160).ToString(), "_"), x.ConverterOutput, CharCHeck = x.BrandCE.ToCharArray() });
-                                
-
-                                var conv = dataConvertion.Where(x => x.BrandCE == calc.BrandCe.Replace(' ', '_')).FirstOrDefault();
-                                decimal convertion = 0;
-                                if (conv != null)
-                                {
-
-                                    convertion = conv.ConverterOutput.HasValue ? conv.ConverterOutput.Value : 0;
-
-                                }
-
-
-                                string propUom = "";
-                                if (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
-                                    input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
-                                {
-                                    propUom = "L";
-                                }
-                                else
-                                {
-                                    var proportionalUsageCalculationNew = rc.InventoryProductionTisToFa.ProportionalUsageCalculations.Where(
-                                        x => x.MaterialId == calc.MaterialId).FirstOrDefault();
-                                    if (proportionalUsageCalculationNew != null)
-                                        propUom =
-                                            proportionalUsageCalculationNew.Uom;
-                                    else propUom = "";
-                                }
-
-
-                                if (propUom != null)
-                                {
-                                    calculationFaConvertionTemp.Add(new Lack1CalculationDetail() {
-                                        AmountUsage = calc.AmountUsage,
-                                        AmountProduction = calc.AmountProduction,
-                                        BrandCe = calc.BrandCe,
-                                        Convertion = convertion,
-                                        FaCode = calc.FaCode,
-                                        MaterialId = calc.MaterialId,
-                                        Ordr = calc.Ordr,
-                                        PlantId = calc.PlantId,
-                                        //Proportional = prod.Proportional,
-                                        Type = Enums.Lack1Calculation.WithConvertion,
-                                        UomProduction = calc.UomProduction,
-                                        UomUsage = propUom,
-                                    });
-                                }
-                                
                             }
 
-                            var totalPerMaterialUsage = calculationFaConvertionTemp.GroupBy(x => x.MaterialId).Select(x => new
-                            {
-                                MaterialId = x.Key,
-                                AmountUsage = x.Sum(y => y.AmountUsage) + usageNotHaveProd.Where(y => y.MaterialId == x.Key).Sum(y => y.AmountUsage)
-                            }).ToList();
-                            var totalPerMaterialProd = calculationFaConvertionTemp.GroupBy(x => new { x.MaterialId} ).Select(x => new
-                            {
-                                MaterialId = x.Key.MaterialId,
-                                
-                                AmountProduction = x.Sum(y => y.AmountProduction * y.Convertion)
-                            }).ToList();
-                            
-                            foreach(var calc in calculationFaConvertionTemp){
-                                var totalUsage = totalPerMaterialUsage.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountUsage);
-                                var totalProd = totalPerMaterialProd.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountProduction);
 
-                                calc.Proportional = calc.AmountProduction * calc.Convertion / totalProd;
-                                calc.AmountUsage = totalUsage * calc.Proportional;
-                            }
-
-                            
-                            //convertion calculation with process order breakdown
-                            //if (rc.InventoryProductionTisToFa.ProportionalUsageCalculations != null)
-                            //{
-                            //    foreach (var propCalc in rc.InventoryProductionTisToFa.ProportionalUsageCalculations)
-                            //    {
-                                    
-
-                            //        foreach (var prod in propCalc.ProductionList)
-                            //        {
-                                        
-                            //            var dataConvertion = pbck1Convertion.Select(x => new { BrandCE = x.BrandCE.Replace(' ', '_').Replace(Char.ConvertFromUtf32(160).ToString(), "_"), x.ConverterOutput, CharCHeck = x.BrandCE.ToCharArray()});
-                            //            prod.brandCe =
-                            //                brandList.Where(x => x.FA_CODE == prod.FaCode && x.WERKS == prod.PlantId)
-                            //                    .FirstOrDefault().BRAND_CE;
-                                        
-                            //            var conv = dataConvertion.Where(x => x.BrandCE == prod.brandCe.Replace(' ','_')).FirstOrDefault();
-                            //            if (conv != null)
-                            //            {
-                                            
-                            //                prod.Convertion = conv.ConverterOutput.HasValue ? conv.ConverterOutput.Value : 0;
-
-                            //            }
-
-                            //        }
-
-                            //        var totalQtyMaterialProd = propCalc.ProductionList.Sum(x => x.Convertion * x.TotalQtyOrdr);
-                            //        foreach (var prod in propCalc.ProductionList)
-                            //        {
-                            //            if (totalQtyMaterialProd != 0)
-                            //            {
-                            //                prod.Proportional = (prod.TotalQtyOrdr * prod.Convertion) / totalQtyMaterialProd;
-                            //            }
-
-                            //            var oriCalc = rc.InventoryProductionTisToFa.CalculationDetails.Where(x => x.FaCode == prod.FaCode && x.MaterialId == propCalc.MaterialId).FirstOrDefault();
-                            //            calculationFaConvertionTemp.Add(new Lack1CalculationDetail
-                            //            {
-                            //                AmountUsage = prod.Proportional * (propCalc.QtyUsage),
-                            //                AmountProduction = oriCalc.AmountProduction,
-                            //                BrandCe = prod.brandCe,
-                            //                Convertion = prod.Convertion,
-                            //                FaCode = prod.FaCode,
-                            //                MaterialId = propCalc.MaterialId,
-                            //                Ordr = propCalc.Ordr,
-                            //                PlantId = prod.PlantId,
-                            //                Proportional = prod.Proportional,
-                            //                Type = Enums.Lack1Calculation.WithConvertion,
-                            //                UomProduction = oriCalc != null ? oriCalc.UomProduction : "",
-                            //                UomUsage = propCalc.Uom,
-
-
-                            //            });
-                            //        }
-
-
-
-                            //    }
-                            //}
-                            
-
-                            
-                            var calculationConvertion = calculationFaConvertionTemp
-                                .GroupBy(x => new { x.FaCode, x.MaterialId, x.BrandCe, x.PlantId, x.Type, x.UomProduction, x.UomUsage, x.Convertion, x.AmountProduction })
-                                .Select(x => new Lack1CalculationDetail()
-                                {
-                                    PlantId = x.Key.PlantId,
-                                    MaterialId = x.Key.MaterialId,
-                                    //Ordr = calc.Ordr,
-                                    FaCode = x.Key.FaCode,
-                                    UomProduction = x.Key.UomProduction,
-                                    AmountProduction = x.Key.AmountProduction,
-                                    //AmountUsage = x.Sum(y=> x.Key.UomUsage == "KG" ? y.AmountUsage * -1000 : y.AmountUsage * -1),
-                                    AmountUsage = x.Sum(y=> y.AmountUsage),
-                                    //Proportional = x.Key.Proportional,
-                                    Type = Enums.Lack1Calculation.WithConvertion,
-                                    UomUsage = x.Key.UomUsage,
-                                    Convertion = x.Key.Convertion,
-                                    BrandCe = x.Key.BrandCe
-                                }).ToList();
-
+                            string propUom = "";
                             if (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
                                 input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
                             {
-                                calculationConvertion = calcuLationFa.Select(
-                                        x => new Lack1CalculationDetail()
-                                        {
-                                            PlantId = x.PlantId,
-                                            MaterialId = x.MaterialId,
-                                            //Ordr = calc.Ordr,
-                                            FaCode = x.FaCode,
-                                            UomProduction = x.UomProduction,
-                                            AmountProduction = x.AmountProduction,
-                                            AmountUsage = x.AmountUsage,
-                                            //Proportional = x.Key.Proportional,
-                                            Type = Enums.Lack1Calculation.WithConvertion,
-                                            UomUsage = x.UomUsage,
-                                            Convertion = x.Convertion,
-                                            BrandCe = x.BrandCe
-                                        }).ToList();
+                                propUom = "L";
                             }
-                            calcuLationFa.AddRange(calculationConvertion);
-
-                            rc.CalculationDetails.AddRange(calcuLationFa);
-                        }
-                        
-
-
-                        if (input.IsTisToTis)
-                        {
-                            var pbck1ConvertionTis = pbck1Convertion.Where(x => x.ProdAlias == "TIS").FirstOrDefault();
-                            if (rc.InventoryProductionTisToTis.CalculationDetails != null)
+                            else
                             {
-
-                                foreach (var calc in rc.InventoryProductionTisToTis.CalculationDetails)
-                                {
-                                    calc.BrandCe = pbck1ConvertionTis.BrandCE;
-                                    calcuLationTis.Add(calc);
-
-                                    //add with convertion tis-to-tis
-                                    var witConvertionTis = new Lack1CalculationDetail() { 
-                                        AmountProduction = calc.AmountProduction,
-                                        AmountUsage = calc.AmountUsage,
-                                        BrandCe = calc.BrandCe,
-                                        Convertion = 1,
-                                        FaCode = calc.FaCode,
-                                        MaterialId = calc.MaterialId,
-                                        Ordr = calc.Ordr,
-                                        PlantId = calc.PlantId,
-                                        Proportional = calc.Proportional,
-                                        Type = Enums.Lack1Calculation.WithConvertion,
-                                        UomProduction = calc.UomProduction,
-                                        UomUsage = calc.UomUsage
-                                        
-                                    };
-                                    calcuLationTis.Add(witConvertionTis);
-                                }
-
-                                rc.CalculationDetails.AddRange(calcuLationTis);
-
+                                var proportionalUsageCalculationNew = rc.InventoryProductionTisToFa.ProportionalUsageCalculations.Where(
+                                    x => x.MaterialId == calc.MaterialId).FirstOrDefault();
+                                if (proportionalUsageCalculationNew != null)
+                                    propUom =
+                                        proportionalUsageCalculationNew.Uom;
+                                else propUom = "";
                             }
+
+
+                            if (propUom != null)
+                            {
+                                calculationFaConvertionTemp.Add(new Lack1CalculationDetail() {
+                                    AmountUsage = calc.AmountUsage,
+                                    AmountProduction = calc.AmountProduction,
+                                    BrandCe = calc.BrandCe,
+                                    Convertion = convertion,
+                                    FaCode = calc.FaCode,
+                                    MaterialId = calc.MaterialId,
+                                    Ordr = calc.Ordr,
+                                    PlantId = calc.PlantId,
+                                    //Proportional = prod.Proportional,
+                                    Type = Enums.Lack1Calculation.WithConvertion,
+                                    UomProduction = calc.UomProduction,
+                                    UomUsage = propUom,
+                                });
+                            }
+                                
+                        }
+
+                        var totalPerMaterialUsage = calculationFaConvertionTemp.GroupBy(x => x.MaterialId).Select(x => new
+                        {
+                            MaterialId = x.Key,
+                            AmountUsage = x.Sum(y => y.AmountUsage) + usageNotHaveProd.Where(y => y.MaterialId == x.Key).Sum(y => y.AmountUsage)
+                        }).ToList();
+                        var totalPerMaterialProd = calculationFaConvertionTemp.GroupBy(x => new { x.MaterialId} ).Select(x => new
+                        {
+                            MaterialId = x.Key.MaterialId,
+                                
+                            AmountProduction = x.Sum(y => y.AmountProduction * y.Convertion)
+                        }).ToList();
+                            
+                        foreach(var calc in calculationFaConvertionTemp){
+                            var totalUsage = totalPerMaterialUsage.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountUsage);
+                            var totalProd = totalPerMaterialProd.Where(x => x.MaterialId == calc.MaterialId).Sum(x => x.AmountProduction);
+
+                            calc.Proportional = calc.AmountProduction * calc.Convertion / totalProd;
+                            calc.AmountUsage = totalUsage * calc.Proportional;
+                        }
 
                             
+                        //convertion calculation with process order breakdown
+                        //if (rc.InventoryProductionTisToFa.ProportionalUsageCalculations != null)
+                        //{
+                        //    foreach (var propCalc in rc.InventoryProductionTisToFa.ProportionalUsageCalculations)
+                        //    {
+                                    
+
+                        //        foreach (var prod in propCalc.ProductionList)
+                        //        {
+                                        
+                        //            var dataConvertion = pbck1Convertion.Select(x => new { BrandCE = x.BrandCE.Replace(' ', '_').Replace(Char.ConvertFromUtf32(160).ToString(), "_"), x.ConverterOutput, CharCHeck = x.BrandCE.ToCharArray()});
+                        //            prod.brandCe =
+                        //                brandList.Where(x => x.FA_CODE == prod.FaCode && x.WERKS == prod.PlantId)
+                        //                    .FirstOrDefault().BRAND_CE;
+                                        
+                        //            var conv = dataConvertion.Where(x => x.BrandCE == prod.brandCe.Replace(' ','_')).FirstOrDefault();
+                        //            if (conv != null)
+                        //            {
+                                            
+                        //                prod.Convertion = conv.ConverterOutput.HasValue ? conv.ConverterOutput.Value : 0;
+
+                        //            }
+
+                        //        }
+
+                        //        var totalQtyMaterialProd = propCalc.ProductionList.Sum(x => x.Convertion * x.TotalQtyOrdr);
+                        //        foreach (var prod in propCalc.ProductionList)
+                        //        {
+                        //            if (totalQtyMaterialProd != 0)
+                        //            {
+                        //                prod.Proportional = (prod.TotalQtyOrdr * prod.Convertion) / totalQtyMaterialProd;
+                        //            }
+
+                        //            var oriCalc = rc.InventoryProductionTisToFa.CalculationDetails.Where(x => x.FaCode == prod.FaCode && x.MaterialId == propCalc.MaterialId).FirstOrDefault();
+                        //            calculationFaConvertionTemp.Add(new Lack1CalculationDetail
+                        //            {
+                        //                AmountUsage = prod.Proportional * (propCalc.QtyUsage),
+                        //                AmountProduction = oriCalc.AmountProduction,
+                        //                BrandCe = prod.brandCe,
+                        //                Convertion = prod.Convertion,
+                        //                FaCode = prod.FaCode,
+                        //                MaterialId = propCalc.MaterialId,
+                        //                Ordr = propCalc.Ordr,
+                        //                PlantId = prod.PlantId,
+                        //                Proportional = prod.Proportional,
+                        //                Type = Enums.Lack1Calculation.WithConvertion,
+                        //                UomProduction = oriCalc != null ? oriCalc.UomProduction : "",
+                        //                UomUsage = propCalc.Uom,
+
+
+                        //            });
+                        //        }
+
+
+
+                        //    }
+                        //}
+                            
+
+                            
+                        var calculationConvertion = calculationFaConvertionTemp
+                            .GroupBy(x => new { x.FaCode, x.MaterialId, x.BrandCe, x.PlantId, x.Type, x.UomProduction, x.UomUsage, x.Convertion, x.AmountProduction })
+                            .Select(x => new Lack1CalculationDetail()
+                            {
+                                PlantId = x.Key.PlantId,
+                                MaterialId = x.Key.MaterialId,
+                                //Ordr = calc.Ordr,
+                                FaCode = x.Key.FaCode,
+                                UomProduction = x.Key.UomProduction,
+                                AmountProduction = x.Key.AmountProduction,
+                                //AmountUsage = x.Sum(y=> x.Key.UomUsage == "KG" ? y.AmountUsage * -1000 : y.AmountUsage * -1),
+                                AmountUsage = x.Sum(y=> y.AmountUsage),
+                                //Proportional = x.Key.Proportional,
+                                Type = Enums.Lack1Calculation.WithConvertion,
+                                UomUsage = x.Key.UomUsage,
+                                Convertion = x.Key.Convertion,
+                                BrandCe = x.Key.BrandCe
+                            }).ToList();
+
+                        if (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
+                            input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
+                        {
+                            calculationConvertion = calcuLationFa.Select(
+                                    x => new Lack1CalculationDetail()
+                                    {
+                                        PlantId = x.PlantId,
+                                        MaterialId = x.MaterialId,
+                                        //Ordr = calc.Ordr,
+                                        FaCode = x.FaCode,
+                                        UomProduction = x.UomProduction,
+                                        AmountProduction = x.AmountProduction,
+                                        AmountUsage = x.AmountUsage,
+                                        //Proportional = x.Key.Proportional,
+                                        Type = Enums.Lack1Calculation.WithConvertion,
+                                        UomUsage = x.UomUsage,
+                                        Convertion = x.Convertion,
+                                        BrandCe = x.BrandCe
+                                    }).ToList();
+                        }
+                        calcuLationFa.AddRange(calculationConvertion);
+
+                        rc.CalculationDetails.AddRange(calcuLationFa);
+                    }
+                        
+
+
+                    if (input.IsTisToTis)
+                    {
+                        var pbck1ConvertionTis = pbck1Convertion.Where(x => x.ProdAlias == "TIS").FirstOrDefault();
+                        if (rc.InventoryProductionTisToTis.CalculationDetails != null)
+                        {
+
+                            foreach (var calc in rc.InventoryProductionTisToTis.CalculationDetails)
+                            {
+                                if(pbck1ConvertionTis != null)
+                                {
+                                    calc.BrandCe = pbck1ConvertionTis.BrandCE;
+                                }
+                                
+                                
+                                
+                                calcuLationTis.Add(calc);
+
+                                //add with convertion tis-to-tis
+                                var witConvertionTis = new Lack1CalculationDetail() { 
+                                    AmountProduction = calc.AmountProduction,
+                                    AmountUsage = calc.AmountUsage,
+                                    BrandCe = calc.BrandCe,
+                                    Convertion = 1,
+                                    FaCode = calc.FaCode,
+                                    MaterialId = calc.MaterialId,
+                                    Ordr = calc.Ordr,
+                                    PlantId = calc.PlantId,
+                                    Proportional = calc.Proportional,
+                                    Type = Enums.Lack1Calculation.WithConvertion,
+                                    UomProduction = calc.UomProduction,
+                                    UomUsage = calc.UomUsage
+                                        
+                                };
+                                calcuLationTis.Add(witConvertionTis);
+                            }
+
+                            rc.CalculationDetails.AddRange(calcuLationTis);
+
                         }
 
-                        
-                        
-
-                        
-                        
-
-                        
+                            
                     }
+
+                        
+                        
+
+                        
+                        
+
+                        
+                }
             }
 
             if (usageNotHaveProd.Count > 0)
@@ -5127,7 +5133,7 @@ namespace Sampoerna.EMS.BLL
                     InvMovementAllList =
                         Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
                 };
-                totalUsage = totalUsage + mvt201 - mvt201Asigned;
+                //totalUsage = totalUsage;
                 rc.TotalUsageTisToTis = totalUsage;
                 rc.TotalLaboratorium = mvt201 - mvt201Asigned;
             }
