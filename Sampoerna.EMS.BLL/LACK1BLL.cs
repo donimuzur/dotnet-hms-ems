@@ -219,7 +219,8 @@ namespace Sampoerna.EMS.BLL
 
 
             newdata.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
-
+            newdata.PERIOD_MONTH = input.PeriodMonth;
+            newdata.PERIOD_YEAR = input.PeriodYear;
             _lack1Service.Insert(newdata);
 
             _uow.SaveChanges();
