@@ -163,6 +163,8 @@ namespace Sampoerna.EMS.XMLReader
             var rc = new MailNotification();
             var toList = new List<String>();
 
+            rc.IsDataExist = false;
+
             foreach (var invalidCk1 in invalidCk1List)
             {
                 toList.AddRange(invalidCk1.userTo.Where(x => x.EMAIL != "").Select(x => x.EMAIL).ToList());
@@ -184,15 +186,9 @@ namespace Sampoerna.EMS.XMLReader
                 rc.CC.Add(controller.EMAIL);
             }
 
-            foreach (var invalidCk1 in invalidCk1List)
+            if (rc.Body.Contains("</td>"))
             {
-                foreach (var brand in invalidCk1.BrandList)
-                {
-                    if (!brand.SentFlag)
-                    {
-                        rc.IsDataExist = true;
-                    }
-                }
+                rc.IsDataExist = true;
             }
 
             return rc;
