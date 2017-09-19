@@ -1677,8 +1677,9 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
-            
+            var _periodSumaries = Mapper.Map<List<PeriodSummary>>(dbData.LACK1_PERIOD_SUMMARY);
 
+            dtToReturn.PeriodSummaries = _periodSumaries.OrderBy(x => x.Type).ToList();
             if (dtToReturn.IsSupplierNppbkcImport)
             {
                 var supplierPlant = _t001WServices.GetById(dtToReturn.SupplierPlantId);
