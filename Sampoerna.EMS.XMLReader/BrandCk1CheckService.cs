@@ -127,16 +127,16 @@ namespace Sampoerna.EMS.XMLReader
                 }
             }
 
-            ProcessDataToEmail(invalidCk1List, allActiveBrand);
+            ProcessDataToEmail(invalidCk1List, allActiveBrand, allLastCk1ItemXmonths);
         }
 
-        private void ProcessDataToEmail(List<InvalidBrandByCk1ForEmail> invalidCk1List, List<ZAIDM_EX_BRAND> allActiveBrand)
+        private void ProcessDataToEmail(List<InvalidBrandByCk1ForEmail> invalidCk1List, List<ZAIDM_EX_BRAND> allActiveBrand, List<CK1_ITEM> ck1ItemList)
         {
             if (invalidCk1List.Count > 0)
             {
                 //do email things here
                 var success = false;
-                var mailNotif = ProcessEmailQuotaNotification(invalidCk1List);
+                var mailNotif = ProcessEmailQuotaNotification(invalidCk1List, ck1ItemList);
                 if (mailNotif != null && mailNotif.IsDataExist)
                 {
                     if (mailNotif.IsCCExist)
@@ -157,7 +157,7 @@ namespace Sampoerna.EMS.XMLReader
             }
         }
 
-        private MailNotification ProcessEmailQuotaNotification(List<InvalidBrandByCk1ForEmail> invalidCk1List)
+        private MailNotification ProcessEmailQuotaNotification(List<InvalidBrandByCk1ForEmail> invalidCk1List, List<CK1_ITEM> ck1ItemList)
         {
             var bodyMail = new StringBuilder();
             var rc = new MailNotification();
@@ -175,7 +175,7 @@ namespace Sampoerna.EMS.XMLReader
 
             bodyMail.Append("Kindly be informed, brands below are Never used on any CK-1 (domestic) in the last 5 months. <br />");
 
-            bodyMail.Append(BuildBodyMailForQuotaNotification(invalidCk1List));
+            bodyMail.Append(BuildBodyMailForQuotaNotification(invalidCk1List, ck1ItemList));
 
             rc.To.AddRange(toList.Distinct());
 
@@ -194,7 +194,7 @@ namespace Sampoerna.EMS.XMLReader
             return rc;
         }
 
-        private string BuildBodyMailForQuotaNotification(List<InvalidBrandByCk1ForEmail> invalidCk1List)
+        private string BuildBodyMailForQuotaNotification(List<InvalidBrandByCk1ForEmail> invalidCk1List, List<CK1_ITEM> ck1ItemList)
         {
             var bodyMail = new StringBuilder();
             var bodyMailDeactivated = new StringBuilder();
@@ -231,87 +231,92 @@ namespace Sampoerna.EMS.XMLReader
             foreach (var invalidCk1 in invalidCk1List) { 
                 foreach (var brand in invalidCk1.BrandList)
                 {
-                    if (!brand.SentFlag)
-                    {
+                    var facodeByNppbkc = ck1ItemList.Where(x => x.CK1.NPPBKC_ID == brand.NppbkcId && x.FA_CODE == brand.FaCode && x.MATERIAL_ID == brand.StickerCode).FirstOrDefault();
+
+                    //only add item if other plant same nppbkc have no ck1
+                    if (facodeByNppbkc == null) { 
+                        if (!brand.SentFlag)
+                        {
                         
-                        var regDateTable = "";
-                        brand.IsDeactivated = false;
+                            var regDateTable = "";
+                            brand.IsDeactivated = false;
 
-                        //bodyMail.Append("<tr>" +
-                        //            "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
-                        //            "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
-                        //            "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
-                        //            "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
-                        //            "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
-                        //            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff + "</td>");
-                        if (brand.LastCk1 != null)
-                        {
-
-                            if(brand.LastCk1.ORDER_DATE >= tresHoldBeginDate) continue;
-
-                            regDateTable = "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_SAP_NUMBER + "</td>" +
-                                "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
-
-                                "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_DATE.ToString("dd MMM yyyy") + "</td>" +
-                                "</tr>";
-
-                            if (brand.LastCk1.ORDER_DATE != null && brand.LastCk1.ORDER_DATE.Value <= tresHoldEndDate)
+                            //bodyMail.Append("<tr>" +
+                            //            "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                            //            "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
+                            //            "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                            //            "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                            //            "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
+                            //            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff + "</td>");
+                            if (brand.LastCk1 != null)
                             {
-                                brand.IsDeactivated = true;
-                            }
-                            
-                        }
-                        else
-                        {
 
-                            if (brand.SkepDate != null)
-                            {
-                                if (brand.SkepDate >= tresHoldBeginDate) continue;
+                                if(brand.LastCk1.ORDER_DATE >= tresHoldBeginDate) continue;
 
-                                regDateTable = "<td style='border: 1px solid black;' colspan='2'> Skep : " +
-                                               brand.SkepNumber + "</td>" +
-                                               "<td style='border: 1px solid black; padding : 5px'>" +
-                                               brand.SkepDate.Value.ToString("dd MMM yyyy") + "</td>" +
-                                               "</tr>";
+                                regDateTable = "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_SAP_NUMBER + "</td>" +
+                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
 
-                                if (brand.SkepDate <= tresHoldEndDate)
+                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_DATE.ToString("dd MMM yyyy") + "</td>" +
+                                    "</tr>";
+
+                                if (brand.LastCk1.ORDER_DATE != null && brand.LastCk1.ORDER_DATE.Value <= tresHoldEndDate)
                                 {
                                     brand.IsDeactivated = true;
                                 }
+                            
                             }
                             else
                             {
-                                regDateTable = "<td style='border: 1px solid black;' colspan='3'>-</td>" +
-                                               "</tr>";
-                            }
+
+                                if (brand.SkepDate != null)
+                                {
+                                    if (brand.SkepDate >= tresHoldBeginDate) continue;
+
+                                    regDateTable = "<td style='border: 1px solid black;' colspan='2'> Skep : " +
+                                                   brand.SkepNumber + "</td>" +
+                                                   "<td style='border: 1px solid black; padding : 5px'>" +
+                                                   brand.SkepDate.Value.ToString("dd MMM yyyy") + "</td>" +
+                                                   "</tr>";
+
+                                    if (brand.SkepDate <= tresHoldEndDate)
+                                    {
+                                        brand.IsDeactivated = true;
+                                    }
+                                }
+                                else
+                                {
+                                    regDateTable = "<td style='border: 1px solid black;' colspan='3'>-</td>" +
+                                                   "</tr>";
+                                }
                             
-                        }
+                            }
 
-                        if (!brand.IsDeactivated)
-                        {
-                            bodyMail.Append("<tr>" +
-                                            "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
-                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
-                                            "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
-                                            "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
-                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
-                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff +
-                                            "</td>");
+                            if (!brand.IsDeactivated)
+                            {
+                                bodyMail.Append("<tr>" +
+                                                "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                                "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
+                                                "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                                "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                                                "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
+                                                "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff +
+                                                "</td>");
 
-                            bodyMail.Append(regDateTable);
-                        }
-                        else
-                        {
-                            bodyMailDeactivated.Append("<tr>" +
-                                            "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
-                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
-                                            "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
-                                            "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
-                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
-                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff +
-                                            "</td>");
+                                bodyMail.Append(regDateTable);
+                            }
+                            else
+                            {
+                                bodyMailDeactivated.Append("<tr>" +
+                                                "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                                "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
+                                                "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                                "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                                                "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
+                                                "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff +
+                                                "</td>");
 
-                            bodyMailDeactivated.Append(regDateTable);
+                                bodyMailDeactivated.Append(regDateTable);
+                            }
                         }
                     }
                 }
