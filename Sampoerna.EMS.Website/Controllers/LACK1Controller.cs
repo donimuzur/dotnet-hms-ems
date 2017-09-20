@@ -982,7 +982,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (item.Type == Enums.Lack1SummaryPeriod.Current)
                     {
-                        detailRow.Saldo = "0";
+                        detailRow.Saldo = "";
                     }
                     else
                     {
