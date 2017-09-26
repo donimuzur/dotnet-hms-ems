@@ -1677,8 +1677,9 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
-            
+            var _periodSumaries = Mapper.Map<List<PeriodSummary>>(dbData.LACK1_PERIOD_SUMMARY);
 
+            dtToReturn.PeriodSummaries = _periodSumaries.OrderBy(x => x.Type).ToList();
             if (dtToReturn.IsSupplierNppbkcImport)
             {
                 var supplierPlant = _t001WServices.GetById(dtToReturn.SupplierPlantId);
@@ -1827,36 +1828,36 @@ namespace Sampoerna.EMS.BLL
                     c =>
                         ((c.CK5_TYPE != Enums.CK5Type.Waste) && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
+            //update regulasi september 2017
+            //if (dbData.PERIOD_MONTH == 1)
+            //{
+            //    var lastLack1 = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
+            //    {
+            //        CompanyCode = dbData.BUKRS,
+            //        ExcisableGoodsType = dbData.EX_GOODTYP,
+            //        ExcludeLack1Id = dbData.LACK1_ID,
+            //        Lack1Level = dbData.LACK1_LEVEL,
+            //        NppbkcId = dbData.NPPBKC_ID,
+            //        PeriodTo = new DateTime(dbData.PERIOD_YEAR.Value, dbData.PERIOD_MONTH.Value, 1),
+            //        ReceivedPlantId = dtToReturn.LevelPlantId,
+            //        SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS
+            //    });
 
-            if (dbData.PERIOD_MONTH == 1)
-            {
-                var lastLack1 = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
-                {
-                    CompanyCode = dbData.BUKRS,
-                    ExcisableGoodsType = dbData.EX_GOODTYP,
-                    ExcludeLack1Id = dbData.LACK1_ID,
-                    Lack1Level = dbData.LACK1_LEVEL,
-                    NppbkcId = dbData.NPPBKC_ID,
-                    PeriodTo = new DateTime(dbData.PERIOD_YEAR.Value, dbData.PERIOD_MONTH.Value, 1),
-                    ReceivedPlantId = dtToReturn.LevelPlantId,
-                    SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS
-                });
+            //    if (lastLack1 != null && lastLack1.LACK1_PERIOD_SUMMARY.Count > 0)
+            //    {
+            //        var lastSummary =
+            //            lastLack1.LACK1_PERIOD_SUMMARY.Where(x => x.TYPE == Enums.Lack1SummaryPeriod.End)
+            //                .FirstOrDefault();
+            //        dtToReturn.Lack1IncomeDetail.Insert(0, new Lack1IncomeDetailDto()
+            //        {
+            //            AMOUNT = lastSummary != null ? lastSummary.SALDO.HasValue ? lastSummary.SALDO.Value : 0 : 0,
+            //            REGISTRATION_NUMBER = "Saldo akhir periode sebelumnya",
+            //            CK5_ID = -99
 
-                if (lastLack1 != null && lastLack1.LACK1_PERIOD_SUMMARY.Count > 0)
-                {
-                    var lastSummary =
-                        lastLack1.LACK1_PERIOD_SUMMARY.Where(x => x.TYPE == Enums.Lack1SummaryPeriod.End)
-                            .FirstOrDefault();
-                    dtToReturn.Lack1IncomeDetail.Insert(0, new Lack1IncomeDetailDto()
-                    {
-                        AMOUNT = lastSummary != null ? lastSummary.SALDO.HasValue ? lastSummary.SALDO.Value : 0 : 0,
-                        REGISTRATION_NUMBER = "Saldo akhir periode sebelumnya",
-                        LACK1_ID = -99
+            //        });
+            //    }
 
-                    });
-                }
-
-            }
+            //}
 
 
             //List<Lack1CalculationDetail> dataCalculations = new List<Lack1CalculationDetail>();
@@ -3050,15 +3051,15 @@ namespace Sampoerna.EMS.BLL
 
             if (input.PeriodMonth == 1)
             {
-                currentPeriodData.Income += startPeriodData.Saldo;
-
+                //currentPeriodData.Income += startPeriodData.Saldo;
+                var saldo = startPeriodData.Saldo;
                 startPeriodData = new PeriodSummary()
                 {
                     Income = 0,
                     Usage = 0,
                     Laboratorium = 0,
                     Return = 0,
-                    Saldo = 0,
+                    Saldo = saldo,
                     Type = Enums.Lack1SummaryPeriod.Start
                 };
             }

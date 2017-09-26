@@ -162,6 +162,8 @@ namespace Sampoerna.EMS.XMLReader
             var rc = new MailNotification();
             var toList = new List<String>();
 
+            rc.IsDataExist = false;
+
             List<ZAIDM_EX_BRAND> brandDeactivated = new List<ZAIDM_EX_BRAND>();
 
             foreach (var invalidCk5 in invalidCk5List)
@@ -185,15 +187,9 @@ namespace Sampoerna.EMS.XMLReader
                 rc.CC.Add(controller.EMAIL);
             }
 
-            foreach (var invalidCk5 in invalidCk5List)
+            if (rc.Body.Contains("</td>"))
             {
-                foreach (var brand in invalidCk5.BrandList)
-                {
-                    if (!brand.SentFlag)
-                    {
-                        rc.IsDataExist = true;
-                    }
-                }
+                rc.IsDataExist = true;
             }
 
             return rc;
