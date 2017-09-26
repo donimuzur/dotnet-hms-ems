@@ -11,5 +11,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? DECREE_DATE { get; set; }
         public string SUPPLIER_COMPANY { get; set; }
         public string DisplayDecreeDate { get; set; }
+
+        public string Uom { get; set; }
+
+        public decimal ApprovedQty { get; set; }
     }
 }

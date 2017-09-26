@@ -361,7 +361,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="row" id="ck5TrialPbck1Reduce">
                                             <label class="col-md-4">Reduce PBCK-1</label>
                                             <div class="col-md-8">
@@ -369,7 +369,14 @@
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-3">
+                                        <div class="row" id="ck5ManualLab" style="display: none">
+                                            <label class="col-md-4">LACK-1 Lab</label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.IsLack1Lab, new { @class = "checkbox" })
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             }
 

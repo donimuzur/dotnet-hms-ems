@@ -1,0 +1,4 @@
+﻿
+@model DateTime?
+
+@Html.TextBox("", (Model.HasValue ? string.Format("{yyyy}", Model.Value) : string.Empty), new { @class = "form-control", @disabled = "disabled" })

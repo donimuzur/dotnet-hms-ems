@@ -22,6 +22,66 @@
     return rc;
 }
 
+function generateHeaderTableNew() {
+    var rc =  /*start header*/
+        '<thead>' +
+            '<tr>' +
+                '<th rowspan="2">Uraian</th>' +
+                '<th rowspan="2">Pemasukan</th>' +
+                '<th colspan="2">Penggunaan</th>' +
+                
+                '<th rowspan="2">Pengembalian</th>' +
+                '<th rowspan="2">Saldo</th>' +
+                '<th rowspan="2">Saldo(SAP)</th>' +
+            '</tr>' +
+            '<tr>' +
+                '<th>Bahan Baku/Penolong</th>' +
+                '<th>Laboratorium</th>' +
+                
+            '</tr>' +
+        '</thead>';
+    /*end of header*/
+    return rc;
+}
+
+function generateHeaderTableCK5() {
+    var rc =  /*start header*/
+        '<thead>' +
+            '<tr>' +
+                '<th >No</th>' +
+                '<th >No. CK5</th>' +
+                '<th >Tanggal CK5</th>' +
+
+                '<th>Jumlah</th>' +
+                
+            '</tr>' +
+            
+        '</thead>';
+    /*end of header*/
+    return rc;
+}
+
+
+function generateHeaderDetailsTable() {
+    var rc =  /*start header*/
+        '<thead>' +
+            '<tr>' +
+                //'<th >Process Order</th>' +
+                '<th >Material</th>' +
+                '<th >Amount Usage</th>' +
+                '<th >FaCode / Material Id</th>' +
+                '<th >Brand Name</th>' +
+                '<th >Amount Production</th>' +
+                '<th >Uom</th>' +
+                
+                
+            '</tr>' +
+            
+        '</thead>';
+    /*end of header*/
+    return rc;
+}
+
 function generateHeaderTableDataCsVsFA(issummary) {
     var rc =  /*start header*/
         '<thead>' +
@@ -247,6 +307,54 @@ function generateRowDataCsVsFaWaste(item, issummary) {
 
 }
 
+
+function generateTableDetails(data) {
+    var tables = {};
+    
+    tables.noconvertion = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
+    tables.noconvertion = tables.noconvertion + '<tbody>';
+
+    tables.convertion = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
+    tables.convertion = tables.noconvertion + '<tbody>';
+
+    console.log('Calculation Details 1');
+    
+    if (data.CalculationDetails != null && data.CalculationDetails.length > 0) {
+        if (data.CalculationDetails) {
+            var rowIndex = 1;
+            var rowCount = data.CalculationDetails.length;
+            for (var i = 0; i < data.CalculationDetails.length; i++) {
+                rowIndex = rowIndex + 1;
+                var item = '<tr>'+
+                    //'<td>' + data.CalculationDetails[i].Ordr + '</td>' +
+                    '<td>' + data.CalculationDetails[i].MaterialId + '</td>' +
+                    '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountUsage) + '</td>'+
+                    '<td>' + data.CalculationDetails[i].FaCode + '</td>' +
+                    '<td>' + data.CalculationDetails[i].BrandCe + '</td>' +
+                    
+                    '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountProduction) + '</td>'+
+                    '<td>' + data.CalculationDetails[i].UomProduction + '</td>' +
+                    '</tr>';
+                
+                if (data.CalculationDetails[i].Type == 1) {
+                    tables.noconvertion = tables.noconvertion + item;
+                } else {
+                    tables.convertion = tables.convertion + item;
+                }
+                
+                
+            }
+            
+            /*footer*/
+            
+            
+        }
+    }
+    tables.noconvertion = tables.noconvertion + '</tbody></table>';
+    tables.convertion = tables.convertion + '</tbody></table>';
+    return tables;
+}
+
 function generateTable(data) {
     console.log('Only Tis To Fa');
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
@@ -330,9 +438,136 @@ function generateTable(data) {
     return rc;
 }
 
+function generateTableNew(data) {
+    console.log('Only Tis To Fa New');
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableNew();
+    
+    //bulan lalu here
+    if (data.StartPeriodData != null) {
+        rc = rc +
+            /*First Record*/
+            '<td >s.d sebelum bulan pelaporan</td>' +
+            '<td>' +
+            ((data.StartPeriodData.Income == 0) ? '-' : ThausandSeperator(data.StartPeriodData.Income, 2)) + '</td>' +
+            '<td >' + ThausandSeperator(data.StartPeriodData.Usage, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.StartPeriodData.Laboratorium, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.StartPeriodData.Return, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.StartPeriodData.Saldo, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+            '</tr>';
+
+    } else {
+        rc = rc +
+            /*First Record*/
+            '<td >s.d sebelum bulan pelaporan</td>' +
+            '<td></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '</tr>';
+    }
+    
+    //bulan pelaporan here
+    if (data.CurrentPeriodData != null) {
+        rc = rc +
+            /*First Record*/
+            '<td >bulan pelaporan</td>' +
+            '<td>' +
+            ((data.CurrentPeriodData.Income == 0) ? '-' : ThausandSeperator(data.CurrentPeriodData.Income, 2)) + '</td>' +
+            '<td >' + ThausandSeperator(data.CurrentPeriodData.Usage, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.CurrentPeriodData.Laboratorium, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.CurrentPeriodData.Return, 2) + '</td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '</tr>';
+    } else {
+        rc = rc +
+            /*First Record*/
+            '<td >bulan pelaporan</td>' +
+            '<td></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '</tr>';
+    }
+
+    
+    
+    
+    //s.d bulan pelaporan here
+    if (data.EndPeriodData != null) {
+        rc = rc +
+            /*First Record*/
+            '<td >s.d bulan pelaporan</td>' +
+            '<td>' +
+            ((data.EndPeriodData.Income == 0) ? '-' : ThausandSeperator(data.EndPeriodData.Income, 2)) + '</td>' +
+            '<td >' + ThausandSeperator(data.EndPeriodData.Usage, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.EndPeriodData.Laboratorium, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.EndPeriodData.Return, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.EndPeriodData.Saldo, 2) + '</td>' +
+            '<td >' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
+            '</tr>';
+    } else {
+        rc = rc +
+            /*First Record*/
+            '<td >s.d bulan pelaporan</td>' +
+            '<td></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '<td ></td>' +
+            '</tr>';
+    }
+    
+
+    /*footer*/
+    rc = rc + '</tbody></table>';
+
+    //rc = rc + generatePlant(data.Lack1Plant);
+    //if (data.Lack1Pbck1Mapping) {
+    //    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //}
+
+    return rc;
+}
+
+
+function generateTableCk5(data) {
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableCK5();
+    rc = rc + '<tbody><tr><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr>';
+    var rowIndex = 0;
+    var rowCount = data.IncomeList.length;
+    if (data.IncomeList != null && data.IncomeList.length > 0) {
+        for (var i = 0; i < data.IncomeList.length; i++) {
+            rowIndex = rowIndex + 1;
+            var item = '<tr>' +
+                '<td>' + rowIndex + '</td>' +
+                '<td>' + data.IncomeList[i].RegistrationNumber + '</td>' +
+                '<td>' + data.IncomeList[i].StringRegistrationDate + '</td>' +
+                
+                '<td>' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
+            /*rc.append(item);*/
+            rc = rc + item;
+        }
+    }
+    rc = rc + '<tr>' +
+        '<td colspan=3>Total</td>' +
+        '<td>' + ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td>' +
+        '</tr>'+
+        '<tr style="display:none"><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" /></td></tr>'+
+        '</tbody></table>';
+
+    return rc;
+}
+
 function generateTableWithTisToTis(data) {
     console.log('With Tis To Tis');
-    console.log(data);
+    debugger;
     
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>';
@@ -401,7 +636,7 @@ function generateContentTableLack1WithTisToTisOnlyOneIncomeList(data) {
     //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
     
     /*Second record*/
-    rc = rc + '<tr><td style="border-bottom:none">' + ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
+    rc = rc + '<tr><td style="border-bottom:none">' + ThausandSeperator(data.TotalUsageTisToTis + data.TotalLaboratorium, 2) + '</td>' +
         '<td style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
         '<td style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
 
@@ -445,7 +680,7 @@ function generateContentTableLack1WithTisToTis(data) {
     rowIndex = rowIndex + 1;
     rc = rc + '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[rowSpan1].RegistrationNumber + ' - ' + data.IncomeList[rowSpan1].StringRegistrationDate + '</td>' +
                     '<td>' + ThausandSeperator(data.IncomeList[rowSpan1].Amount) + '</td>' +
-                    '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
+                    '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + ThausandSeperator(data.TotalUsageTisToTis + data.TotalLaboratorium, 2) + '</td>' +
                     '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
                     '<td rowspan="' + rowSpan2 + '" style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
 
@@ -559,6 +794,50 @@ function generatePbck1Mapping(data) {
     } else {
         rc = "-";
     }
+    return rc;
+}
+
+
+function generateEmptyck5Table() {
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableCK5();
+    rc = rc + '<tbody><tr><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr>';
+    
+            
+            var item = '<tr>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+
+                '<td></td></tr>';
+            /*rc.append(item);*/
+            rc = rc + item;
+    
+    rc = rc + '<tr>' +
+        '<td colspan=3>Total</td>' +
+        '<td>-</td>' +
+        '</tr>' +
+        '<tr style="display:none"><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "0" /></td></tr>' +
+        '</tbody></table>';
+
+    return rc;
+}
+
+function generateEmptyDetailsTable() {
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
+    rc = rc + '<tbody>';
+    var item = '<tr>' +
+                    //'<td></td>' +
+                    '<td></td>' +
+                    '<td></td>' +
+                    '<td></td>' +
+
+                    '<td></td>' +
+                    '<td></td>' +
+                    '</tr>';
+
+    rc = rc + item;
+    /*footer*/
+    rc = rc + '</tbody></table>';
     return rc;
 }
 

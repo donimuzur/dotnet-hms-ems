@@ -3031,34 +3031,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 return true;
             }
 
-            //try
-            //{
-            //create xml file
-            var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
+            try
+            {
+                //create xml file
+                var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
 
-            var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "CK5APP_" +
-                           model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-            var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
-                                   model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-            ck5XmlDto.Ck5PathXml = fileName;
+                var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "CK5APP_" +
+                               model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                                       model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                ck5XmlDto.Ck5PathXml = fileName;
 
-            XmlCK5DataWriter rt = new XmlCK5DataWriter();
+                XmlCK5DataWriter rt = new XmlCK5DataWriter();
             
-            rt.CreateCK5Xml(ck5XmlDto);
-            _ck5Bll.CK5Workflow(input);
-            rt.MoveTempToOutbound(fileName, outboundFilePath);
-            return true;
+                rt.CreateCK5Xml(ck5XmlDto);
+            
+                rt.MoveTempToOutbound(fileName, outboundFilePath);
+            
+                _ck5Bll.CK5Workflow(input);
+                return true;
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    //failed create xml...
-            //    //rollaback the update
-            //    _ck5Bll.GovApproveDocumentRollback(input);
-            //    AddMessageInfo("Failed Create CK5 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
+            }
+            catch (Exception ex)
+            {
+                //failed create xml...
+                //rollaback the update
+                _ck5Bll.GovApproveDocumentRollback(input);
+                AddMessageInfo("Failed Create CK5 XMl message : " + ex.Message, Enums.MessageInfoType.Error);
 
-            //    return false;
-            //}
+                return false;
+            }
 
         }
 
@@ -5850,6 +5852,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.SEALING_NOTIF_DATE = model.SealingNotifDate;
                 input.UNSEALING_NOTIF_NUMBER = model.UnSealingNotifNumber;
                 input.UNSEALING_NOTIF_DATE = model.UnsealingNotifDate;
+                input.IS_REDUCE_PBCK1 = model.IsReducePbck1Ck5Trial;
+                input.IS_LAB = model.IsLack1Lab;
                 
                 input.Ck5MaterialDtos = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels);
 

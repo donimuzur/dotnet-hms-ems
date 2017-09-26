@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.BLL", "Sampoerna.EMS.BLL\Sampoerna.EMS.BLL.csproj", "{810DB88F-FBFD-4AF7-89BC-4612F101D5B9}"
 EndProject
@@ -21,13 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Website", "Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.XMLReader", "Sampoerna.EMS.XMLReader\Sampoerna.EMS.XMLReader.csproj", "{5370F240-5512-461A-9956-351009512C94}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{ED0A63DC-7697-4F13-B19E-61A0BEA43A7C}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.Utils", "Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj", "{506150A8-FD10-433E-8184-5A5FF03D53FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.AutoMapperExtensions", "Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj", "{3CDDFD06-1254-4BD5-82ED-283F26C38EEA}"
@@ -39,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.MessagingService", "Sampoerna.EMS.MessagingService\Sampoerna.EMS.MessagingService.csproj", "{C0C96FBC-D939-4121-B79C-1AB8B96092DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.LinqExtensions", "Sampoerna.EMS.LinqExtensions\Sampoerna.EMS.LinqExtensions.csproj", "{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampoerna.EMS.CustomService", "EMS.CustomService\Sampoerna.EMS.CustomService.csproj", "{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -200,6 +195,18 @@ Global
 		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2C4B45EA-929B-4CC1-9BAE-824D900AF5F9}.Release|x86.ActiveCfg = Release|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Debug|x86.Build.0 = Debug|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Release|x86.ActiveCfg = Release|Any CPU
+		{2844B4E7-0CFC-4470-ACD8-B6FD848F6198}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

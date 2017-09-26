@@ -35,9 +35,9 @@ namespace Sampoerna.EMS.BLL.Services
                 && c.STATUS == Enums.DocumentStatus.Completed
                 && c.IS_NPPBKC_IMPORT == input.IsSupplierNppbkcImport
                 && (c.PERIOD_FROM.Value.Month <= input.PeriodMonth 
-                && c.PERIOD_TO.Value.Month >= input.PeriodMonth 
-                
-                && c.PERIOD_FROM.Value.Year == input.PeriodYear), null, "").ToList();
+                && c.PERIOD_TO.Value.Month >= input.PeriodMonth
+
+                && c.PERIOD_FROM.Value.Year == input.PeriodYear), null, "PBCK1_PROD_CONVERTER").ToList();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
@@ -52,6 +53,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
+        public decimal TotalLaboratorium { get; set; }
         public decimal? TotalUsageTisToTis { get; set; }
         public decimal EndingBalance { get; set; }
         public decimal CloseBalance { get; set; }
@@ -76,6 +78,15 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public Lack1InventoryAndProductionModel InventoryProductionTisToTis { get; set; }
         public List<Lack1SummaryProductionItemModel> FusionSummaryProductionList { get; set; }//set by controller
         public List<Lack1ProductionDetailItemSummaryByProdTypeModel> FusionSummaryProductionByProdTypeList { get; set; }
+
+        public List<Lack1CalculationModel> CalculationDetails { get; set; }
+
+        public List<Lack1PeriodSummaryModel> PeriodSummaries { get; set; }
+
+        public Lack1PeriodSummaryModel StartPeriodData { get; set; }
+        public Lack1PeriodSummaryModel CurrentPeriodData { get; set; }
+        public Lack1PeriodSummaryModel EndPeriodData { get; set; }
+
         public Lack1RemarkModel Ck5RemarkData { get; set; }
         public bool IsEtilAlcohol { get; set; }
         public bool HasWasteData { get; set; }

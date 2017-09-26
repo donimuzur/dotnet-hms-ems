@@ -681,7 +681,7 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            var plant = _plantBll.GetT001WById(dbData.PLANT_ID);
+            //var plant = _plantBll.GetT001WById(dbData.PLANT_ID);
             var nppbkcId = dbData.NPPBKC_ID;
 
             var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()

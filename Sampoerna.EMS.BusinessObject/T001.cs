@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
         public string BUTXT_ALIAS { get; set; }
+        public string PKP { get; set; }
     
         public virtual ICollection<HEADER_FOOTER> HEADER_FOOTER { get; set; }
         public virtual ICollection<T001K> T001K { get; set; }

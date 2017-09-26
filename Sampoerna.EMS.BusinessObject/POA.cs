@@ -22,6 +22,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.PBCK7 = new HashSet<PBCK7>();
             this.PBCK4 = new HashSet<PBCK4>();
             this.PBCK3 = new HashSet<PBCK3>();
+            this.POA_EXCISER = new HashSet<POA_EXCISER>();
         }
     
         public string POA_ID { get; set; }
@@ -49,5 +50,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PBCK7> PBCK7 { get; set; }
         public virtual ICollection<PBCK4> PBCK4 { get; set; }
         public virtual ICollection<PBCK3> PBCK3 { get; set; }
+        public virtual ICollection<POA_EXCISER> POA_EXCISER { get; set; }
     }
 }

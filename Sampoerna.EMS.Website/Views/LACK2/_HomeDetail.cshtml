@@ -48,6 +48,15 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">NPWP</label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.Npwp, new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -139,6 +148,7 @@
                                         <th>Amount</th>
                                         <th>Company</th>
                                         <th>NPPBKC</th>
+                                        <th>NPWP</th>
                                         <th>Address</th>
                                     </tr>
                                 </thead>
@@ -157,6 +167,7 @@
                                                 <td>@Model.Items[i].Ck5ItemQty</td>
                                                 <td>@Model.Items[i].CompanyName</td>
                                                 <td>@Model.Items[i].CompanyNppbkc</td>
+                                                <td>@Model.Items[i].CompanyNpwp</td>
                                                 <td>@Model.Items[i].CompanyAddress</td>
                                             </tr>
                                         }

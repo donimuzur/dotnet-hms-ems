@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? GRAND_TOTAL_EX { get; set; }
         public string DEST_PLANT_COMPANY_NAME { get; set; }
         public string DEST_PLANT_NPPBKC_ID { get; set; }
+        public string DEST_PLANT_NPWP { get; set; }
         public string DEST_PLANT_ADDRESS { get; set; }
     }
 }

@@ -128,7 +128,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.STO_SENDER_NUMBER, opt => opt.MapFrom(src => src.StoSenderNumber))
               .ForMember(dest => dest.STO_RECEIVER_NUMBER, opt => opt.MapFrom(src => src.StoReceiverNumber))
               .ForMember(dest => dest.STOB_NUMBER, opt => opt.MapFrom(src => src.StobNumber))
-
+              .ForMember(dest => dest.FLAG_FOR_LACK1_LAB, opt => opt.MapFrom(src => src.IsLack1Lab))
               ;
 
             Mapper.CreateMap<CK5Dto, CK5FormViewModel>().IgnoreAllNonExisting()
@@ -216,6 +216,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.IsReducePbck1Ck5Trial, opt => opt.MapFrom(src => src.REDUCE_TRIAL.HasValue ? src.REDUCE_TRIAL : false))
             .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
             .ForMember(dest => dest.IsTriggerSto, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Return))
+            .ForMember(dest => dest.IsLack1Lab, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1_LAB))
             ;
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();

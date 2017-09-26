@@ -101,6 +101,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal BeginingBalance { get; set; }
         public decimal CloseBalance { get; set; }
         public decimal TotalIncome { get; set; }
+        public decimal TotalLaboratorium { get; set; }
         public decimal Usage { get; set; }
         public decimal? UsageTisToTis { get; set; }
         public decimal EndingBalance { get; set; }
@@ -136,6 +137,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Lack1RemarkDto Ck5RemarkData { get; set; }
         public bool IsEtilAlcohol { get; set; }
         public bool HasWasteData { get; set; }
+
+        public List<Lack1CalculationDetail> CalculationDetails { get; set; }
+
+        public List<PeriodSummary> PeriodSummaries { get; set; }
+
+        public PeriodSummary StartPeriodData { get; set; }
+        public PeriodSummary CurrentPeriodData { get; set; }
+        public PeriodSummary EndPeriodData { get; set; }
     }
 
     public class Lack1RemarkDto

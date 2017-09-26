@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegSupportingDocumentModel>
+
+@{
+    Layout = null;
+}
+
+<style>
+    .file {
+        visibility: hidden;
+        position: absolute;
+    }
+</style>
+@foreach (var doc in Model)
+{
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-4">
+                <span>@doc.Name</span>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => doc.File, new { @type = "file", @class = "form-control", @id = "supportDocFile" + doc.Id })
+                    <div class="col-md-12">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" disabled placeholder="Select file" id="supportDocText@(doc.Id)">
+                        </div>
+                        <div class="col-md-2">
+                            <span class="input-group-btn">
+                                <button class="browse btn btn-primary" type="button" id="supportDoc@(doc.Id)">Browse</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model == null || Model.Count() <= 0)
+{
+    <div class="alert alert-info">No Supporting Documents</div>
+}
+

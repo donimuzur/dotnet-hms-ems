@@ -678,6 +678,18 @@ namespace Sampoerna.EMS.BLL
 
                 #endregion
 
+                #region -----------Use For Lack10 Validation-------------
+                if (output.UseForLack10.Trim().ToLower() == "yes" || output.UseForLack10.Trim().ToLower() == "no")
+                {
+                    output.UseForLack10 = output.UseForLack10 ;
+                }
+                else
+                {
+                    output.UseForLack10 = output.UseForLack10;
+                    messageList.Add("Use For Lack10 [" + output.UseForLack10 + "] not valid");
+                }
+                #endregion
+
                 #region -------------- Set Message Info if exists ---------------
 
                 if (messageList.Count > 0)

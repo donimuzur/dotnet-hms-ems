@@ -213,11 +213,15 @@
             if ($("#CompanyCode").length) {
                 var companyCode = $('#CompanyCode').find("option:selected").val();
                 $('#NppbkcId option').remove();
+                $('#Npwp').val('');
                 console.log(companyCode);
                 if (companyCode == '' || $(this).find("option:selected").val() == '') {
                     $('#NppbkcId').append('<option value="">Select</option>');
                 } else {
                     ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "LACK2")', { companyId: companyCode });
+
+                    /*Load NPWP */
+                    ajaxGetNpwpByCompany('@Url.Action("GetNpwpByCompany", "LACK2")', { company: companyCode });
                 }
             }
         }
@@ -439,12 +443,13 @@
                         '<td>' + data[i].GRAND_TOTAL_EX + '</td>' +
                         '<td>' + data[i].DEST_PLANT_COMPANY_NAME + '</td>' +
                         '<td>' + data[i].DEST_PLANT_NPPBKC_ID + '</td>' +
+                        '<td>' + data[i].DEST_PLANT_NPWP + '</td>' +
                         '<td>' + data[i].DEST_PLANT_ADDRESS + '</td></tr>';
                     $('#tb-body-ck5-lack2').append(tableCk5Item);
                 }
             } else {
                 $('#tb-body-ck5-lack2').html("");
-                $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="6">no data<td></tr>');
+                $('#tb-body-ck5-lack2').append('<tr><td style="text-align:center" colspan="8">no data<td></tr>');
             }
         }
 
@@ -494,6 +499,19 @@
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
+        }
+
+        function ajaxGetNpwpByCompany(url, formData) {
+            if (formData.company) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        $('#Npwp').val(data);
+                    }
+                });
+            }
         }
 
     </script>

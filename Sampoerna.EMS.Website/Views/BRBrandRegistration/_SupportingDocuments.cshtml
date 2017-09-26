@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegSupportingDocumentModel>
+
+@{
+    Layout = null;
+    var index = 0;
+}
+
+<style>
+.file {
+  visibility: hidden;
+  position: absolute;
+}
+</style>
+@foreach (var doc in Model)
+{
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-4">
+                <span>@doc.Name</span>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group div_file">
+                    @*@Html.TextBoxFor(model => doc.File, new { @type = "file", @class = "form-control", @id ="supportDocFile" + doc.Id })*@
+
+                    <input type="hidden" name="BrandRegSupportingDocument[@index].Id" value="@doc.Id" />
+                    <input type="file" name="BrandRegSupportingDocument[@index].File" class="form-control file txt_file" id="txt_supportdoc_file@(doc.Id)" accept="application/pdf" data-fieldname = "Supporting Document" @if (doc.Path == "" || doc.Path == null) { <text> required="required" </text> }  />
+                    <div class="col-md-12">
+                        <div class="col-md-10 div_supportdoc_name" @if (!doc.IsBrowseFileEnable) { <text> style="display:none;" </text>  }>
+                            <input type="text" class="form-control txt_file_name" disabled placeholder="Select file" id="txt_supportdoc_name@(doc.Id)">
+                        </div>
+                        @if (doc.Path != "" && doc.Path != null)
+                        {                            
+                            <div class="col-md-12 div_file_href">
+                                <i class="fa fa-file"></i>
+                                <a href="@doc.Path" download>@doc.FileName</a>
+                                @if (!doc.IsReadonly)
+                                {
+                                    <button type="button" class="btn btn-blue pull-right btn_remove_supportdoc" data-fileuploadid="@doc.FileUploadId">Delete</button>
+                                }
+                            </div>
+                        }
+                        <div class="col-md-2 span_browsesupportdoc" @if (!doc.IsBrowseFileEnable || doc.IsReadonly) { <text> style="display:none;" </text>  }>
+                            <span>
+                                <button class="browse btn btn-blue btn_browsesupportdoc_file" data-index="@doc.Id" type="button">Browse</button>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    index++;
+
+}
+
+@if (Model == null || Model.Count() <= 0)
+{
+    <div class="alert alert-info">No Supporting Documents</div>
+}

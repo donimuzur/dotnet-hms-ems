@@ -1,0 +1,202 @@
+﻿
+@using Sampoerna.EMS.Website.Helpers
+@using Sampoerna.EMS.Core;
+@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditViewModel
+
+@{
+    ViewBag.Title = "Excise Credit";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            @*<div class="white-wrapper" style="display: none;">
+                    @using (Ajax.BeginForm("FilterOpenDocument", "ExciseCredit",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables"
+                    }, new { @class = "form-excise", role = "form" }))
+                    {
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC ID</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Filter.NPPBKC, Model.NppbkcList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Type</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Filter.ExciseCreditType, Model.TypeList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Year</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Filter.Year, Model.YearList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="last-form">
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <label class="col-md-4">POA</label>
+                                        <div id="divPoaList" class="col-md-8 ui-widget">
+                                            @Html.DropDownListFor(model => model.Filter.POA, Model.PoaList, "All", new { @class = "form-control selectpicker" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <label class="col-md-4">Creator</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.Filter.Creator, Model.CreatorList, "All", new { @class = "form-control selectpicker" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>*@
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_ExciseCreditTable")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading"></div>
+
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $('#MenuExciseCompletedListDocument').addClass('active');
+
+       function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectpicker").val($(".selectpicker option:first").val());
+            });
+
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#exciseTable')) {
+                table = $('#exciseTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#exciseTable').DataTable(
+                {
+                    "order": [[4, "desc"]],
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+
+            // Setup - add a text input to each footer cell
+            $('#exciseTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+
+        $("#SearchInput_NppbkcId").change(function () {
+            if ($("#SearchInput_NppbkcId").length) {
+                var nbck = $(this).find("option:selected").text();
+                $('#SearchInput_POA option').remove();
+                console.log(nbck);
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_POA').append('<option value="">All</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
+                }
+            }
+
+        });
+
+        $(document).ready(function () {
+            setupDataTables();
+        });
+
+        function ajaxSelectNppbck(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data.SearchInput.PoaList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            $('.loading').hide();
+            setupDataTables();
+        }
+
+
+    </script>
+}

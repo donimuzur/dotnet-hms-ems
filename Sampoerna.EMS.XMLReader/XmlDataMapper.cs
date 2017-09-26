@@ -91,11 +91,14 @@ namespace Sampoerna.EMS.XMLReader
             var isNeedInsertBulk = false;
             var fileName = string.Empty;
             var needMoved = true;
+            T itemTemp = null;
             try
             {
                 var existingData = repo.Get();
+                
                 foreach (var item in existingData)
                 {
+                    itemTemp = item;
                     if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
                     {
                         needMoved = true;
@@ -119,7 +122,7 @@ namespace Sampoerna.EMS.XMLReader
                         isNeedInsertBulk = true;
                     }
 
-                    var isFromSap = item.GetType().GetProperty("IS_FROM_SAP") != null && (bool)item.GetType().GetProperty("IS_FROM_SAP").GetValue(item);
+                    var isFromSap = item.GetType().GetProperty("IS_FROM_SAP") != null && item.GetType().GetProperty("IS_FROM_SAP").GetValue(item) != null && (bool)item.GetType().GetProperty("IS_FROM_SAP").GetValue(item);
                     if (!isFromSap)
                         continue;
 
@@ -225,6 +228,7 @@ namespace Sampoerna.EMS.XMLReader
             catch (Exception ex)
             {
                 errorCount++;
+                var temp = itemTemp;
                 logger.Warn(ex.Message);
                 this.Errors.Add(ex.Message);
                 //uow.RevertChanges();

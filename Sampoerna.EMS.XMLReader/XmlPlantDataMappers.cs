@@ -52,6 +52,10 @@ namespace Sampoerna.EMS.XMLReader
                             item.MODIFIED_DATE = DateTime.Now;
                             item.MODIFIED_BY = Constans.PI;
                             item.ADDRESS_IMPORT = exisitingPlant.ADDRESS_IMPORT;
+
+                            //DMS
+                            item.CITY_ID = exisitingPlant.CITY_ID;
+                            item.STATE_ID = exisitingPlant.STATE_ID;
                             items.Add(item);
 
                         }
