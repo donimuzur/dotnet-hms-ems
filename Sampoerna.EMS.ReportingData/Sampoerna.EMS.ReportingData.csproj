@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="dsCk4c.cs">
       <DependentUpon>dsCk4c.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsCk4c.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -50,7 +49,6 @@
     </Compile>
     <Compile Include="dsCK5Print.cs">
       <DependentUpon>dsCK5Print.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsCK5Print.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -64,7 +62,6 @@
     </Compile>
     <Compile Include="dsLack1.cs">
       <DependentUpon>dsLack1.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsLack1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -73,7 +70,6 @@
     </Compile>
     <Compile Include="dsLack10.cs">
       <DependentUpon>dsLack10.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsLack10.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -82,7 +78,6 @@
     </Compile>
     <Compile Include="dsLack2.cs">
       <DependentUpon>dsLack2.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsLack2.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -91,7 +86,6 @@
     </Compile>
     <Compile Include="dsPbck1.cs">
       <DependentUpon>dsPbck1.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsPbck1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -100,7 +94,6 @@
     </Compile>
     <Compile Include="dsPbck4.cs">
       <DependentUpon>dsPbck4.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsPbck4.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -109,7 +102,6 @@
     </Compile>
     <Compile Include="dsPbck7.cs">
       <DependentUpon>dsPbck7.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="dsPbck7.Designer.cs">
       <AutoGen>True</AutoGen>

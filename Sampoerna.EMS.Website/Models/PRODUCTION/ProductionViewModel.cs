@@ -55,7 +55,6 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         [Required]
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
-
         public string QtyPackedStr { get; set; }
 
         public decimal? QtyPacked

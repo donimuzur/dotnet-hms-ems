@@ -14,7 +14,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
 using Sampoerna.EMS.Utils;
-using Voxteneo.WebComponents.Logger;
+//using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlMaterialDataMapper : IXmlDataReader 
